@@ -9,7 +9,7 @@ add_subdirectory(third-party/glfw EXCLUDE_FROM_ALL)
 add_library(glad STATIC EXCLUDE_FROM_ALL libs/glad/src/glad.c)
 target_include_directories(glad PUBLIC libs/glad/include)
 
-add_executable(simulation src/01-window/main.cpp)
+add_executable(simulation src/02-primitives/main.cpp)
 target_include_directories(simulation PRIVATE src/include)
 
 target_link_libraries(simulation PRIVATE glfw)
