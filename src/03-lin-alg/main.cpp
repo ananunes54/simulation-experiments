@@ -6,15 +6,30 @@ class Matrix
 {
 
 private:
-	int rows, columns;
-	std::unique_ptr<double> data;
+	int m_rows, m_columns;
+	std::unique_ptr<double[]> m_data;
 
 public:
-	Matrix()
+	Matrix(std::initializer_list<double> data, int rows, int columns) : m_rows(rows), m_columns(columns)
 	{
-		data = std::make_unique<double>();
+		m_data = std::make_unique<double[]>(data.size());
+		auto a = 0;
+		for (auto i : data)
+		{
+			m_data[a++] = i;
+		}
 	
 		std::cout << "construtor ok" << std::endl;
+	}
+
+	int GetRows()
+	{
+		return m_rows;
+	}
+
+	int GetColumns()
+	{
+		return m_columns;
 	}
 
 	~Matrix()
@@ -26,7 +41,8 @@ public:
 int main()
 {
 	{
-	Matrix m;
+	Matrix m({0, 1, 2}, 3, 1);
+	std::cout << m.GetRows() << ", " << m.GetColumns() << std::endl;
 	}
 	return 0;
 }
