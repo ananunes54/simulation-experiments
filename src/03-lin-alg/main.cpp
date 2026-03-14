@@ -56,6 +56,14 @@ public:
 		}
 	}
 
+	void Scale(double factor)
+	{
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			m_data[i] *= factor;
+		}
+	}
+
 	int GetRows()
 	{
 		return m_rows;
@@ -88,7 +96,7 @@ int main()
 {
 	{
 	Matrix m({0, 1, 2}, 3, 1);
-	m += m;
+	m.Scale(0);
 	m.Print();
 	}
 	return 0;
