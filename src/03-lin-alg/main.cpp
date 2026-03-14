@@ -32,6 +32,15 @@ public:
 		std::cout << "construtor ok" << std::endl;
 	}
 
+	Matrix(const Matrix& other) : m_rows(other.m_rows), m_columns(other.m_columns)
+	{
+		m_data = std::make_unique<double[]>(m_rows*m_columns);
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			m_data[i] = other[i];
+		}
+	}
+
 	double operator[] (int index) const
 	{
 		if (index < 0 || index >= (m_rows * m_columns))
@@ -44,7 +53,7 @@ public:
 
 	void operator+=(Matrix &other)
 	{
-		if (other.GetRows() != m_rows || other.GetColumns() != m_columns)
+		if (other.m_rows != m_rows || other.m_columns != m_columns)
 		{
 			std::cout << "matriz invalida para a operacao." << std::endl;
 			return;
@@ -96,8 +105,8 @@ int main()
 {
 	{
 	Matrix m({0, 1, 2}, 3, 1);
-	m.Scale(0);
-	m.Print();
+	Matrix n = m;
+	n.Print();
 	}
 	return 0;
 }
