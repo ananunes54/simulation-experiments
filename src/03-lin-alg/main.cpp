@@ -32,7 +32,7 @@ public:
 		std::cout << "construtor ok" << std::endl;
 	}
 
-	double operator[](int index)
+	double operator[] (int index) const
 	{
 		if (index < 0 || index >= (m_rows * m_columns))
 		{
@@ -64,17 +64,17 @@ public:
 		}
 	}
 
-	int GetRows()
+	int GetRows() const
 	{
 		return m_rows;
 	}
 
-	int GetColumns()
+	int GetColumns() const
 	{
 		return m_columns;
 	}
 
-	void Print()
+	void Print() const
 	{
 		for (auto i = 0; i < m_rows; i++)
 		{
