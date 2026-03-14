@@ -52,6 +52,18 @@ public:
 		return m_columns;
 	}
 
+	void Print()
+	{
+		for (auto i = 0; i < m_rows; i++)
+		{
+			for (auto j = 0; j < m_columns; j++)
+			{
+				std::cout << m_data[i*m_columns + j] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
+
 	~Matrix()
 	{
 		std::cout << "destrutor ok" << std::endl;
