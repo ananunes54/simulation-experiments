@@ -24,6 +24,11 @@ public:
 
 	double operator[](int index)
 	{
+		if (index < 0 || index >= (m_rows * m_columns))
+		{
+			return 0;
+		}
+
 		return m_data[index];
 	}
 
