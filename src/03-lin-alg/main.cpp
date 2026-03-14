@@ -42,6 +42,20 @@ public:
 		return m_data[index];
 	}
 
+	void operator+=(Matrix &other)
+	{
+		if (other.GetRows() != m_rows || other.GetColumns() != m_columns)
+		{
+			std::cout << "matriz invalida para a operacao." << std::endl;
+			return;
+		}
+
+		for (int i = 0; i < m_rows * m_columns; i++)
+		{
+			m_data[i] += other[i];
+		}
+	}
+
 	int GetRows()
 	{
 		return m_rows;
@@ -74,8 +88,8 @@ int main()
 {
 	{
 	Matrix m({0, 1, 2}, 3, 1);
-	std::cout << m.GetRows() << ", " << m.GetColumns() << std::endl;
-	std::cout << m[2] << std::endl;
+	m += m;
+	m.Print();
 	}
 	return 0;
 }
