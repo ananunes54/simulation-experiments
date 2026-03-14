@@ -12,11 +12,21 @@ private:
 public:
 	Matrix(std::initializer_list<double> data, int rows, int columns) : m_rows(rows), m_columns(columns)
 	{
-		m_data = std::make_unique<double[]>(data.size());
+		unsigned int size = data.size();
+
+		m_data = std::make_unique<double[]>(size);
 		auto a = 0;
 		for (auto i : data)
 		{
 			m_data[a++] = i;
+		}
+
+		if (m_rows * m_columns != size)
+		{
+			std::cout << "especificacao de linhas e colunas invalida. a matriz decaiu para um vetor." << std::endl;
+			m_rows = size;
+			m_columns = 1;
+			return;
 		}
 	
 		std::cout << "construtor ok" << std::endl;
