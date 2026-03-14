@@ -22,6 +22,11 @@ public:
 		std::cout << "construtor ok" << std::endl;
 	}
 
+	double operator[](int index)
+	{
+		return m_data[index];
+	}
+
 	int GetRows()
 	{
 		return m_rows;
@@ -43,6 +48,7 @@ int main()
 	{
 	Matrix m({0, 1, 2}, 3, 1);
 	std::cout << m.GetRows() << ", " << m.GetColumns() << std::endl;
+	std::cout << m[2] << std::endl;
 	}
 	return 0;
 }
