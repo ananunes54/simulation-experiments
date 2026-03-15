@@ -112,6 +112,53 @@ public:
 		return *this;
 	}
 
+	Matrix operator*(const Matrix& other) const
+	{
+		if (&other == this)
+		{
+			return *this;
+		}
+
+		if (m_columns != other.m_rows)
+		{
+			std::cout << "numero de linhas e colunas incompativel; matriz nula retornada com ";
+			std::cout << m_rows << "linhas e ";
+			std::cout << m_columns << "colunas." << std::endl;
+
+			Matrix temp(m_rows, m_columns);
+
+			for (auto i = 0; i < m_columns*m_rows; i++)
+			{
+				temp.m_data[i] = 0;
+			}
+
+			return temp;
+		}
+
+		Matrix temp(m_rows, other.m_columns);
+
+		{
+			std::cout << "matriz da multiplicacao: ";
+			std::cout << m_rows << "linhas, ";
+			std::cout << other.m_columns << "colunas." << std::endl;
+
+			for (auto i = 0; i < m_rows; i++)
+			{
+				for (auto j = 0, sum = 0; j < other.m_columns; j++)
+				{
+					for (auto k = 0; k < m_columns; k++)
+					{
+						sum += m_data[i*m_columns + k] * other.m_data[other.m_columns*k + j];
+					}
+
+					temp.m_data[i*other.m_columns + j] = sum;
+				}
+			}
+		}
+
+		return temp;
+	}
+
 	void Scale(double factor)
 	{
 		for (auto i = 0; i < m_rows*m_columns; i++)
