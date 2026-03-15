@@ -41,6 +41,15 @@ public:
 		}
 	}
 
+	Matrix(int rows, int columns) : m_rows(rows), m_columns(columns)
+	{
+		m_data = std::make_unique<double[]>(m_rows*m_columns);
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			m_data[i] = 0;
+		}
+	}
+
 	double operator[] (int index) const
 	{
 		if (index < 0 || index >= (m_rows * m_columns))
