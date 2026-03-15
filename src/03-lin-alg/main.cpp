@@ -65,6 +65,44 @@ public:
 		}
 	}
 
+	Matrix& operator=(const Matrix& other)
+	{
+		if (&other == this) 
+		{
+			return *this;
+		}
+
+		if (other.m_rows != m_rows || other.m_columns != m_columns)
+		{
+			std::cout << "numero de linhas e colunas incompativel; a copia nao foi concluida." << std::endl;
+			return *this;
+		}
+
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			m_data[i] = other[i];
+		}
+		
+		return *this;
+	}
+
+	Matrix& operator=(Matrix&& other)
+	{
+		if (this == &other)
+		{
+			return *this;
+		}
+
+		if (other.m_rows != m_rows || other.m_columns != m_columns)
+		{
+			std::cout << "numero de linhas e colunas incompativel; a copia nao foi concluida." << std::endl;
+			return *this;
+		}
+
+		m_data = std::move(other.m_data);
+		return *this;
+	}
+
 	void Scale(double factor)
 	{
 		for (auto i = 0; i < m_rows*m_columns; i++)
