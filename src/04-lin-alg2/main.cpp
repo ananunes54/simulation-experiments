@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <matrix_exponential.h>
 
 template<int I, int J>
 struct matrix
@@ -41,7 +42,7 @@ matrix<I, J> Multiply(matrix<I, K>& m1, matrix<K, J>& m2)
 	auto m1Columns = K;
 	auto m2Columns = J;
 	auto resultColumns = J;
-	auto sum = 0;
+	double sum = 0;
 	matrix<I, J> result;
 
 	for (auto i = 0; i < I; i++)
@@ -73,6 +74,27 @@ matrix<I, J> Transpose(matrix<J, I>& m)
 			result.data[i*resultColumns + j] = m.data[j*mColumns + i];
 		}
 	}
+	return result;
+}
+
+template<int N>
+matrix<N, N> Exponential(matrix<N, N>& m)
+{
+	double buffer[N*N];
+	for (auto c = 0; c < N*N; c++)
+	{
+		buffer[c] = m.data[c];
+	}
+
+	double *expmPtr = r8mat_expm1(N, buffer);
+
+	matrix<N, N> result;
+	for (auto c = 0; c < N*N; c++)
+	{
+		result.data[c] = expmPtr[c];
+	}
+
+	free(expmPtr);
 	return result;
 }
 
@@ -127,8 +149,7 @@ void Print(matrix<I, J>& m)
 
 int main()
 {
-	vector<3> v1 = {1, 1, 1};
-	vector<3> v2 = v1;
-	double r = ApplyMetric(v1, v2);
-	std::cout << r << std::endl;
+	matrix<3, 3> m = {2, 1, 0, 0, 2, 0, 0, 0, 3};
+	matrix<3, 3> n = Exponential(m);
+	Print(n);
 }
