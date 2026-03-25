@@ -1,10 +1,7 @@
 #include <iostream>
 #include <array>
 #include <matrix_exponential.h>
-#include "matrix.h"
-
-template<int I>
-using vector = matrix<I, 1>;
+#include <matrix.h>
 
 template<int J>
 using covector = matrix<1, J>;
@@ -114,14 +111,43 @@ matrix<N, N> MinkowskiMatrix()
 			result.data[c] = 0;
 		}
 	}
+
 	return result;
 }
 
 template<int N>
-double ApplyMetric(vector<N>& v1, vector<N>& v2)
+matrix<N, N> EuclideanMatrix()
+{
+	matrix<N, N> result;
+	for (auto c = 0; c < N*N; c++)
+	{
+		if (c%(N+1) == 0)
+		{
+			result.data[c] = 1;	
+		}
+
+		else
+		{
+			result.data[c] = 0;
+		}
+	}
+
+	return result;
+}
+
+template<int N>
+double ApplyMinkowskiMetric(vector<N> v1, vector<N> v2)
 {
 	matrix<N, N> minkowski = MinkowskiMatrix<N>();
 	v1 = Multiply(minkowski, v1);
+	covector<N> c1 = Transpose(v1);
+	matrix<1, 1> result = Multiply(c1, v2);
+	return result.data[0];
+}
+
+template<int N>
+double ApplyEuclideanMetric(vector<N> v1, vector<N> v2)
+{
 	covector<N> c1 = Transpose(v1);
 	matrix<1, 1> result = Multiply(c1, v2);
 	return result.data[0];
@@ -139,5 +165,6 @@ void Print(matrix<I, J>& m)
 
 		std::cout << std::endl;
 	}
+	std::cout << std::endl;
 }
 

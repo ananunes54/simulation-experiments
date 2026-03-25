@@ -34,8 +34,16 @@ template<int N>
 matrix<N, N> MinkowskiMatrix();
 
 template<int N>
-double ApplyMetric(vector<N>& v1, vector<N>& v2);
+matrix<N, N> EuclideanMatrix();
+
+template<int N>
+double ApplyMinkowskiMetric(vector<N> v1, vector<N> v2);
+
+template<int N>
+double ApplyEuclideanMetric(vector<N> v1, vector<N> v2);
 
 template<int I, int J>
 void Print(matrix<I, J>& m);
+
+#include <matrix.tpp>
 #endif
