@@ -11,8 +11,9 @@ add_library(glad STATIC EXCLUDE_FROM_ALL libs/glad/src/glad.c)
 target_include_directories(glad PUBLIC libs/glad/include)
 
 add_executable(simulation src/04-lin-alg2/main.cpp)
-target_include_directories(simulation PRIVATE src/include)
+target_include_directories(simulation PUBLIC shared)
 
 target_link_libraries(simulation PRIVATE glfw)
 target_link_libraries(simulation PRIVATE glad)
 target_link_libraries(simulation PRIVATE expm)
+target_link_libraries(simulation PRIVATE m)
