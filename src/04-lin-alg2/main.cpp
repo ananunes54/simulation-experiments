@@ -122,16 +122,6 @@ matrix<N, N> MinkowskiMatrix()
 	return result;
 }
 
-template<int N>
-double ApplyMetric(vector<N>& v1, vector<N>& v2)
-{
-	matrix<N, N> minkowski = MinkowskiMatrix<N>();
-	v1 = Multiply(minkowski, v1);
-	covector<N> c1 = Transpose(v1);
-	matrix<1, 1> result = Multiply(c1, v2);
-	return result.data[0];
-}
-
 template<int I, int J>
 void Print(matrix<I, J>& m)
 {
@@ -144,12 +134,26 @@ void Print(matrix<I, J>& m)
 
 		std::cout << std::endl;
 	}
+	std::cout << std::endl;
+}
+
+template<int N>
+double ApplyMetric(vector<N> v1, vector<N> v2)
+{
+	matrix<N, N> minkowski = MinkowskiMatrix<N>();
+	v1 = Multiply(minkowski, v1);
+	std::cout << "--------------------" << std::endl;
+	covector<N> c1 = Transpose(v1);
+	Print(c1);
+	Print(v2);
+	matrix<1, 1> result = Multiply(c1, v2);
+	return result.data[0];
 }
 
 
 int main()
 {
-	matrix<3, 3> m = {2, 1, 0, 0, 2, 0, 0, 0, 3};
-	matrix<3, 3> n = Exponential(m);
-	Print(n);
+	vector<3> a = {0, 0.01, 0};
+	double metric = ApplyMetric(a, a);
+	std::cout << metric << std::endl;
 }
