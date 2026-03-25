@@ -1,6 +1,7 @@
-//#include <math.h>
+#include <math.h>
 #include <iostream>
 #include <memory>
+#include <matrix_exponential.h>
 
 class Matrix
 {
@@ -60,6 +61,29 @@ public:
 		return m_data[index];
 	}
 
+	Matrix operator+(Matrix &other)
+	{
+		if (other.m_rows != m_rows && other.m_columns != m_columns)
+		{
+			std::cout << "numero de linhas e colunas incompativel. matriz nula retornada.";
+			Matrix temp(m_rows, m_columns);
+			for (auto i = 0; i < m_rows*m_columns; i++)
+			{
+				temp.m_data[i] = 0;
+			}
+
+			return temp;
+		}
+
+		Matrix temp(m_rows, m_columns);
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			temp.m_data[i] = m_data[i] + other.m_data[i];
+		}
+
+		return temp;
+	}
+/*
 	void operator+=(Matrix &other)
 	{
 		if (other.m_rows != m_rows || other.m_columns != m_columns)
@@ -73,7 +97,7 @@ public:
 			m_data[i] += other[i];
 		}
 	}
-
+*/
 	Matrix& operator=(const Matrix& other)
 	{
 		if (&other == this) 
@@ -167,6 +191,27 @@ public:
 		}
 	}
 
+	void Exponential()
+	{
+		if (m_rows != m_columns)
+		{
+			return;
+		}
+		
+		double* temp = r8mat_expm1(m_rows, m_data.get());
+		for (auto i = 0; i < m_rows*m_columns; i++)
+		{
+			m_data[i] = temp[i];
+		}
+
+		free(temp);
+	}
+
+	Matrix Minkowski(const Matrix& other)
+	{
+		Matrix Minkowski(other.m
+	}
+
 	int GetRows() const
 	{
 		return m_rows;
@@ -189,17 +234,21 @@ public:
 		}
 	}
 
+
 	~Matrix()
 	{
 		std::cout << "destrutor ok" << std::endl;
 	}
 };
 
+
 int main()
 {
 	{
-	Matrix m({0, 1, 2}, 3, 1);
-	Matrix n = m;
+	const Matrix Minkowski({1, 0, 0, 0, -1, 0, 0, 0, -1}, 3, 3);
+	Matrix m({1, 2, 3}, 3, 1);
+	Matrix n(3, 1);
+	n = Minkowski * m;
 	n.Print();
 	}
 	return 0;
