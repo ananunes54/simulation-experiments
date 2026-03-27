@@ -10,7 +10,7 @@ add_subdirectory(libs/matrix-exponential EXCLUDE_FROM_ALL)
 add_library(glad STATIC EXCLUDE_FROM_ALL libs/glad/src/glad.c)
 target_include_directories(glad PUBLIC libs/glad/include)
 
-add_executable(simulation src/5-hyperbolic-motion/main.cpp)
+add_executable(simulation src/6-sim-control/main.cpp)
 target_include_directories(simulation PUBLIC shared)
 
 target_link_libraries(simulation PRIVATE glfw)

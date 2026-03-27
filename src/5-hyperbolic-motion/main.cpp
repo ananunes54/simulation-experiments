@@ -12,7 +12,7 @@
 #define DIMENSIONS 3
 #define TOLERANCE 0.001
 
-int main()
+int main(int argc, char *argv[])
 {
 	static double trajectory[POINTS*DIMENSIONS] = {0};
 	const double time_increment = 0.001;
