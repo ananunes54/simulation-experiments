@@ -8,25 +8,25 @@
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
 
-#define POINTS 100
+#define POINTS 1000
 #define DIMENSIONS 3
 #define TOLERANCE 0.001
 
 int main()
 {
-	double trajectory[POINTS*DIMENSIONS] = {0};
+	static double trajectory[POINTS*DIMENSIONS] = {0};
 	const double time_increment = 0.001;
 
 	matrix<3, 3> omega = {
-		0, 0.1, 0,
-		0.1, 0, 0,
-		0, 0, 0
+		0, 0, 0,
+		0, 0, 10,
+		0, -10, 0
 	};
 
 	matrix<3, 3> timeScaledOmega = Scale(omega, time_increment);
 	matrix<3, 3> omegaExp = Exponential(timeScaledOmega);
 
-	double v = 0.05;
+	double v = 0.5;
 	double gamma = 1/sqrt(1 - pow(v, 2));
 
 	vector<3> fourVelocity = {gamma, gamma * v, 0};
@@ -44,15 +44,24 @@ int main()
 	const double positionInvariant = sqrt(-ApplyMinkowskiMetric(fourPosition, fourPosition));
 	std::cout << positionInvariant << std::endl;
 	double positionMetric;
+
+
+	vector<3> fourPositionIncrement;
 	
 	for (auto i = 0; i < sizeof(trajectory)/sizeof(double); )
 	{
+		trajectory[i] = fourPosition.data[1];
+		trajectory[i+1] = fourPosition.data[0];
+
 		fourVelocity = Multiply(omegaExp, fourVelocity);
 		velocityMetric = ApplyMinkowskiMetric(fourVelocity, fourVelocity);
 		
 		fourAcceleration = Multiply(omega, fourVelocity);
 		accelerationMetric = ApplyMinkowskiMetric(fourAcceleration, fourAcceleration);
 		auMetric = ApplyMinkowskiMetric(fourVelocity, fourAcceleration);
+
+		fourPositionIncrement = Scale(fourVelocity, time_increment);
+		fourPosition = Add(fourPosition, fourPositionIncrement);
 
 		if ( TOLERANCE < velocityMetric - velocityInvariant || TOLERANCE < velocityInvariant - velocityMetric)
 		{
@@ -75,7 +84,7 @@ int main()
 		i += DIMENSIONS;
 	}
 
-/*
+
 	glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
 	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
 		
@@ -106,20 +115,19 @@ int main()
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(trajectory), trajectory GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(trajectory), trajectory, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, DIMENSIONS, GL_DOUBLE, GL_TRUE, DIMENSIONS*sizeof(double), 0);
+	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, DIMENSIONS*sizeof(double), 0);
 
 
 	while(!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawArrays(GL_POINTS, 0, 4);
+		glDrawArrays(GL_POINTS, 0, POINTS);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
-*/
 }
