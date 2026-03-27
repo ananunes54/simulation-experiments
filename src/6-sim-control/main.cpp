@@ -4,14 +4,13 @@
 namespace simulation
 {
 	struct state
-	{
-		enum axis {time, X, Y, Z};
+	{	
 		vector<3> linAcceleration = {0, 0, 0};
 		vector<3> angAcceleration = {0, 0, 0};
 		vector<3> spacialVelocity = {0, 0, 0};
 		vector<3> spacialPosition = {0, 0, 0};
-		axis visibleAxis1;
-		axis visibleAxis2;
+		char visibleAxis1;
+		char visibleAxis2;
 	};
 
 	void SetInitialValues(simulation::state& state)
@@ -24,6 +23,8 @@ namespace simulation
 		std::cin >> state.spacialVelocity.data[0] >> state.spacialVelocity.data[1] >> state.spacialVelocity.data[2];
 		std::cout << "posicao: ";
 		std::cin >> state.spacialPosition.data[0] >> state.spacialPosition.data[1] >> state.spacialPosition.data[2];
+		std::cout << "eixos visiveis: ";
+		std::cin >> state.visibleAxis1 >> state.visibleAxis2;
 	}
 }
 
@@ -37,5 +38,8 @@ int main()
 	Print(state.angAcceleration);
 	Print(state.spacialVelocity);
 	Print(state.spacialPosition);
+
+	std::cout << state.visibleAxis1 << std::endl;
+	std::cout << state.visibleAxis2 << std::endl;
 
 }
