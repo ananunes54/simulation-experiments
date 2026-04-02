@@ -13,6 +13,7 @@
 #define DIMENSIONS 3
 #define TOLERANCE 0.001
 
+
 int main()
 {
 	simulation::state s;
@@ -30,7 +31,8 @@ int main()
 	matrix<3, 3> timeScaledOmega = Scale(omega, time_increment);
 	matrix<3, 3> omegaExp = Exponential(timeScaledOmega);
 
-	double v = 0.5;
+	double v = sqrt(ApplyEuclideanMetric(s.spacialVelocity, s.spacialVelocity));
+	std::cout << v << std::endl;
 	double gamma = 1/sqrt(1 - pow(v, 2));
 
 	vector<3> fourVelocity = {gamma, gamma * v, 0};
