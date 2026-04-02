@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <matrix.h>
 #include <math.h>
+#include <control.h>
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
@@ -12,15 +13,18 @@
 #define DIMENSIONS 3
 #define TOLERANCE 0.001
 
-int main(int argc, char *argv[])
+int main()
 {
+	simulation::state s;
+	simulation::SetInitialValues(s);
+
 	static double trajectory[POINTS*DIMENSIONS] = {0};
 	const double time_increment = 0.001;
 
 	matrix<3, 3> omega = {
-		0, 0, 0,
-		0, 0, 10,
-		0, -10, 0
+		0                         , s.linAcceleration.data[0], s.linAcceleration.data[1],
+		s.linAcceleration.data[0] , 0                        , s.angAcceleration.data[0],
+		s.linAcceleration.data[1] , -s.angAcceleration.data[0], 0
 	};
 
 	matrix<3, 3> timeScaledOmega = Scale(omega, time_increment);
