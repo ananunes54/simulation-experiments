@@ -11,7 +11,7 @@
 #define WINDOW_HEIGHT 720
 
 #define POINTS 5000
-#define DIMENSIONS 3
+#define DIMENSIONS 2
 #define TOLERANCE 0.001
 
 
@@ -25,6 +25,8 @@ int main()
 	std::cout << "x2: ";
 	std::cin >> x2;
 
+	std::cout << "eixos visiveis: " << s1.visibleAxis1 << " " << s1.visibleAxis2 << std::endl;
+	
 	static double trajectory1[POINTS*DIMENSIONS] = {0};
 	static double trajectory2[POINTS*DIMENSIONS] = {0};
 
@@ -52,25 +54,40 @@ int main()
 	
 	for (auto i = 0; i < sizeof(trajectory1)/sizeof(double); )
 	{
+		if (s1.visibleAxis1 != 'y' && s1.visibleAxis2 != 'y')
+		{
+			trajectory1[i] = fourPosition1.data[1];
+			trajectory1[i+1] = fourPosition1.data[0];
+			trajectory2[i] = fourPosition2.data[1];
+			trajectory2[i+1] = fourPosition2.data[0];
+		}
+
+		else if (s1.visibleAxis1 == 't' || s1.visibleAxis2 == 't')
+		{
+			trajectory1[i] = fourPosition1.data[2];
+			trajectory1[i+1] = fourPosition1.data[0];
+			trajectory2[i] = fourPosition2.data[2];
+			trajectory2[i+1] = fourPosition2.data[0];
+		}
 		
-		trajectory1[i] = fourPosition1.data[1];
-		trajectory1[i+1] = fourPosition1.data[0];
+		else
+		{
+			trajectory1[i] = fourPosition1.data[1];
+			trajectory1[i+1] = fourPosition1.data[2];
+			trajectory2[i] = fourPosition2.data[1];
+			trajectory2[i+1] = fourPosition2.data[2];
+		}
 
 		fourPosition1 = Multiply(omegaExp, fourPosition1);
-
-		trajectory2[i] = fourPosition2.data[1];
-		trajectory2[i+1] = fourPosition2.data[0];
-
 		fourPosition2 = Multiply(omegaExp, fourPosition2);
-
-
+/*
 		positionMetric = ApplyMinkowskiMetric(fourPosition1, fourPosition1);
 
 		if(positionInvariant - positionMetric > TOLERANCE || positionMetric - positionInvariant > TOLERANCE)
 		{
 			std::cout << "a metrica passou da tolerancia em " << ((positionInvariant > positionMetric) ? (positionInvariant - positionMetric) : (positionMetric - positionInvariant)) << " em i = " << i << std::endl;
 		}
-
+*/
 		i += DIMENSIONS;
 	}
 
@@ -106,13 +123,13 @@ int main()
 	glGenBuffers(1, &buffer1);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trajectory1), trajectory1, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, DIMENSIONS*sizeof(double), 0);
 
 	unsigned int buffer2;
 	glGenBuffers(1, &buffer2);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer2);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trajectory2), trajectory2, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
 
 	while(!glfwWindowShouldClose(window))
 	{
