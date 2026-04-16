@@ -44,6 +44,15 @@ int main()
 	vector<3> fourPosition1 = {0, s1.spacialPosition.data[0], 0};
 	vector<3> fourPosition2 = {0, x2, 0};
 
+	vector<3> fourVelocity1 = Multiply(omega, fourPosition1);
+	vector<3> fourVelocity2 = Multiply(omega, fourPosition2);
+
+	if (ApplyMinkowskiMetric(fourVelocity1, fourVelocity1) <= 0 || ApplyMinkowskiMetric(fourVelocity2, fourVelocity2) <= 0)
+	{
+		std::cout << "condicoes iniciais invalidas." << std::endl;
+		return -1;
+	}
+	
 	std::cout.precision(15);
 	std::cout << std::fixed;
 
