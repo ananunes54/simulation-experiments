@@ -7,10 +7,10 @@
 #include <control.h>
 #include <iomanip>
 
-#define WINDOW_WIDTH 720
-#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH 900
+#define WINDOW_HEIGHT 900
 
-#define POINTS 5000
+#define POINTS 20000
 #define DIMENSIONS 2
 #define TOLERANCE 0.001
 
@@ -24,30 +24,33 @@ int main()
 	double x2;
 	std::cout << "x2: ";
 	std::cin >> x2;
-
-	std::cout << "eixos visiveis: " << s1.visibleAxis1 << " " << s1.visibleAxis2 << std::endl;
 	
 	static double trajectory1[POINTS*DIMENSIONS] = {0};
 	static double trajectory2[POINTS*DIMENSIONS] = {0};
 
 	const double time_increment = 0.001;
 
-	matrix<3, 3> omega = {
-		0                         , s1.linAcceleration.data[0], s1.linAcceleration.data[1],
-		s1.linAcceleration.data[0] , 0                        , s1.angAcceleration.data[0],
-		s1.linAcceleration.data[1] , -s1.angAcceleration.data[0], 0
+	matrix<4, 4> omega = {
+		             0             , s1.linAcceleration.data[0] , s1.linAcceleration.data[1], 0,
+		s1.linAcceleration.data[0] ,             0              , -s1.angAcceleration.data[0], 0,
+		s1.linAcceleration.data[1] , s1.angAcceleration.data[0],            0              , 0,
+		          0                ,             0              ,            0              , 0
 	};
+	
+	matrix<4, 4> timeScaledOmega = Scale(omega, time_increment);
+	matrix<4, 4> omegaExp = Exponential(timeScaledOmega);
 
-	matrix<3, 3> timeScaledOmega = Scale(omega, time_increment);
-	matrix<3, 3> omegaExp = Exponential(timeScaledOmega);
+	matrix<4, 4> omegaExp2 = Exponential(omega);
+	Print(omega);
+	Print(omegaExp2);
 
-	vector<3> fourPosition1 = {0, s1.spacialPosition.data[0], 0};
-	vector<3> fourPosition2 = {0, x2, 0};
+	vector<4> fourPosition1 = {0, s1.spacialPosition.data[0], 0, 1};
+	vector<4> fourPosition2 = {0, x2, 0, 1};
 
-	vector<3> fourVelocity1 = Multiply(omega, fourPosition1);
-	vector<3> fourVelocity2 = Multiply(omega, fourPosition2);
+	vector<4> fourVelocity1 = Multiply(omega, fourPosition1);
+	vector<4> fourVelocity2 = Multiply(omega, fourPosition2);
 
-	if (ApplyMinkowskiMetric(fourVelocity1, fourVelocity1) <= 0 || ApplyMinkowskiMetric(fourVelocity2, fourVelocity2) <= 0)
+	if (ApplyMinkowskiMetric(fourVelocity1, fourVelocity1) + 1 <= 0 || ApplyMinkowskiMetric(fourVelocity2, fourVelocity2) + 1 <= 0)
 	{
 		std::cout << "condicoes iniciais invalidas." << std::endl;
 		return -1;
@@ -60,9 +63,14 @@ int main()
 	std::cout << positionInvariant << std::endl;
 	double positionMetric;
 
-	
-	for (auto i = 0; i < sizeof(trajectory1)/sizeof(double); )
+	int i;
+	for (i = 0; i < sizeof(trajectory1)/sizeof(double); )
 	{
+		if (fourPosition1.data[1] <= 0 || fourPosition2.data[1] <= 0)
+		{
+			std::cout << "a trajetória cruzou o eixo y. x =" << fourPosition1.data[2] << std::endl;
+		}
+
 		if (s1.visibleAxis1 != 'y' && s1.visibleAxis2 != 'y')
 		{
 			trajectory1[i] = fourPosition1.data[1];
@@ -99,6 +107,7 @@ int main()
 */
 		i += DIMENSIONS;
 	}
+	std::cout << i << std::endl;
 
 
 	glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
@@ -138,6 +147,12 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, buffer2);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trajectory2), trajectory2, GL_STATIC_DRAW);
 
+	float line[4] = {0, 1, 0, -1};
+	unsigned int bufferLine;
+	glGenBuffers(1, &bufferLine);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferLine);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
 
 	while(!glfwWindowShouldClose(window))
@@ -151,6 +166,10 @@ int main()
 		glBindBuffer(GL_ARRAY_BUFFER, buffer2);
 		glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, DIMENSIONS*sizeof(double), 0);
 		glDrawArrays(GL_POINTS, 0, POINTS);
+
+		glBindBuffer(GL_ARRAY_BUFFER, bufferLine);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+		glDrawArrays(GL_LINES, 0, 2);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
