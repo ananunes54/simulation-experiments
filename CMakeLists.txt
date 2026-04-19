@@ -5,7 +5,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(SRC 
 	shared/control.cpp
-	src/7-born-rigid/main.cpp)
+	src/8-shaders/main.cpp)
 
 add_subdirectory(third-party/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(libs/matrix-exponential EXCLUDE_FROM_ALL)
