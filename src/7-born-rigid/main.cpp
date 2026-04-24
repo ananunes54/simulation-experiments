@@ -6,6 +6,7 @@
 #include <math.h>
 #include <control.h>
 #include <iomanip>
+#include <utils.h>
 
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 900
@@ -109,33 +110,8 @@ int main()
 	}
 	std::cout << i << std::endl;
 
-
-	glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
-	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-		
-	if (!glfwInit())
-	{
-		return -1;
-	}
-
-	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "window", NULL, NULL);
-
-	if (!window)
-	{
-		std::cout << "erro ao criar janela." << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "erro ao carregar glad." << std::endl;
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return -1;
-	}
+	GLFWwindow* window;
+	int initialized = init(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	unsigned int buffer1;
 	glGenBuffers(1, &buffer1);
