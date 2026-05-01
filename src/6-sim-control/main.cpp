@@ -1,22 +1,31 @@
+#define GLFW_INCLUDE_NONE
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <exception>
+#define WAYLAND
 
-class teste
+class GLFW
 {
 public:
-	teste()
+	GLFW()
 	{
-		std::cout << "objeto criado" << std::endl;
+		#ifdef WAYLAND
+		glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+		#endif
+
+		if (!glfwInit())
+		{
+			const char* description;
+			int error = glfwGetError(&description);
+			throw std::runtime_error(description);
+		}
 	}
 
-	void funcao()
+	~GLFW()
 	{
-		throw std::runtime_error("erro ao criar objeto");
-	}
-
-	~teste()
-	{
-		std::cout << "objeto destruido" << std::endl;
+		std::cout << "terminated" << std::endl;
+		glfwTerminate();
 	}
 };
 
@@ -25,13 +34,11 @@ int main ()
 {
 	try
 	{
-		teste a;
-		a.funcao();
+		GLFW glfw;
 	}
 	catch (std::exception& e)
 	{
-		std::cout << "exceção encontrada: " << e.what() << std::endl;
+		std::cout << e.what() << std::endl;
 	}
-
 	return 0;
 }
