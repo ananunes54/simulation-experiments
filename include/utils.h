@@ -1,6 +1,22 @@
 #ifndef UTILS_H_INCLUDED
 #define UTILS_H_INCLUDED
 #include <GLFW/glfw3.h>
+#include <string>
+#include <exception>
+
+
+class FileException : public std::exception
+{
+private:
+	std::string m_message;
+public:
+	explicit FileException(std::string& message) : m_message(message) {}
+	const char* what() const noexcept override 
+	{
+		return m_message.c_str();
+	}
+};
+
 
 class Glfw
 {
@@ -25,5 +41,7 @@ public:
 };
 
 void loadGlad();
+
+std::string readFromFile(std::string& fileName);
 
 #endif

@@ -4,6 +4,8 @@
 #include <utils.h>
 #include <iostream>
 #include <exception>
+#include <fstream>
+#include <system_error>
 
 
 Glfw::Glfw()
@@ -69,5 +71,40 @@ void loadGlad()
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		throw std::runtime_error("não foi possivel carregar o glad.");
+	}
+}
+
+
+std::string readFromFile(std::string& fileName)
+{
+	std::ifstream file(fileName.data());
+	if (!file) 
+	{
+		std::string msg("nao foi possivel carregar o arquivo.");
+		throw FileException(msg);
+	}
+	
+	file.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
+	try 
+	{
+		
+		file.seekg(0, std::ios::end);
+		int fileSize = file.tellg();
+		std::string fileContent(fileSize, ' ');
+		file.seekg(0, std::ios::beg);
+		file.read(fileContent.data(), fileSize);
+		file.close();
+		return fileContent;
+	}
+	catch(std::ios_base::failure& e)
+	{
+		if (file.is_open())
+		{
+			file.close();
+		}
+
+		std::cerr << "[EXCEÇÃO] Erro ao processar o shader '" << fileName << "'\n"
+                  << "Detalhes: " << e.what() << "\n" << "Codigo: " << e.code() << std::endl;
+		return "";
 	}
 }

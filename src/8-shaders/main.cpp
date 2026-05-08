@@ -17,7 +17,7 @@ int main()
 
 		loadGlad();
 
-		float squarePositions[18] = {
+		float squarePositions[8] = {
 			-0.5f, -0.5f,
 			0.5f, -0.5f,
 			0.5f, 0.5f,
@@ -29,6 +29,9 @@ int main()
 			2, 3, 0
 		};
 		
+		std::string shaderFile("/home/ana/sim-experiments/src/8-shaders/shader.txt");
+		std::string shaderSource = readFromFile(shaderFile);
+		std::cout << "arquivo shader lido" << std::endl;
 
 		unsigned int vao;
 		glGenBuffers(1, &vao);
@@ -63,6 +66,7 @@ int main()
 			glfwPollEvents();
 		}
 	}
+
 	catch(std::exception& e)
 	{
 		std::cout << "exception caught: " << e.what() << std::endl;
