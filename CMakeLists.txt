@@ -6,6 +6,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(SRC 
 	shared/control.cpp
 	shared/utils.cpp
+	shared/shaders.cpp
 	src/8-shaders/main.cpp)
 
 add_subdirectory(third-party/glfw EXCLUDE_FROM_ALL)

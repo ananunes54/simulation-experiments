@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <utils.h>
 #include <exception>
+#include <shaders.h>
 
 int main()
 {
@@ -29,9 +30,6 @@ int main()
 			2, 3, 0
 		};
 		
-		std::string shaderFile("/home/ana/sim-experiments/src/8-shaders/shader.txt");
-		std::string shaderSource = readFromFile(shaderFile);
-		std::cout << "arquivo shader lido" << std::endl;
 
 		unsigned int vao;
 		glGenBuffers(1, &vao);
@@ -55,6 +53,24 @@ int main()
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
+		std::string vertexShaderStr = readFromFile(vertexShaderPath);
+		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
+		std::string fragmentShaderStr = readFromFile(fragmentShaderPath);
+		unsigned int program = createProgram(vertexShaderStr, fragmentShaderStr);
+
+		if (program != -1)
+		{
+			std::cout << "opengl program compilado com sucesso" << std::endl;
+			glUseProgram(program);
+		}
+
+		else
+		{
+			std::cout << "nao foi possivel compilar opengl program" << std::endl;
+		}
+		
+		
 		while (!window.shouldClose())
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -65,7 +81,11 @@ int main()
 
 			glfwPollEvents();
 		}
+		
+		glDeleteProgram(program);
 	}
+
+
 
 	catch(std::exception& e)
 	{
