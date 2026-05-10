@@ -15,6 +15,8 @@ add_subdirectory(libs/matrix-exponential EXCLUDE_FROM_ALL)
 add_library(glad STATIC EXCLUDE_FROM_ALL libs/glad/src/glad.c)
 target_include_directories(glad PUBLIC libs/glad/include)
 
+find_package(glm CONFIG REQUIRED)
+
 add_executable(simulation ${SRC})
 target_include_directories(simulation PUBLIC include)
 
@@ -22,3 +24,4 @@ target_link_libraries(simulation PRIVATE glfw)
 target_link_libraries(simulation PRIVATE glad)
 target_link_libraries(simulation PRIVATE expm)
 target_link_libraries(simulation PRIVATE m)
+target_link_libraries(simulation PRIVATE glm::glm)

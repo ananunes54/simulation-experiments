@@ -6,6 +6,7 @@
 #include <utils.h>
 #include <exception>
 #include <shaders.h>
+#include <math.h>
 
 int main()
 {
@@ -19,10 +20,10 @@ int main()
 		loadGlad();
 
 		float squarePositions[8] = {
-			-0.5f, -0.5f,
-			0.5f, -0.5f,
-			0.5f, 0.5f,
-			-0.5f, 0.5f,
+			-0.5f / 2.0, -0.5f / 2.0f,
+			0.5f / 2.0f, -0.5f / 2.0f,
+			0.5f / 2.0f, 0.5f / 2.0f,
+			-0.5f / 2.0f, 0.5f / 2.0f
 		};
 
 		unsigned int squareIndices[6] = {
@@ -59,6 +60,9 @@ int main()
 		std::string fragmentShaderStr = readFromFile(fragmentShaderPath);
 		unsigned int program = createProgram(vertexShaderStr, fragmentShaderStr);
 
+		int u_colorLocation = glGetUniformLocation(program, "u_color");
+		int u_timeLocation = glGetUniformLocation(program, "u_time");
+
 		if (program != -1)
 		{
 			std::cout << "opengl program compilado com sucesso" << std::endl;
@@ -70,10 +74,14 @@ int main()
 			std::cout << "nao foi possivel compilar opengl program" << std::endl;
 		}
 		
-		
+		float time = 0.0f;
 		while (!window.shouldClose())
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			glUniform4f(u_colorLocation, 1.0f, 0.5f, 0.25f, 1.0f);
+			glUniform1f(u_timeLocation, time);
+			time += 0.01f;
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, squareIndices);
 
