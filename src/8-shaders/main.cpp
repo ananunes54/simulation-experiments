@@ -7,6 +7,9 @@
 #include <exception>
 #include <shaders.h>
 #include <math.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <matrix.h>
 
 int main()
 {
@@ -25,6 +28,20 @@ int main()
 			0.5f / 2.0f, 0.5f / 2.0f,
 			-0.5f / 2.0f, 0.5f / 2.0f
 		};
+
+		matrix<3, 3> aMat = {0.0f, 0.0f, 0.005f, 
+				  0.0f, 0.0f, 0.0f,
+				  0.0f, 0.0f, 0.0f};
+
+		matrix<3, 3> omegaMat = Exponential(aMat);
+
+		glm::mat3 lorentzMat = glm::mat3(omegaMat.data[0], omegaMat.data[3], omegaMat.data[6],
+					omegaMat.data[1], omegaMat.data[4], omegaMat.data[7],
+					omegaMat.data[2], omegaMat.data[5], omegaMat.data[8]);
+
+		glm::mat3 auxMat = glm::mat3(omegaMat.data[0], omegaMat.data[3], omegaMat.data[6],
+					omegaMat.data[1], omegaMat.data[4], omegaMat.data[7],
+					omegaMat.data[2], omegaMat.data[5], omegaMat.data[8]);
 
 		unsigned int squareIndices[6] = {
 			0, 1, 2,
@@ -62,6 +79,7 @@ int main()
 
 		int u_colorLocation = glGetUniformLocation(program, "u_color");
 		int u_timeLocation = glGetUniformLocation(program, "u_time");
+		int u_lorentzMatLocation = glGetUniformLocation(program, "u_lorentzMat");
 
 		if (program != -1)
 		{
@@ -79,9 +97,12 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUniform4f(u_colorLocation, 1.0f, 0.5f, 0.25f, 1.0f);
+			glUniform4f(u_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 			glUniform1f(u_timeLocation, time);
 			time += 0.01f;
+			glUniformMatrix3fv(u_lorentzMatLocation, 1, GL_FALSE, glm::value_ptr(lorentzMat));
+
+			lorentzMat = lorentzMat * auxMat;
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, squareIndices);
 
