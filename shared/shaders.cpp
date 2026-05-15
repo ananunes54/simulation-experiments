@@ -5,6 +5,7 @@
 #include <iostream>
 #include <shaders.h>
 #include <vector>
+#include <utils.h>
 
 static unsigned int compileShader(unsigned int shaderType, std::string& shaderSource)
 {
@@ -36,9 +37,13 @@ static unsigned int compileShader(unsigned int shaderType, std::string& shaderSo
 	return shader;
 }
 
-unsigned int createProgram(std::string& vertexShaderSource, std::string& fragmentShaderSource)
+unsigned int createProgram(std::string& vertexShaderPath, std::string& fragmentShaderPath)
 {
 	unsigned int program = glCreateProgram();
+	
+	std::string vertexShaderSource = readFromFile(vertexShaderPath);
+	std::string fragmentShaderSource = readFromFile(fragmentShaderPath);
+
 	
 	unsigned int vertexShaderId = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
 	if (vertexShaderId == -1)
