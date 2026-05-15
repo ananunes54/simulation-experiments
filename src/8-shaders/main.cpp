@@ -23,52 +23,36 @@ int main()
 		loadGlad();
 
 		std::vector<float> vertices{
-			-0.5f / 2.0,  -0.5f / 2.0f,
-			 0.5f / 2.0f, -0.5f / 2.0f,
-			 0.5f / 2.0f,  0.5f / 2.0f,
-			-0.5f / 2.0f,  0.5f / 2.0f
-
+			 0.0f / 1.0f, -0.5f / 2.0f,  
+			 0.0f / 1.0f,  0.5f / 2.0f,
 		};
 
 		std::vector<unsigned int> indices{
-				0, 1, 2,
-				2, 3, 0
+				0, 1
 		};
 
 
-		glm::mat3 aMat(0.0f, 0.0f, 0.005f, 
-			       0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f);
+		glm::mat3 aMat(0.0f,   0.0f, 0.0f, 
+			       0.0f,   0.0f, 0.0f,
+			       0.005f, 0.004f, 0.0f);
+
 
 		glm::mat3 lorentzMat = exp(aMat);
 
-		glm::mat3 auxMat = lorentzMat;
-
-
-		Object obj(vertices, indices);
-		obj.setAttribute(0, 2, 2*sizeof(float), 0);	
-
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
-		std::string vertexShaderStr = readFromFile(vertexShaderPath);
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
-		std::string fragmentShaderStr = readFromFile(fragmentShaderPath);
-		unsigned int program = createProgram(vertexShaderStr, fragmentShaderStr);
+	
+		unsigned int program = createProgram(vertexShaderPath, fragmentShaderPath);
 
 		int u_colorLocation = glGetUniformLocation(program, "u_color");
 		int u_timeLocation = glGetUniformLocation(program, "u_time");
-		int u_lorentzMatLocation = glGetUniformLocation(program, "u_lorentzMat");
 
-		if (program != -1)
-		{
-			std::cout << "opengl program compilado com sucesso" << std::endl;
-			glUseProgram(program);
-		}
+		Object obj(Shape::line, vertices, indices);
+		obj.setAttribute(0, 2, 2*sizeof(float), 0);
+		obj.setMovementMatrix(lorentzMat);
+		obj.setProgram(program);
 
-		else
-		{
-			std::cout << "nao foi possivel compilar opengl program" << std::endl;
-		}
 		
 		float time = 0.0f;
 		while (!window.shouldClose())
@@ -78,9 +62,6 @@ int main()
 			glUniform4f(u_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 			glUniform1f(u_timeLocation, time);
 			time += 0.01f;
-			glUniformMatrix3fv(u_lorentzMatLocation, 1, GL_FALSE, glm::value_ptr(lorentzMat));
-
-			lorentzMat = lorentzMat * auxMat;
 
 			obj.draw();
 
