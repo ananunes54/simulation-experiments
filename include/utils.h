@@ -44,6 +44,6 @@ void loadGlad();
 
 std::string readFromFile(std::string& fileName);
 
-glm::mat3 exp(glm::mat3& m);
+glm::mat3 exp(glm::mat3 m);
 
 #endif
