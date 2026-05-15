@@ -10,18 +10,25 @@
 
 #include <vector>
 
+enum class Shape : unsigned char
+{
+	personalized, line, triangle, rectangle, circle
+};
+
+
 class Object
 {
 private:
 	std::vector<float> m_vertices;
 	std::vector<unsigned int> m_indices;
+	Shape m_shape = Shape::personalized;
 	unsigned int m_vao;
 	unsigned int m_vbo;
 	unsigned int m_ebo;
 
 
 public:
-	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices) : m_vertices(vertices), m_indices(indices)
+	Object(Shape objShape, std::vector<float>& vertices, std::vector<unsigned int>& indices) : m_vertices(vertices), m_indices(indices), m_shape(objShape)
 	{
 		glGenBuffers(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
@@ -55,7 +62,17 @@ public:
 	void draw()
 	{
 		glBindVertexArray(m_vao);
-		glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, m_indices.data());
+
+		if (m_shape == Shape::line)
+		{
+			glDrawElements(GL_LINES, m_indices.size(), GL_UNSIGNED_INT, m_indices.data());
+		}
+
+		else
+		{
+			glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, m_indices.data());
+		}
+
 		glBindVertexArray(0);
 	}
 
