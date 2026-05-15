@@ -25,6 +25,8 @@ private:
 	unsigned int m_vao;
 	unsigned int m_vbo;
 	unsigned int m_ebo;
+	int m_program;
+	
 	int m_movementMatUniform;
 	glm::mat3 m_movementMat;
 	glm::mat3 m_auxMovementMat;
@@ -67,9 +69,30 @@ public:
 		m_movementMat = m_auxMovementMat = movementMat;
 	}
 
+	void setProgram(unsigned int program)
+	{
+		
+		m_program = program;
+		if (program != -1)
+		{
+			m_movementMatUniform = glGetUniformLocation(program, "u_lorentzMat");
+		}
+
+		else
+		{
+			m_movementMatUniform = -1;
+		}
+	}
+
 	void draw()
 	{
 		glBindVertexArray(m_vao);
+		
+		if (m_program != -1)
+		{
+			glUseProgram(m_program);
+			glUniformMatrix3fv(m_movementMatUniform, 1, GL_FALSE, glm::value_ptr(m_movementMat));
+		}
 
 		if (m_shape == Shape::line)
 		{
