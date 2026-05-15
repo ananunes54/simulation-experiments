@@ -25,6 +25,9 @@ private:
 	unsigned int m_vao;
 	unsigned int m_vbo;
 	unsigned int m_ebo;
+	int m_movementMatUniform;
+	glm::mat3 m_movementMat;
+	glm::mat3 m_auxMovementMat;
 
 
 public:
@@ -59,6 +62,11 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	void setMovementMatrix(glm::mat3 movementMat)
+	{
+		m_movementMat = m_auxMovementMat = movementMat;
+	}
+
 	void draw()
 	{
 		glBindVertexArray(m_vao);
@@ -72,6 +80,8 @@ public:
 		{
 			glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, m_indices.data());
 		}
+
+		m_movementMat = m_movementMat * m_auxMovementMat;
 
 		glBindVertexArray(0);
 	}
