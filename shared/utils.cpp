@@ -6,7 +6,9 @@
 #include <exception>
 #include <fstream>
 #include <system_error>
-
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <matrix_exponential.h>
 
 Glfw::Glfw()
 {
@@ -107,4 +109,33 @@ std::string readFromFile(std::string& fileName)
                   << "Detalhes: " << e.what() << "\n" << "Codigo: " << e.code() << std::endl;
 		return "";
 	}
+}
+
+
+glm::mat3 exp(glm::mat3& m)
+{
+	double buffer[9];
+
+	for (auto i = 0; i < 3; i++)
+	{
+		for (auto j = 0; j < 3; j++)
+		{
+			buffer[i*3 + j] = static_cast<double>(m[i][j]);
+		}
+	}
+
+	double* expPtr = r8mat_expm1(3, buffer);
+	glm::mat3 tempMat(0.0f);
+	
+	for (auto i = 0; i < 3; i++)
+	{
+		for (auto j = 0; j < 3; j++)
+		{
+			tempMat[i][j] = static_cast<float>(expPtr[i*3 + j]);
+		}
+	}
+
+	tempMat = glm::transpose(tempMat);
+
+	return tempMat;
 }

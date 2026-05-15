@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <exception>
-
+#include <glm/glm.hpp>
 
 class FileException : public std::exception
 {
@@ -43,5 +43,7 @@ public:
 void loadGlad();
 
 std::string readFromFile(std::string& fileName);
+
+glm::mat3 exp(glm::mat3& m);
 
 #endif

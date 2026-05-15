@@ -9,7 +9,6 @@
 #include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <matrix.h>
 #include <object.h>
 
 int main()
@@ -37,19 +36,13 @@ int main()
 		};
 
 
-		matrix<3, 3> aMat = {0.0f, 0.0f, 0.005f, 
-				  0.0f, 0.0f, 0.0f,
-				  0.0f, 0.0f, 0.0f};
+		glm::mat3 aMat(0.0f, 0.0f, 0.005f, 
+			       0.0f, 0.0f, 0.0f,
+			       0.0f, 0.0f, 0.0f);
 
-		matrix<3, 3> omegaMat = Exponential(aMat);
+		glm::mat3 lorentzMat = exp(aMat);
 
-		glm::mat3 lorentzMat = glm::mat3(omegaMat.data[0], omegaMat.data[3], omegaMat.data[6],
-					omegaMat.data[1], omegaMat.data[4], omegaMat.data[7],
-					omegaMat.data[2], omegaMat.data[5], omegaMat.data[8]);
-
-		glm::mat3 auxMat = glm::mat3(omegaMat.data[0], omegaMat.data[3], omegaMat.data[6],
-					omegaMat.data[1], omegaMat.data[4], omegaMat.data[7],
-					omegaMat.data[2], omegaMat.data[5], omegaMat.data[8]);
+		glm::mat3 auxMat = lorentzMat;
 
 
 		Object obj(vertices, indices);
