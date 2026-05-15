@@ -112,7 +112,7 @@ std::string readFromFile(std::string& fileName)
 }
 
 
-glm::mat3 exp(glm::mat3& m)
+glm::mat3 exp(glm::mat3 m)
 {
 	double buffer[9];
 
@@ -134,8 +134,6 @@ glm::mat3 exp(glm::mat3& m)
 			tempMat[i][j] = static_cast<float>(expPtr[i*3 + j]);
 		}
 	}
-
-	tempMat = glm::transpose(tempMat);
 
 	return tempMat;
 }
