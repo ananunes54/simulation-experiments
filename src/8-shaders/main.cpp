@@ -37,7 +37,7 @@ int main()
 			       0.005f, 0.004f, 0.0f);
 
 
-		glm::mat3 lorentzMat = exp(aMat);
+		glm::mat3 motionMat = exp(aMat);
 
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
@@ -50,7 +50,7 @@ int main()
 
 		Object obj(Shape::line, vertices, indices);
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
-		obj.setMovementMatrix(lorentzMat);
+		obj.setMotionMatrix(motionMat);
 		obj.setProgram(program);
 
 		

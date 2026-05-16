@@ -27,9 +27,9 @@ private:
 	unsigned int m_ebo;
 	int m_program;
 	
-	int m_movementMatUniform;
-	glm::mat3 m_movementMat;
-	glm::mat3 m_auxMovementMat;
+	int m_motionMatUniform;
+	glm::mat3 m_motionMat;
+	glm::mat3 m_auxMotionMat;
 
 
 public:
@@ -52,6 +52,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+
 	void setAttribute(unsigned int location, unsigned int numOfComponents,  unsigned int strideInBytes, unsigned int offset)
 	{
 		glBindVertexArray(m_vao);
@@ -64,9 +65,12 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void setMovementMatrix(glm::mat3 movementMat)
+	void setMotionMatrix(glm::mat3 motionMat)
 	{
-		m_movementMat = m_auxMovementMat = movementMat;
+		m_motionMat = m_auxMotionMat = motionMat;
+	}
+
+	{
 	}
 
 	void setProgram(unsigned int program)
@@ -75,12 +79,12 @@ public:
 		m_program = program;
 		if (program != -1)
 		{
-			m_movementMatUniform = glGetUniformLocation(program, "u_lorentzMat");
+			m_motionMatUniform = glGetUniformLocation(program, "u_motionMat");
 		}
 
 		else
 		{
-			m_movementMatUniform = -1;
+			m_motionMatUniform = -1;
 		}
 	}
 
@@ -91,7 +95,7 @@ public:
 		if (m_program != -1)
 		{
 			glUseProgram(m_program);
-			glUniformMatrix3fv(m_movementMatUniform, 1, GL_FALSE, glm::value_ptr(m_movementMat));
+			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_motionMat));
 		}
 
 		if (m_shape == Shape::line)
@@ -104,7 +108,7 @@ public:
 			glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, m_indices.data());
 		}
 
-		m_movementMat = m_movementMat * m_auxMovementMat;
+		m_motionMat = m_motionMat * m_auxMotionMat;
 
 		glBindVertexArray(0);
 	}
