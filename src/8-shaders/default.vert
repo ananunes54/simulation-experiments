@@ -6,6 +6,7 @@ out vec4 vertexColor;
 
 uniform float u_time;
 uniform mat3 u_motionMat;
+uniform mat3 u_refChangeMat;
 
 vec2 applyMat(mat3 m, vec2 v)
 {
@@ -18,6 +19,7 @@ vec2 applyMat(mat3 m, vec2 v)
 void main()
 {
 	vec2 resultVector = applyMat(u_motionMat, aPos);
+	resultVector = applyMat(u_refChangeMat, resultVector);
 
 
 	gl_Position = vec4(resultVector.y, resultVector.x, 0.0, 1.0);

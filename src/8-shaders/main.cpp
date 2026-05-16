@@ -39,6 +39,18 @@ int main()
 
 		glm::mat3 motionMat = exp(aMat);
 
+		glm::vec3 fVelocity = aMat * glm::vec3(vertices[0], vertices[1], 1);
+
+		float velocity = fVelocity[1] / fVelocity[0];
+
+		float gamma = 1 / sqrt(1 - pow(velocity, 2));
+
+		
+		glm::mat3 lorentzMat(
+				  gamma           , - gamma * velocity, 0,
+				- gamma * velocity,   gamma           , 0,
+				0                 ,                  0, 1
+				); 
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
@@ -51,6 +63,7 @@ int main()
 		Object obj(Shape::line, vertices, indices);
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
 		obj.setMotionMatrix(motionMat);
+		obj.setRefChangeMatrix(lorentzMat);
 		obj.setProgram(program);
 
 		

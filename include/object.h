@@ -28,6 +28,8 @@ private:
 	int m_program;
 	
 	int m_motionMatUniform;
+	int m_refChangeMatUniform;
+	glm::mat3 m_refChangeMat;
 	glm::mat3 m_motionMat;
 	glm::mat3 m_auxMotionMat;
 
@@ -70,7 +72,9 @@ public:
 		m_motionMat = m_auxMotionMat = motionMat;
 	}
 
+	void setRefChangeMatrix(glm::mat3 refChangeMat)
 	{
+		m_refChangeMat = refChangeMat;
 	}
 
 	void setProgram(unsigned int program)
@@ -80,11 +84,13 @@ public:
 		if (program != -1)
 		{
 			m_motionMatUniform = glGetUniformLocation(program, "u_motionMat");
+			m_refChangeMatUniform = glGetUniformLocation(program, "u_refChangeMat");
 		}
 
 		else
 		{
 			m_motionMatUniform = -1;
+			m_refChangeMatUniform = -1;
 		}
 	}
 
@@ -96,6 +102,7 @@ public:
 		{
 			glUseProgram(m_program);
 			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_motionMat));
+			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, glm::value_ptr(m_refChangeMat));
 		}
 
 		if (m_shape == Shape::line)
