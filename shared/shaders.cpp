@@ -30,6 +30,12 @@ static unsigned int compileShader(unsigned int shaderType, std::string& shaderSo
 		std::vector<char> log(logSize);
 		glGetShaderInfoLog(shader, logSize, &logSize, &log[0]);
 
+		for (char c : log)
+		{
+			std::cout << c;
+		}
+		std::cout << std::endl;
+
 		glDeleteShader(shader);
 		return -1;
 	}
