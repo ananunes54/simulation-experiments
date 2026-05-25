@@ -36,15 +36,17 @@ int main()
 				0, 1
 		};
 
+		float dq = 0.01f;
 
-		glm::mat3 aMat(0.0f,   0.0f, 0.0f, 
-			       0.0f,   0.0f, 0.0f,
-			       0.005f, 0.004f, 0.0f);
+		glm::mat3 aMat(0.0f * dq,   0.0f * dq, 0.0f * dq, 
+			       0.0f * dq,   0.0f * dq, 0.0f * dq,
+			       0.5f * dq,   0.4f * dq, 0.0f * dq);
 
 
 		glm::mat3 motionMat = exp(aMat);
 
 		glm::vec3 fVelocity = aMat * glm::vec3(vertices[0], vertices[1], 1);
+		glm::vec3 fPosition = motionMat * glm::vec3(vertices[0], vertices[1], 1.0f);
 
 		float velocity = fVelocity[1] / fVelocity[0];
 
@@ -64,6 +66,7 @@ int main()
 
 		int u_colorLocation = glGetUniformLocation(program, "u_color");
 		int u_timeLocation = glGetUniformLocation(program, "u_time");
+		int u_properTimeLocation = glGetUniformLocation(program, "u_properTime");
 
 		Object obj(Shape::line, vertices, indices);
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
@@ -74,13 +77,22 @@ int main()
 
 		
 		float time = 0.0f;
+		float properTime = 0.0f;
+
+		float velocityMetric = minkowskiMetric(fVelocity, fVelocity);
+		float dProperTime = sqrt(velocityMetric) * dq;
+
+		float dTime = fPosition[0];
+
 		while (!window.shouldClose())
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glUniform4f(u_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 			glUniform1f(u_timeLocation, time);
-			time += 0.01f;
+			glUniform1f(u_properTimeLocation, properTime);
+			time += dTime;
+			properTime += dProperTime;
 
 			obj.draw();
 
