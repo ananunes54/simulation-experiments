@@ -64,6 +64,7 @@ int main()
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
 		obj.setMotionMatrix(motionMat);
 		obj.setRefChangeMatrix(lorentzMat);
+		obj.setVelocity(velocity);
 		obj.setProgram(program);
 
 		
