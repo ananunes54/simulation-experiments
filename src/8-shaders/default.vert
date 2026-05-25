@@ -6,6 +6,7 @@ out vec4 vertexColor;
 
 uniform float u_time;
 uniform float u_velocity;
+uniform float u_gamma;
 uniform mat3 u_motionMat;
 uniform mat3 u_refChangeMat;
 

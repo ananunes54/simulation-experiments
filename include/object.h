@@ -27,8 +27,10 @@ private:
 	unsigned int m_ebo;
 	int m_program;
 	float m_velocity = 0;
+	float m_gamma = 1;
 	
 	int m_velocityUniform;
+	int m_gammaUniform;
 	int m_motionMatUniform;
 	int m_refChangeMatUniform;
 	glm::mat3 m_refChangeMat;
@@ -82,6 +84,7 @@ public:
 	void setVelocity(float velocity)
 	{
 		m_velocity = velocity;
+		m_gamma = 1 / sqrt(1 - pow(m_velocity, 2));
 	}
 
 	void setProgram(unsigned int program)
@@ -93,6 +96,7 @@ public:
 			m_motionMatUniform = glGetUniformLocation(program, "u_motionMat");
 			m_refChangeMatUniform = glGetUniformLocation(program, "u_refChangeMat");
 			m_velocityUniform = glGetUniformLocation(program, "u_velocity");
+			m_gammaUniform = glGetUniformLocation(program, "u_gamma");
 		}
 
 		else
@@ -100,6 +104,7 @@ public:
 			m_motionMatUniform = -1;
 			m_refChangeMatUniform = -1;
 			m_velocityUniform = -1;
+			m_gammaUniform = -1;
 		}
 	}
 
@@ -113,6 +118,7 @@ public:
 			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_motionMat));
 			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, glm::value_ptr(m_refChangeMat));
 			glUniform1f(m_velocityUniform, m_velocity);
+			glUniform1f(m_gammaUniform, m_gamma);
 		}
 
 		if (m_shape == Shape::line)
