@@ -38,25 +38,32 @@ int main()
 
 		float dq = 0.01f;
 
-		glm::mat3 aMat(0.0f * dq,   0.0f * dq, 0.0f * dq, 
-			       0.0f * dq,   0.0f * dq, 0.0f * dq,
-			       0.5f * dq,   0.4f * dq, 0.0f * dq);
+		glm::mat3 aMat(0.0f, 0.0f, 0.0f, 
+			       0.0f, 0.0f, 0.0f,
+			       0.5f, 0.0f, 0.0f);
 
 
-		glm::mat3 motionMat = exp(aMat);
+		glm::mat3 aMat2(0.0f * dq, 0.0f * dq, 0.0f * dq, 
+			        0.0f * dq, 0.0f * dq, 0.0f * dq,
+			        0.5f * dq, 0.0f * dq, 0.0f * dq);
+
+
+
+		glm::mat3 motionMat = exp(aMat2);
 
 		glm::vec3 fVelocity = aMat * glm::vec3(vertices[0], vertices[1], 1);
 		glm::vec3 fPosition = motionMat * glm::vec3(vertices[0], vertices[1], 1.0f);
 
 		float velocity = fVelocity[1] / fVelocity[0];
+		std::cout << velocity << std::endl;
 
 		float gamma = 1 / sqrt(1 - pow(velocity, 2));
 
 		
 		glm::mat3 lorentzMat(
-				  gamma           , - gamma * velocity, 0,
-				- gamma * velocity,   gamma           , 0,
-				0                 ,                  0, 1
+				  gamma           ,  -gamma * velocity, 0,
+				 -gamma * velocity,   gamma           , 0,
+				  0               ,                  0, 1
 				); 
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
@@ -81,8 +88,10 @@ int main()
 
 		float velocityMetric = minkowskiMetric(fVelocity, fVelocity);
 		float dProperTime = sqrt(velocityMetric) * dq;
+		std::cout << "dProperTime = " << dProperTime << std::endl;
 
 		float dTime = fPosition[0];
+		std::cout << "dTime = " << dTime << std::endl;
 
 		while (!window.shouldClose())
 		{
