@@ -24,8 +24,7 @@ int main()
 		unsigned windowWidth = 800, windowHeight = 800;
 		Window window(windowWidth, windowHeight);
 		window.makeCurrent();
-
-		loadGlad();
+        loadGlad();
 
 		std::vector<float> vertices{
 			 0.0f / 1.0f, -0.5f / 2.0f,  
@@ -75,14 +74,16 @@ int main()
 		int u_timeLocation = glGetUniformLocation(program, "u_time");
 		int u_properTimeLocation = glGetUniformLocation(program, "u_properTime");
 
-		Object obj(Shape::line, vertices, indices);
+		Object obj(vertices, indices);
+        obj.setPrimitive(Primitive::line);
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
 		obj.setMotionMatrix(motionMat);
 		obj.setRefChangeMatrix(lorentzMat);
 		obj.setVelocity(velocity);
 		obj.setProgram(program);
 
-		
+        
+
 		float time = 0.0f;
 		float properTime = 0.0f;
 
