@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <utils.h>
 #include <iostream>
-#include <exception>
 #include <fstream>
 #include <system_error>
 #include <glm/glm.hpp>
@@ -112,7 +111,7 @@ std::string readFromFile(std::string& fileName)
 }
 
 
-glm::mat3 exp(glm::mat3 m)
+glm::mat3 exp(glm::mat3 mat)
 {
 	double buffer[9];
 
@@ -120,7 +119,7 @@ glm::mat3 exp(glm::mat3 m)
 	{
 		for (auto j = 0; j < 3; j++)
 		{
-			buffer[i*3 + j] = static_cast<double>(m[i][j]);
+			buffer[i*3 + j] = static_cast<double>(mat[i][j]);
 		}
 	}
 
@@ -136,4 +135,24 @@ glm::mat3 exp(glm::mat3 m)
 	}
 
 	return tempMat;
+}
+
+glm::mat3 scale(glm::mat3 mat, float factor)
+{
+    glm::mat3 tempMat(1.0f);
+
+    for (auto i = 0; i < 3; i++)    
+    {
+        for (auto j = 0; j < 3; j++)
+        {
+            tempMat[j][i] = mat[j][i] * factor;        
+        }
+    }
+
+    return tempMat;
+}
+
+float minkowskiMetric(glm::vec3 v1, glm::vec3 v2)
+{
+	return v1[0] * v2[0] - v1[1] * v2[1];
 }

@@ -44,6 +44,10 @@ void loadGlad();
 
 std::string readFromFile(std::string& fileName);
 
-glm::mat3 exp(glm::mat3 m);
+glm::mat3 exp(glm::mat3 mat);
+
+glm::mat3 scale(glm::mat3 mat, float factor);
+
+float minkowskiMetric(glm::vec3 v1, glm::vec3 v2);
 
 #endif
