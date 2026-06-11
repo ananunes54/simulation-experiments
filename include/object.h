@@ -10,30 +10,26 @@
 
 #include <vector>
 #include <geometry.h>
+#include <physics.h>
 
 
 class Object
 {
 private:
 	Geometry m_geometry;
+    Physics m_physics;
 	unsigned int m_vao;
 	unsigned int m_vbo;
 	unsigned int m_ebo;
 	int m_program;
-	float m_velocity = 0;
-	float m_gamma = 1;
 	
 	int m_velocityUniform;
 	int m_gammaUniform;
 	int m_motionMatUniform;
 	int m_refChangeMatUniform;
-	glm::mat3 m_refChangeMat;
-	glm::mat3 m_motionMat;
-	glm::mat3 m_auxMotionMat;
-
 
 public:
-	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices) : m_geometry(vertices, indices) 
+	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices) : m_geometry(vertices, indices), m_physics() 
 	{
 		glGenBuffers(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
@@ -70,21 +66,25 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void setMotionMatrix(glm::mat3 motionMat)
+	void setAccelerationMatrix(glm::mat3 accelerationMat, float dq)
 	{
-		m_motionMat = m_auxMotionMat = motionMat;
+	    m_physics.setAccelerationMat(accelerationMat, dq);
 	}
 
-	void setRefChangeMatrix(glm::mat3 refChangeMat)
-	{
-		m_refChangeMat = refChangeMat;
-	}
+    void setFourPosition(glm::vec3 fourPosition)
+    {
+        m_physics.setFourPosition(fourPosition);
+    }
 
-	void setVelocity(float velocity)
-	{
-		m_velocity = velocity;
-		m_gamma = 1 / sqrt(1 - pow(m_velocity, 2));
-	}
+    float getProperTimeInterval()
+    {
+        return m_physics.getProperTimeInterval();
+    }
+
+    float getExternTimeInterval()
+    {
+        return m_physics.getExternTimeInterval();
+    }
 
 	void setProgram(unsigned int program)
 	{
@@ -114,10 +114,11 @@ public:
 		if (m_program != -1)
 		{
 			glUseProgram(m_program);
-			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_motionMat));
-			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, glm::value_ptr(m_refChangeMat));
-			glUniform1f(m_velocityUniform, m_velocity);
-			glUniform1f(m_gammaUniform, m_gamma);
+
+			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_physics.getMotionMat()));
+			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, glm::value_ptr(m_physics.getRefChangeMat()));
+			glUniform1f(m_velocityUniform, m_physics.getVelocityMagnitude());
+			glUniform1f(m_gammaUniform, m_physics.getGamma());
 		}
 
 		if (m_geometry.getPrimitive() == Primitive::line)
@@ -130,13 +131,10 @@ public:
 			glDrawElements(GL_TRIANGLES, m_geometry.getNumOfIndices(), GL_UNSIGNED_INT, m_geometry.getIndices());
 		}
 
-		m_motionMat = m_motionMat * m_auxMotionMat;
+		m_physics.updateMotionMat();
 
 		glBindVertexArray(0);
-	}
-
-	
-
+	}	
 };
 
 #endif
