@@ -29,8 +29,9 @@ private:
 	int m_refChangeMatUniform;
 
 public:
-	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices) : m_geometry(vertices, indices), m_physics() 
+	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter) : m_geometry(vertices, indices, objCenter), m_physics() 
 	{
+        m_physics.setFourPosition(glm::vec3(objCenter[0], objCenter[1], 1.0f));
 		glGenBuffers(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
 		glGenBuffers(1, &m_ebo);
@@ -70,11 +71,6 @@ public:
 	{
 	    m_physics.setAccelerationMat(accelerationMat, dq);
 	}
-
-    void setFourPosition(glm::vec3 fourPosition)
-    {
-        m_physics.setFourPosition(fourPosition);
-    }
 
     float getProperTimeInterval()
     {

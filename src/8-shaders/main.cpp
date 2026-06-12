@@ -26,7 +26,8 @@ int main()
 			 0.0f / 1.0f,  0.5f / 2.0f,
 		};
 
-        glm::vec3 fourPosition = glm::vec3(vertices[0], vertices[1], 1.0f);
+        // centro do objeto (sem considerar um vetor "extendido")
+        glm::vec2 objCenter(vertices[0], vertices[1]);
 
 		std::vector<unsigned int> indices{
 				0, 1
@@ -47,10 +48,9 @@ int main()
 		int u_timeLocation = glGetUniformLocation(program, "u_time");
 		int u_properTimeLocation = glGetUniformLocation(program, "u_properTime");
 
-		Object obj(vertices, indices);
+		Object obj(vertices, indices, objCenter);
         obj.setPrimitive(Primitive::line);
 		obj.setAttribute(0, 2, 2*sizeof(float), 0);
-        obj.setFourPosition(fourPosition);
 		obj.setAccelerationMatrix(aMat, dq);
 		obj.setProgram(program);
         
