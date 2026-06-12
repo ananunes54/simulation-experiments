@@ -12,6 +12,7 @@
 #include <geometry.h>
 #include <physics.h>
 #include <mesh.h>
+#include <shaders.h>
 
 class Object
 {
@@ -19,16 +20,11 @@ private:
 	Geometry m_geometry;
     Physics m_physics;
 	unsigned int m_vao;
-	int m_program;
+	Shader m_shader;
     Mesh m_mesh;
-	
-	int m_velocityUniform;
-	int m_gammaUniform;
-	int m_motionMatUniform;
-	int m_refChangeMatUniform;
 
 public:
-	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter) : m_geometry(vertices, indices, objCenter), m_physics(), m_mesh(m_geometry)
+	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter, std::string& vertexShaderPath, std::string& fragmentShaderPath) : m_geometry(vertices, indices, objCenter), m_physics(), m_mesh(m_geometry), m_shader(vertexShaderPath, fragmentShaderPath)
 	{
         m_physics.setFourPosition(glm::vec3(objCenter[0], objCenter[1], 1.0f));
 	}
@@ -53,40 +49,57 @@ public:
         return m_physics.getExternTimeInterval();
     }
 
-	void setProgram(unsigned int program)
-	{
-		
-		m_program = program;
-		if (program != -1)
-		{
-			m_motionMatUniform = glGetUniformLocation(program, "u_motionMat");
-			m_refChangeMatUniform = glGetUniformLocation(program, "u_refChangeMat");
-			m_velocityUniform = glGetUniformLocation(program, "u_velocity");
-			m_gammaUniform = glGetUniformLocation(program, "u_gamma");
-		}
+    unsigned int getShaderID()
+    {
+        return m_shader.getID();
+    }
 
-		else
-		{
-			m_motionMatUniform = -1;
-			m_refChangeMatUniform = -1;
-			m_velocityUniform = -1;
-			m_gammaUniform = -1;
-		}
-	}
+    int getShaderVelocityUniform()
+    {
+        return m_shader.getVelocityUniform();
+    }
+
+    int getShaderGammaUniform()
+    {
+        return m_shader.getGammaUniform();
+    }
+
+    int getShaderMotionMatUniform()
+    {
+        return m_shader.getMotionMatUniform();
+    }
+
+    int getShaderRefChangeMatUniform()
+    {
+        return m_shader.getRefChangeMatUniform();
+    }
+
+    int getShaderColorUniform()
+    {
+        return m_shader.getColorUniform();
+    }
+
+    int getShaderTimeUniform()
+    {
+        return m_shader.getTimeUniform();
+    }
+
+    int getShaderProperTimeUniform()
+    {
+        return m_shader.getProperTimeUniform();
+    }
+
 
 	void draw()
 	{
 		glBindVertexArray(m_mesh.getVAO());
 		
-		if (m_program != -1)
-		{
-			glUseProgram(m_program);
+        glUseProgram(m_shader.getID());
 
-			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, m_physics.getMotionMatPtr());
-			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, m_physics.getRefChangeMatPtr());
-			glUniform1f(m_velocityUniform, m_physics.getVelocityMagnitude());
-			glUniform1f(m_gammaUniform, m_physics.getGamma());
-		}
+        glUniformMatrix3fv(m_shader.getMotionMatUniform(), 1, GL_FALSE, m_physics.getMotionMatPtr());
+        glUniformMatrix3fv(m_shader.getRefChangeMatUniform(), 1, GL_FALSE, m_physics.getRefChangeMatPtr());
+        glUniform1f(m_shader.getVelocityUniform(), m_physics.getVelocityMagnitude());
+        glUniform1f(m_shader.getGammaUniform(), m_physics.getGamma());
 
 		if (m_mesh.getPrimitive() == Primitive::line)
 		{

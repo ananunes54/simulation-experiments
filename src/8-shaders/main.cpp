@@ -42,17 +42,11 @@ int main()
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
-	
-		unsigned int program = createProgram(vertexShaderPath, fragmentShaderPath);
 
-		int u_colorLocation = glGetUniformLocation(program, "u_color");
-		int u_timeLocation = glGetUniformLocation(program, "u_time");
-		int u_properTimeLocation = glGetUniformLocation(program, "u_properTime");
-
-		Object obj(vertices, indices, objCenter);
+        
+		Object obj(vertices, indices, objCenter, vertexShaderPath, fragmentShaderPath);
         obj.setPrimitive(Primitive::line);
 		obj.setAccelerationMatrix(aMat, dq);
-		obj.setProgram(program);
         
         float dTime = obj.getExternTimeInterval();
         float dProperTime = obj.getProperTimeInterval();
@@ -64,9 +58,9 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUniform4f(u_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniform1f(u_timeLocation, time);
-			glUniform1f(u_properTimeLocation, properTime);
+			glUniform4f(obj.getShaderColorUniform(), 1.0f, 1.0f, 1.0f, 1.0f);
+			glUniform1f(obj.getShaderTimeUniform(), time);
+			glUniform1f(obj.getShaderProperTimeUniform(), properTime);
 			time += dTime;
 			properTime += dProperTime;
 
@@ -76,8 +70,6 @@ int main()
 
 			glfwPollEvents();
 		}
-		
-		glDeleteProgram(program);
 	}
 
 

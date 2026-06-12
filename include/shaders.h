@@ -2,8 +2,36 @@
 #define SHADERS_H_INCLUDED
 #include <string>
 
-static unsigned int compileShader(unsigned int shaderType, std::string& shaderSource);
+class Shader
+{
+    private:
+        std::string m_vertexShaderPath;
+        std::string m_fragmentShaderPath;
+        unsigned int m_ID;
 
-unsigned int createProgram(std::string& vertexShaderSource, std::string& fragmentShaderSource);
+        int u_velocity;
+        int u_gamma;
+        int u_motionMat;
+        int u_refChangeMat;
+        int u_color;
+        int u_time;
+        int u_properTime;
+
+    private:
+        unsigned int compileShader(unsigned int shaderType, std::string& shaderSource);
+        unsigned int createProgram();
+
+    public:
+        Shader(std::string& vertexShaderPath, std::string& fragmentShaderPath);
+        ~Shader();
+        unsigned int getID();
+        int getVelocityUniform();
+        int getGammaUniform();
+        int getMotionMatUniform();
+        int getRefChangeMatUniform();
+        int getColorUniform();
+        int getTimeUniform();
+        int getProperTimeUniform();
+};
 
 #endif 

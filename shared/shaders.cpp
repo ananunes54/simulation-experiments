@@ -6,8 +6,26 @@
 #include <shaders.h>
 #include <vector>
 #include <utils.h>
+#include <string>
 
-static unsigned int compileShader(unsigned int shaderType, std::string& shaderSource)
+Shader::Shader(std::string& vertexShaderPath, std::string& fragmentShaderPath) : m_vertexShaderPath(vertexShaderPath), m_fragmentShaderPath(fragmentShaderPath) 
+{
+    m_ID = Shader::createProgram();
+    u_velocity = glGetUniformLocation(m_ID, "u_velocity");
+    u_gamma = glGetUniformLocation(m_ID, "u_gamma");
+    u_motionMat = glGetUniformLocation(m_ID, "u_motionMat");
+    u_refChangeMat = glGetUniformLocation(m_ID, "u_refChangeMat");
+    u_color = glGetUniformLocation(m_ID, "u_color");
+    u_time = glGetUniformLocation(m_ID, "u_time");
+    u_properTime = glGetUniformLocation(m_ID, "u_properTime");
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(m_ID);
+}
+
+unsigned int Shader::compileShader(unsigned int shaderType, std::string& shaderSource)
 {
 	unsigned int shader = glCreateShader(shaderType);
 	const char* str = shaderSource.c_str();
@@ -38,17 +56,17 @@ static unsigned int compileShader(unsigned int shaderType, std::string& shaderSo
 
 		glDeleteShader(shader);
 		return -1;
-	}
+}
 
 	return shader;
 }
 
-unsigned int createProgram(std::string& vertexShaderPath, std::string& fragmentShaderPath)
+unsigned int Shader::createProgram()
 {
 	unsigned int program = glCreateProgram();
 	
-	std::string vertexShaderSource = readFromFile(vertexShaderPath);
-	std::string fragmentShaderSource = readFromFile(fragmentShaderPath);
+	std::string vertexShaderSource = readFromFile(m_vertexShaderPath);
+	std::string fragmentShaderSource = readFromFile(m_fragmentShaderPath);
 
 	
 	unsigned int vertexShaderId = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
@@ -63,8 +81,6 @@ unsigned int createProgram(std::string& vertexShaderPath, std::string& fragmentS
 	{
 		std::cout << "nao foi possivel compilar o fragment shader" << std::endl;
 	}
-
-
 
 	if (vertexShaderId == -1 || fragmentShaderId == -1)
 	{
@@ -115,4 +131,44 @@ unsigned int createProgram(std::string& vertexShaderPath, std::string& fragmentS
 	
 	return program;
 
+}
+
+unsigned int Shader::getID()
+{
+    return m_ID;
+}
+
+int Shader::getVelocityUniform()
+{
+    return u_velocity;
+}
+
+int Shader::getGammaUniform()
+{
+    return u_gamma;
+}
+
+int Shader::getMotionMatUniform()
+{
+    return u_motionMat;
+}
+
+int Shader::getRefChangeMatUniform()
+{
+    return u_refChangeMat;
+}
+
+int Shader::getColorUniform()
+{
+    return u_color;
+}
+
+int Shader::getTimeUniform()
+{
+    return u_time;
+}
+
+int Shader::getProperTimeUniform()
+{
+    return u_properTime;
 }
