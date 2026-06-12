@@ -1,10 +1,16 @@
 #include <iostream>
 #include <physics.h>
 #include <utils.h>
+#include <glm/gtc/type_ptr.hpp>
 
 glm::mat3 Physics::getAccelerationMat()
 {
     return m_accelerationMat;
+}
+
+float* Physics::getAccelerationMatPtr()
+{
+    return glm::value_ptr(m_accelerationMat);
 }
 
 glm::mat3 Physics::getMotionMat()
@@ -12,9 +18,19 @@ glm::mat3 Physics::getMotionMat()
     return m_motionMat;
 }
 
+float* Physics::getMotionMatPtr()
+{
+    return glm::value_ptr(m_motionMat);
+}
+
 glm::mat3 Physics::getRefChangeMat()
 {
     return m_refChangeMat;
+}
+
+float* Physics::getRefChangeMatPtr()
+{
+    return glm::value_ptr(m_refChangeMat);
 }
 
 glm::vec3 Physics::getFourPosition()

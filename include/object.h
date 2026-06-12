@@ -82,8 +82,8 @@ public:
 		{
 			glUseProgram(m_program);
 
-			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, glm::value_ptr(m_physics.getMotionMat()));
-			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, glm::value_ptr(m_physics.getRefChangeMat()));
+			glUniformMatrix3fv(m_motionMatUniform, 1, GL_FALSE, m_physics.getMotionMatPtr());
+			glUniformMatrix3fv(m_refChangeMatUniform, 1, GL_FALSE, m_physics.getRefChangeMatPtr());
 			glUniform1f(m_velocityUniform, m_physics.getVelocityMagnitude());
 			glUniform1f(m_gammaUniform, m_physics.getGamma());
 		}

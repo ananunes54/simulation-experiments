@@ -25,8 +25,11 @@ class Physics
 public:
     Physics() {};
     glm::mat3 getAccelerationMat();
+    float* getAccelerationMatPtr();
     glm::mat3 getMotionMat();
+    float* getMotionMatPtr();
     glm::mat3 getRefChangeMat();
+    float* getRefChangeMatPtr();
     glm::vec3 getFourVelocity();
     glm::vec3 getFourPosition();
     float getVelocityMagnitude();
