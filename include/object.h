@@ -11,7 +11,7 @@
 #include <vector>
 #include <geometry.h>
 #include <physics.h>
-
+#include <mesh.h>
 
 class Object
 {
@@ -19,9 +19,8 @@ private:
 	Geometry m_geometry;
     Physics m_physics;
 	unsigned int m_vao;
-	unsigned int m_vbo;
-	unsigned int m_ebo;
 	int m_program;
+    Mesh m_mesh;
 	
 	int m_velocityUniform;
 	int m_gammaUniform;
@@ -29,43 +28,15 @@ private:
 	int m_refChangeMatUniform;
 
 public:
-	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter) : m_geometry(vertices, indices, objCenter), m_physics() 
+	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter) : m_geometry(vertices, indices, objCenter), m_physics(), m_mesh(m_geometry)
 	{
         m_physics.setFourPosition(glm::vec3(objCenter[0], objCenter[1], 1.0f));
-		glGenBuffers(1, &m_vao);
-		glGenBuffers(1, &m_vbo);
-		glGenBuffers(1, &m_ebo);
-
-		glBindVertexArray(m_vao);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-		glBufferData(GL_ARRAY_BUFFER, m_geometry.getNumOfVertices() * sizeof(float), m_geometry.getVertices(), GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_geometry.getNumOfIndices() * sizeof(unsigned int), m_geometry.getIndices(), GL_STATIC_DRAW);
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
     void setPrimitive(Primitive primitive)
     {
-        m_geometry.setPrimitive(primitive);
+        m_mesh.setPrimitive(primitive);
     }
-
-
-	void setAttribute(unsigned int location, unsigned int numOfComponents,  unsigned int strideInBytes, unsigned int offset)
-	{
-		glBindVertexArray(m_vao);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-		glVertexAttribPointer(location, numOfComponents, GL_FLOAT, GL_FALSE, strideInBytes, reinterpret_cast<void*>(static_cast<uintptr_t>(offset)));
-		glEnableVertexAttribArray(0);
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
 
 	void setAccelerationMatrix(glm::mat3 accelerationMat, float dq)
 	{
@@ -105,7 +76,7 @@ public:
 
 	void draw()
 	{
-		glBindVertexArray(m_vao);
+		glBindVertexArray(m_mesh.getVAO());
 		
 		if (m_program != -1)
 		{
@@ -117,14 +88,14 @@ public:
 			glUniform1f(m_gammaUniform, m_physics.getGamma());
 		}
 
-		if (m_geometry.getPrimitive() == Primitive::line)
+		if (m_mesh.getPrimitive() == Primitive::line)
 		{
-			glDrawElements(GL_LINES, m_geometry.getNumOfIndices(), GL_UNSIGNED_INT, m_geometry.getIndices());
+			glDrawElements(GL_LINES, m_geometry.getNumOfIndices(), GL_UNSIGNED_INT, 0);
 		}
 
 		else
 		{
-			glDrawElements(GL_TRIANGLES, m_geometry.getNumOfIndices(), GL_UNSIGNED_INT, m_geometry.getIndices());
+			glDrawElements(GL_TRIANGLES, m_geometry.getNumOfIndices(), GL_UNSIGNED_INT, 0);
 		}
 
 		m_physics.updateMotionMat();

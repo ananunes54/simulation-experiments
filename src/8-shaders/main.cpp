@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <object.h>
+#include <mesh.h>
 
 int main()
 {
@@ -50,7 +51,6 @@ int main()
 
 		Object obj(vertices, indices, objCenter);
         obj.setPrimitive(Primitive::line);
-		obj.setAttribute(0, 2, 2*sizeof(float), 0);
 		obj.setAccelerationMatrix(aMat, dq);
 		obj.setProgram(program);
         

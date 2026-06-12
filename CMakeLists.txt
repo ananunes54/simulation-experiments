@@ -10,6 +10,7 @@ set(SRC
     shared/utils.cpp
     shared/shaders.cpp
     shared/geometry.cpp
+    shared/mesh.cpp
     shared/physics.cpp
     src/8-shaders/main.cpp
     )

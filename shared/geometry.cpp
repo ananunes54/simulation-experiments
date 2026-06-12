@@ -20,12 +20,3 @@ unsigned int* Geometry::getIndices()
     return m_indices.data();
 }
 
-Primitive Geometry::getPrimitive()
-{
-    return m_primitive;
-}
-
-void Geometry::setPrimitive(Primitive primitive)
-{
-    m_primitive = primitive;
-}
