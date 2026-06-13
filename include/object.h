@@ -26,7 +26,7 @@ private:
 public:
 	Object(std::vector<float>& vertices, std::vector<unsigned int>& indices, glm::vec2 objCenter, std::string& vertexShaderPath, std::string& fragmentShaderPath) : m_geometry(vertices, indices, objCenter), m_physics(), m_mesh(m_geometry), m_shader(vertexShaderPath, fragmentShaderPath)
 	{
-        m_physics.setFourPosition(glm::vec3(objCenter[0], objCenter[1], 1.0f));
+        m_physics.setCenter(objCenter);
 	}
 
     void setPrimitive(Primitive primitive)

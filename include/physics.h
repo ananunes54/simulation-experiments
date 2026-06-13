@@ -37,7 +37,7 @@ public:
     float getProperTimeInterval();
     float getExternTimeInterval();
 
-    void setFourPosition(glm::vec3 fourPosition);
+    void setCenter(glm::vec2 center);
     void setAccelerationMat(glm::mat3 mat, float dq);
 
     void updateMotionMat();

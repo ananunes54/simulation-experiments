@@ -1,16 +1,20 @@
 #define GLFW_INCLUDE_NONE
-#include <stdlib.h>
-#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <utils.h>
-#include <exception>
-#include <shaders.h>
-#include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <object.h>
+
+#include <exception>
+#include <stdlib.h>
+#include <iostream>
+#include <math.h>
+
+#include <utils.h>
+#include <geometry.h>
 #include <mesh.h>
+#include <physics.h>
+#include <shaders.h>
+#include <render.h>
 
 int main()
 {
@@ -34,22 +38,26 @@ int main()
 				0, 1
 		};
 
-		float dq = 0.01f;
+        Geometry geometry(vertices, indices, objCenter);
+        Mesh mesh(geometry);
+        mesh.setPrimitive(Primitive::line);
 
+		float dq = 0.01f;
 		glm::mat3 aMat(0.0f, 0.0f, 0.0f, 
 			       0.0f, 0.0f, 0.0f,
 			       0.5f, 0.0f, 0.0f);
 
+        Physics physics;
+        physics.setCenter(objCenter);
+        physics.setAccelerationMat(aMat, dq);
+
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
-        
-		Object obj(vertices, indices, objCenter, vertexShaderPath, fragmentShaderPath);
-        obj.setPrimitive(Primitive::line);
-		obj.setAccelerationMatrix(aMat, dq);
-        
-        float dTime = obj.getExternTimeInterval();
-        float dProperTime = obj.getProperTimeInterval();
+        Shader shader(vertexShaderPath, fragmentShaderPath);
+
+        float dTime = physics.getExternTimeInterval();
+        float dProperTime = physics.getProperTimeInterval();
 
 		float time = 0.0f;
 		float properTime = 0.0f;
@@ -58,21 +66,21 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUniform4f(obj.getShaderColorUniform(), 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniform1f(obj.getShaderTimeUniform(), time);
-			glUniform1f(obj.getShaderProperTimeUniform(), properTime);
+			glUniform4f(shader.getColorUniform(), 1.0f, 1.0f, 1.0f, 1.0f);
+			glUniform1f(shader.getTimeUniform(), time);
+			glUniform1f(shader.getProperTimeUniform(), properTime);
 			time += dTime;
 			properTime += dProperTime;
 
-			obj.draw();
+            render(mesh, physics, shader);
+
+            physics.updateMotionMat();
 
 			window.swapBuffers();
 
 			glfwPollEvents();
 		}
 	}
-
-
 
 	catch(std::exception& e)
 	{

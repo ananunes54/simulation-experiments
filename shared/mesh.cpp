@@ -5,6 +5,9 @@
 
 Mesh::Mesh(Geometry geometry)
 {
+    m_verticesCount = geometry.getNumOfVertices();
+    m_indicesCount = geometry.getNumOfIndices();
+    
     unsigned int temp_vbo;
     unsigned int temp_ebo;
     glGenVertexArrays(1, &m_vao);
@@ -38,4 +41,14 @@ Primitive Mesh::getPrimitive()
 int Mesh::getVAO()
 {
     return m_vao;
+}
+
+unsigned int Mesh::getVerticesCount()
+{
+    return m_verticesCount;
+}
+
+unsigned int Mesh::getIndicesCount()
+{
+    return m_indicesCount;
 }

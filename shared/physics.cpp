@@ -63,9 +63,9 @@ float Physics::getExternTimeInterval()
     return m_externTimeInterval;
 }
 
-void Physics::setFourPosition(glm::vec3 fourPosition)
+void Physics::setCenter(glm::vec2 center)
 {
-    m_fourPosition = fourPosition;
+    m_fourPosition = glm::vec3(center[0], center[1], 1.0f);
 }
 
 void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
