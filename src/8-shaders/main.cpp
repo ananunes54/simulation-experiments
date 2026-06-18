@@ -55,6 +55,11 @@ int main()
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
+        std::vector<UniformInfo> uniforms = shader.getUniforms();
+        for (auto uniform : uniforms)
+        {
+            std::cout << "em 'main': " << uniform.name << std::endl;
+        }
 
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();
