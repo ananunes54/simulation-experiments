@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-
 struct UniformInfo
 {
     unsigned int program;

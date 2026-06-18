@@ -13,6 +13,7 @@ set(SRC
     shared/mesh.cpp
     shared/physics.cpp
     shared/render.cpp
+    shared/material.cpp
     src/8-shaders/main.cpp
     )
 

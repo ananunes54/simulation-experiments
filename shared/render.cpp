@@ -3,17 +3,26 @@
 #include <mesh.h>
 #include <physics.h>
 #include <shaders.h>
+#include <material.h>
 
-void render(Mesh& mesh, Physics& physics, Shader& shader)
+void render(Mesh& mesh, Physics& physics, Material& material)
 {
     glBindVertexArray(mesh.getVAO());
-    glUseProgram(shader.getID());
+   
+    std::string motionMat = "u_motionMat";
+    material.setGlmMat3(motionMat, physics.getMotionMat());
 
-    glUniformMatrix3fv(shader.getMotionMatUniform(), 1, GL_FALSE, physics.getMotionMatPtr()); 
-    glUniformMatrix3fv(shader.getRefChangeMatUniform(), 1, GL_FALSE, physics.getRefChangeMatPtr());
-    glUniform1f(shader.getVelocityUniform(), physics.getVelocityMagnitude());
-    glUniform1f(shader.getGammaUniform(), physics.getGamma());
-    
+    std::string gamma = "u_gamma";
+    material.setFloat(gamma, physics.getGamma());
+
+    std::string velocity = "u_velocity";
+    material.setFloat(velocity, physics.getVelocityMagnitude());
+
+    std::string refChangeMat = "u_refChangeMat";
+    material.setGlmMat3(refChangeMat, physics.getRefChangeMat());
+
+    material.bind();
+
     if (mesh.getPrimitive() == Primitive::line)
     {
         glDrawElements(GL_LINES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
@@ -24,4 +33,5 @@ void render(Mesh& mesh, Physics& physics, Shader& shader)
     }
             
     glBindVertexArray(0);
+    material.unbind();
 }

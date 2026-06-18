@@ -15,6 +15,7 @@
 #include <physics.h>
 #include <shaders.h>
 #include <render.h>
+#include <material.h>
 
 int main()
 {
@@ -55,10 +56,12 @@ int main()
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
+        Material material(shader);
+
         std::vector<UniformInfo> uniforms = shader.getUniforms();
         for (auto uniform : uniforms)
         {
-            std::cout << "em 'main': " << uniform.name << std::endl;
+            std::cout << "em 'main': " << uniform.name << ", do tipo: " << uniform.type << std::endl;
         }
 
         float dTime = physics.getExternTimeInterval();
@@ -71,13 +74,19 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUniform4f(shader.getColorUniform(), 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniform1f(shader.getTimeUniform(), time);
-			glUniform1f(shader.getProperTimeUniform(), properTime);
+            std::string uColor = "u_color";
+            material.setGlmVec4(uColor, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+            
+            std::string uTime = "u_time";
+            material.setFloat(uTime, time);
+			
+            std::string uProperTime = "u_properTime";
+            material.setFloat(uProperTime, properTime);
+			
 			time += dTime;
 			properTime += dProperTime;
 
-            render(mesh, physics, shader);
+            render(mesh, physics, material);
 
             physics.updateMotionMat();
 
