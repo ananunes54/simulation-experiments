@@ -8,7 +8,7 @@
 
 #include <shaders.h>
 
-using UniformType = std::variant<int, float, glm::vec3, glm::vec4, glm::mat3>;
+using UniformType = std::variant<int, float, glm::vec3, glm::vec4, glm::mat3, glm::mat4>;
 class Material
 {
     private:
@@ -19,6 +19,7 @@ class Material
         Material(Shader& shader) : m_shader(shader) {};
         void setFloat(std::string& name, float value);
         void setGlmMat3(std::string& name, glm::mat3 value);
+        void setGlmMat4(std::string& name, glm::mat4 value);
         void setGlmVec3(std::string& name, glm::vec3 value);
         void setGlmVec4(std::string& name, glm::vec4 value);
 

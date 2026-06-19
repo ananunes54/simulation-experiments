@@ -11,6 +11,11 @@ void Material::setGlmMat3(std::string& name, glm::mat3 value)
     m_uniforms[name] = value;
 }
 
+void Material::setGlmMat4(std::string& name, glm::mat4 value)
+{
+    m_uniforms[name] = value;
+}
+
 void Material::setGlmVec3(std::string& name, glm::vec3 value)
 {
     m_uniforms[name] = value;
@@ -59,6 +64,13 @@ void Material::bind()
             case 4:
                 {
                     glm::mat3 val = std::get<4>(value);
+                    glUniformMatrix3fv(uLocation, 1, GL_FALSE, glm::value_ptr(val));
+                    break;
+                }
+                
+            case 5:
+                {
+                    glm::mat4 val = std::get<5>(value);
                     glUniformMatrix3fv(uLocation, 1, GL_FALSE, glm::value_ptr(val));
                     break;
                 }

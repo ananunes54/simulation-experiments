@@ -18,18 +18,33 @@ vec2 applyMat(mat3 m, vec2 v)
 	return tempVec.xy;
 }
 
+float solveT(float k, float x0)
+{
+    float t = k;
+    for (int i = 0; i < 3; i++)
+    {
+        float func = t - u_velocity*x0 - k;
+        float der = 1;
+        t = t - func;
+    }
+
+    return t;
+}
 
 void main()
 {
 	vec2 resultVector = applyMat(u_motionMat, aPos);
 
-	float newTime = u_gamma * u_properTime + u_gamma * u_gamma * u_velocity * resultVector.y - u_gamma * u_gamma * u_velocity * u_velocity * resultVector.x;
+	//float newTime = u_gamma * u_properTime + u_gamma * u_gamma * u_velocity * resultVector.y - u_gamma * u_gamma * u_velocity * u_velocity * resultVector.x;
 
-	float newX = aPos.y + u_velocity * newTime;
+    float k = u_properTime / u_gamma;
+    float testTime = solveT(k, resultVector.y);
 
-	resultVector = applyMat(u_refChangeMat, vec2(newTime, newX));
+	float newX = aPos.y + u_velocity * testTime;
+
+	resultVector = applyMat(u_refChangeMat, vec2(testTime, newX));
 
 	gl_Position = vec4(resultVector.y, resultVector.x, 0.0, 1.0);
 
-	vertexColor = vec4(aPos.x * 0.9, aPos.x * aPos.y, 0.0, 1.0);
+    vertexColor = vec4(aPos.x * 0.9, aPos.x * aPos.y, 0.0, 1.0);
 }
