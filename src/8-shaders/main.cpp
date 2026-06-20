@@ -27,13 +27,13 @@ int main()
 		window.makeCurrent();
         loadGlad();
 
-		std::vector<float> vertices{
-			 0.0f / 1.0f, -0.5f / 2.0f,  
-			 0.0f / 1.0f,  0.5f / 2.0f,
+		std::vector<glm::vec3> vertices{
+             glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, 0.0f), 
+			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, 0.0f)
 		};
 
         // centro do objeto (sem considerar um vetor "extendido")
-        glm::vec2 objCenter(vertices[0], vertices[1]);
+        glm::vec2 objCenter(vertices[0][0], vertices[0][1]);
 
 		std::vector<unsigned int> indices{
 				0, 1

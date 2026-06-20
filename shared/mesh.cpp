@@ -16,11 +16,11 @@ Mesh::Mesh(Geometry geometry)
     
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, temp_vbo);
-    glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfVertices() * sizeof(float), geometry.getVertices(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfVertices() * sizeof(glm::vec3), geometry.getVertices(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp_ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, geometry.getNumOfIndices() * sizeof(unsigned int), geometry.getIndices(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);

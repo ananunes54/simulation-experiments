@@ -10,7 +10,7 @@ unsigned int Geometry::getNumOfIndices()
     return m_indices.size();
 }
 
-float* Geometry::getVertices()
+glm::vec3* Geometry::getVertices()
 {
     return m_vertices.data();
 }
