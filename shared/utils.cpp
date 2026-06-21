@@ -111,39 +111,39 @@ std::string readFromFile(std::string& fileName)
 }
 
 
-glm::mat3 exp(glm::mat3 mat)
+glm::mat4 exp(glm::mat4 mat)
 {
-	double buffer[9];
+	double buffer[16];
 
-	for (auto i = 0; i < 3; i++)
+	for (auto i = 0; i < 4; i++)
 	{
-		for (auto j = 0; j < 3; j++)
+		for (auto j = 0; j < 4; j++)
 		{
-			buffer[i*3 + j] = static_cast<double>(mat[i][j]);
+			buffer[i*4 + j] = static_cast<double>(mat[i][j]);
 		}
 	}
 
-	double* expPtr = r8mat_expm1(3, buffer);
-	glm::mat3 tempMat(0.0f);
+	double* expPtr = r8mat_expm1(4, buffer);
+	glm::mat4 tempMat(0.0f);
 	
-	for (auto i = 0; i < 3; i++)
+	for (auto i = 0; i < 4; i++)
 	{
-		for (auto j = 0; j < 3; j++)
+		for (auto j = 0; j < 4; j++)
 		{
-			tempMat[i][j] = static_cast<float>(expPtr[i*3 + j]);
+			tempMat[i][j] = static_cast<float>(expPtr[i*4 + j]);
 		}
 	}
 
 	return tempMat;
 }
 
-glm::mat3 scale(glm::mat3 mat, float factor)
+glm::mat4 scale(glm::mat4 mat, float factor)
 {
-    glm::mat3 tempMat(1.0f);
+    glm::mat4 tempMat(1.0f);
 
-    for (auto i = 0; i < 3; i++)    
+    for (auto i = 0; i < 4; i++)    
     {
-        for (auto j = 0; j < 3; j++)
+        for (auto j = 0; j < 4; j++)
         {
             tempMat[j][i] = mat[j][i] * factor;        
         }
@@ -152,7 +152,7 @@ glm::mat3 scale(glm::mat3 mat, float factor)
     return tempMat;
 }
 
-float minkowskiMetric(glm::vec3 v1, glm::vec3 v2)
+float minkowskiMetric(glm::vec4 v1, glm::vec4 v2)
 {
 	return v1[0] * v2[0] - v1[1] * v2[1];
 }

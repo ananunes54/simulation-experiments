@@ -3,7 +3,7 @@
 #include <utils.h>
 #include <glm/gtc/type_ptr.hpp>
 
-glm::mat3 Physics::getAccelerationMat()
+glm::mat4 Physics::getAccelerationMat()
 {
     return m_accelerationMat;
 }
@@ -13,7 +13,7 @@ float* Physics::getAccelerationMatPtr()
     return glm::value_ptr(m_accelerationMat);
 }
 
-glm::mat3 Physics::getMotionMat()
+glm::mat4 Physics::getMotionMat()
 {
     return m_motionMat;
 }
@@ -23,7 +23,7 @@ float* Physics::getMotionMatPtr()
     return glm::value_ptr(m_motionMat);
 }
 
-glm::mat3 Physics::getRefChangeMat()
+glm::mat4 Physics::getRefChangeMat()
 {
     return m_refChangeMat;
 }
@@ -33,12 +33,12 @@ float* Physics::getRefChangeMatPtr()
     return glm::value_ptr(m_refChangeMat);
 }
 
-glm::vec3 Physics::getFourPosition()
+glm::vec4 Physics::getFourPosition()
 {
     return m_fourPosition;
 }
 
-glm::vec3 Physics::getFourVelocity()
+glm::vec4 Physics::getFourVelocity()
 {
     return m_fourVelocity;
 }
@@ -63,18 +63,18 @@ float Physics::getExternTimeInterval()
     return m_externTimeInterval;
 }
 
-void Physics::setCenter(glm::vec2 center)
+void Physics::setCenter(glm::vec3 center)
 {
-    m_fourPosition = glm::vec3(center[0], center[1], 1.0f);
+    m_fourPosition = glm::vec4(center[0], center[1], center[2], 1.0f);
 }
 
-void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
+void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
 {
     m_accelerationMat = accelerationMat;
     // ====== debug =======
-    for (auto i = 0; i < 3; i++)
+    for (auto i = 0; i < 4; i++)
     {
-        for (auto j = 0; j < 3; j++)
+        for (auto j = 0; j < 4; j++)
         {
             std::cout << "[" << m_accelerationMat[j][i] << "]";
         }
@@ -85,9 +85,9 @@ void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
 
     m_auxMotionMat = scale(m_accelerationMat, dq);
     // ====== debug =======
-    for (auto i = 0; i < 3; i++)
+    for (auto i = 0; i < 4; i++)
     {
-        for (auto j = 0; j < 3; j++)
+        for (auto j = 0; j < 4; j++)
         {
             std::cout << "[" << m_auxMotionMat[j][i] << "]";
         }
@@ -97,9 +97,9 @@ void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
     //=====================
     m_motionMat = exp(m_auxMotionMat);
     // ====== debug =======
-    for (auto i = 0; i < 3; i++)
+    for (auto i = 0; i < 4; i++)
     {
-        for (auto j = 0; j < 3; j++)
+        for (auto j = 0; j < 4; j++)
         {
             std::cout << "[" << m_motionMat[j][i] << "]";
         }
@@ -110,13 +110,13 @@ void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
     
     m_fourVelocity = m_accelerationMat * m_fourPosition;
     // ====== debug =======
-    for (auto i = 0; i < 3; i++)
+    for (auto i = 0; i < 4; i++)
         std::cout << "[" << m_fourVelocity[i] << "]";
     std::cout << std::endl;
     //=====================
 
 
-    glm::vec3 nextFourPosition = m_motionMat * m_fourPosition;
+    glm::vec4 nextFourPosition = m_motionMat * m_fourPosition;
     m_externTimeInterval = nextFourPosition[0];
 
     m_velocityMagnitude = m_fourVelocity[1] / m_fourVelocity[0];
@@ -126,10 +126,11 @@ void Physics::setAccelerationMat(glm::mat3 accelerationMat, float dq)
     
     m_gamma = 1 / sqrt(1 - pow(m_velocityMagnitude, 2));
 
-    m_refChangeMat = glm::mat3(
-            m_gamma, -m_gamma * m_velocityMagnitude, 0,
-            -m_gamma * m_velocityMagnitude, m_gamma, 0,
-            0, 0, 1);
+    m_refChangeMat = glm::mat4(
+            m_gamma                       , -m_gamma * m_velocityMagnitude, 0, 0,
+            -m_gamma * m_velocityMagnitude, m_gamma                       , 0, 0,
+            0                             , 0                             , 1, 0,
+            0                             , 0                             , 0, 1);
 }
 
 void Physics::updateMotionMat()

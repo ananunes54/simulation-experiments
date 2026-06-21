@@ -28,12 +28,12 @@ int main()
         loadGlad();
 
 		std::vector<glm::vec3> vertices{
-             glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, 0.0f), 
-			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, 0.0f)
+             glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, 0.5 / 2.0f), 
+			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, 0.5 / 2.0f)
 		};
 
         // centro do objeto (sem considerar um vetor "extendido")
-        glm::vec2 objCenter(vertices[0][0], vertices[0][1]);
+        glm::vec3 objCenter(vertices[0][0], vertices[0][1], vertices[0][2]);
 
 		std::vector<unsigned int> indices{
 				0, 1
@@ -44,9 +44,10 @@ int main()
         mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
-		glm::mat3 aMat(0.0f, 0.0f, 0.0f, 
-			       0.0f, 0.0f, 0.0f,
-			       0.5f, 0.0f, 0.0f);
+		glm::mat4 aMat(0.0f, 0.0f, 0.0f, 0.0f,
+			       0.0f, 0.0f, 0.0f, 0.0f,
+			       0.0f, 0.0f, 0.0f, 0.0f,
+			       0.1f, 0.0f, 0.0f, 0.0f);
 
         Physics physics;
         physics.setCenter(objCenter);
@@ -57,12 +58,6 @@ int main()
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
-
-        std::vector<UniformInfo> uniforms = shader.getUniforms();
-        for (auto uniform : uniforms)
-        {
-            std::cout << "em 'main': " << uniform.name << ", do tipo: " << uniform.type << std::endl;
-        }
 
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();

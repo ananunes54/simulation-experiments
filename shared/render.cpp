@@ -10,7 +10,7 @@ void render(Mesh& mesh, Physics& physics, Material& material)
     glBindVertexArray(mesh.getVAO());
    
     std::string motionMat = "u_motionMat";
-    material.setGlmMat3(motionMat, physics.getMotionMat());
+    material.setGlmMat4(motionMat, physics.getMotionMat());
 
     std::string gamma = "u_gamma";
     material.setFloat(gamma, physics.getGamma());
@@ -19,7 +19,7 @@ void render(Mesh& mesh, Physics& physics, Material& material)
     material.setFloat(velocity, physics.getVelocityMagnitude());
 
     std::string refChangeMat = "u_refChangeMat";
-    material.setGlmMat3(refChangeMat, physics.getRefChangeMat());
+    material.setGlmMat4(refChangeMat, physics.getRefChangeMat());
 
     material.bind();
 

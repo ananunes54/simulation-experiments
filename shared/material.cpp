@@ -1,5 +1,6 @@
 #include <material.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 void Material::setFloat(std::string& name, float value)
 {
@@ -34,27 +35,23 @@ void Material::bind()
     for (const auto& [name, value] : m_uniforms)
     {
         int uLocation = glGetUniformLocation(shaderID, name.c_str());
-
         switch (value.index()) {
             case 0:
                 {
                     glUniform1i(uLocation, std::get<0>(value));
                     break;
                 }
-
             case 1:
                 {
                     glUniform1f(uLocation, std::get<1>(value));
                     break;
                 }
-                
             case 2:
                 {
                     glm::vec3 val = std::get<2>(value);
                     glUniform3fv(uLocation, 1, glm::value_ptr(val));
                     break;
                 }
-
             case 3:
                 {
                     glm::vec4 val = std::get<3>(value);
@@ -67,11 +64,13 @@ void Material::bind()
                     glUniformMatrix3fv(uLocation, 1, GL_FALSE, glm::value_ptr(val));
                     break;
                 }
-                
             case 5:
                 {
                     glm::mat4 val = std::get<5>(value);
-                    glUniformMatrix3fv(uLocation, 1, GL_FALSE, glm::value_ptr(val));
+                    glUniformMatrix4fv(uLocation, 1, GL_FALSE, glm::value_ptr(val));
+                    GLenum err = glGetError();
+                    if (err != GL_NO_ERROR)
+                        std::cout << "erro " << err << " em material.bind, " << name << std::endl;
                     break;
                 }
         }

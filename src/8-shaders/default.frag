@@ -9,6 +9,6 @@ uniform float u_time;
 
 void main()
 {
-	FragColor = vec4(u_color.x * abs(cos(u_time)), u_color.y * abs(sin(u_time)), u_color.z * abs(sin(u_time)), 1.0);
-	//FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	//FragColor = vec4(u_color.x * abs(cos(u_time)), u_color.y * abs(sin(u_time)), u_color.z * abs(sin(u_time)), 1.0);
+	FragColor = vertexColor;
 }
