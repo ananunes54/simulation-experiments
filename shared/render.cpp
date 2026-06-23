@@ -5,10 +5,11 @@
 #include <shaders.h>
 #include <material.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <utils.h>
 
 void render(Mesh& mesh, Physics& physics, Material& material)
 {
-    glBindVertexArray(mesh.getVAO());
+    GLCall(glBindVertexArray(mesh.getVAO()));
    
     std::string motionMat = "u_motionMat";
     material.setGlmMat4(motionMat, physics.getMotionMat());
@@ -43,13 +44,13 @@ void render(Mesh& mesh, Physics& physics, Material& material)
 
     if (mesh.getPrimitive() == Primitive::line)
     {
-        glDrawElements(GL_LINES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+        GLCall(glDrawElements(GL_LINES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0));
     }
     else 
     {
-        glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+        GLCall(glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0));
     }
             
-    glBindVertexArray(0);
+    GLCall(glBindVertexArray(0));
     material.unbind();
 }

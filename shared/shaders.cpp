@@ -25,7 +25,7 @@ Shader::Shader(std::string& vertexShaderPath, std::string& fragmentShaderPath) :
 
 Shader::~Shader()
 {
-    glDeleteProgram(m_ID);
+    GLCall(glDeleteProgram(m_ID));
 }
 
 unsigned int Shader::compileShader(unsigned int shaderType, std::string& shaderSource)
@@ -90,10 +90,10 @@ unsigned int Shader::createProgram()
 		return -1;
 	}
 
-	glAttachShader(program, vertexShaderId);
-	glAttachShader(program, fragmentShaderId);
+	GLCall(glAttachShader(program, vertexShaderId));
+	GLCall(glAttachShader(program, fragmentShaderId));
 	
-	glLinkProgram(program);
+	GLCall(glLinkProgram(program));
 
 	int linkingStatus = 0;
 	glGetProgramiv(program, GL_LINK_STATUS, (int *)&linkingStatus);
@@ -126,11 +126,11 @@ unsigned int Shader::createProgram()
 		return -1;
 	}
 
-	glDetachShader(program, vertexShaderId);
-	glDetachShader(program, fragmentShaderId);
+	GLCall(glDetachShader(program, vertexShaderId));
+	GLCall(glDetachShader(program, fragmentShaderId));
 
-	glDeleteShader(vertexShaderId);
-	glDeleteShader(fragmentShaderId);
+	GLCall(glDeleteShader(vertexShaderId));
+	GLCall(glDeleteShader(fragmentShaderId));
 	
 	return program;
 
@@ -138,11 +138,11 @@ unsigned int Shader::createProgram()
 
 void Shader::introspectProgram()
 {
-    glGetProgramiv(m_ID, GL_ACTIVE_UNIFORMS, &m_uniformsCount);
+    GLCall(glGetProgramiv(m_ID, GL_ACTIVE_UNIFORMS, &m_uniformsCount));
     m_uniforms.resize(m_uniformsCount);
 
     int maxNameLenght;
-    glGetProgramiv(m_ID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLenght);
+    GLCall(glGetProgramiv(m_ID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLenght));
 
     GLint size;
 
@@ -151,7 +151,7 @@ void Shader::introspectProgram()
         m_uniforms[i].program = m_ID;
         m_uniforms[i].index = i;
         m_uniforms[i].name.assign(maxNameLenght, '\0');
-        glGetActiveUniform(m_ID, i, maxNameLenght, nullptr, &size, &(m_uniforms[i]).type, m_uniforms[i].name.data());
+        GLCall(glGetActiveUniform(m_ID, i, maxNameLenght, nullptr, &size, &(m_uniforms[i]).type, m_uniforms[i].name.data()));
     }
 }
 

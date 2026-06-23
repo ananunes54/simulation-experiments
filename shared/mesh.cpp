@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <mesh.h>
 #include <geometry.h>
+#include <utils.h>
 
 Mesh::Mesh(Geometry geometry)
 {
@@ -10,22 +11,22 @@ Mesh::Mesh(Geometry geometry)
     
     unsigned int temp_vbo;
     unsigned int temp_ebo;
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &temp_vbo);
-    glGenBuffers(1, &temp_ebo);
+    GLCall(glGenVertexArrays(1, &m_vao));
+    GLCall(glGenBuffers(1, &temp_vbo));
+    GLCall(glGenBuffers(1, &temp_ebo));
     
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, temp_vbo);
-    glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfVertices() * sizeof(glm::vec3), geometry.getVertices(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, geometry.getNumOfIndices() * sizeof(unsigned int), geometry.getIndices(), GL_STATIC_DRAW);
+    GLCall(glBindVertexArray(m_vao));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, temp_vbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfVertices() * sizeof(glm::vec3), geometry.getVertices(), GL_STATIC_DRAW));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp_ebo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, geometry.getNumOfIndices() * sizeof(unsigned int), geometry.getIndices(), GL_STATIC_DRAW));
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
-    glEnableVertexAttribArray(0);
+    GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0));
+    GLCall(glEnableVertexAttribArray(0));
 
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GLCall(glBindVertexArray(0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void Mesh::setPrimitive(Primitive primitive)

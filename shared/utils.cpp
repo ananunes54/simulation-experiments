@@ -9,6 +9,18 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <matrix_exponential.h>
 
+void sim::glClearErrors()
+{
+    while(glGetError() != GL_NO_ERROR);
+}
+
+void sim::glLog(const char* functionName, const char* file, int line)
+{
+    while(GLenum err = glGetError())
+    {
+        std::cout << "[OpenGL] Error: (" << err << ") " << "in function " << functionName << "in file " << file << std::endl;
+    }
+}
 Glfw::Glfw()
 {
 	#ifdef WAYLAND

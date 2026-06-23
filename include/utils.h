@@ -5,6 +5,14 @@
 #include <exception>
 #include <glm/glm.hpp>
 
+#define GLCall(x) sim::glClearErrors; x; sim::glLog(#x, __FILE__, __LINE__);
+
+namespace sim
+{
+    void glClearErrors();
+    void glLog(const char* functionName, const char* file, int line);
+};
+
 class FileException : public std::exception
 {
 private:
