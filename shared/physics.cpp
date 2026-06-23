@@ -96,6 +96,7 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
     std::cout << std::endl;
     //=====================
     m_motionMat = exp(m_auxMotionMat);
+    m_auxMotionMat = m_motionMat;
     // ====== debug =======
     for (auto i = 0; i < 4; i++)
     {
@@ -112,7 +113,7 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
     // ====== debug =======
     for (auto i = 0; i < 4; i++)
         std::cout << "[" << m_fourVelocity[i] << "]";
-    std::cout << std::endl;
+    std::cout << std::endl; std::cout << std::endl;
     //=====================
 
 
@@ -131,9 +132,20 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
             -m_gamma * m_velocityMagnitude, m_gamma                       , 0, 0,
             0                             , 0                             , 1, 0,
             0                             , 0                             , 0, 1);
+    // ====== debug =======
+    for (auto i = 0; i < 4; i++)
+    {
+        for (auto j = 0; j < 4; j++)
+        {
+            std::cout << "[" << m_refChangeMat[j][i] << "]";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    //=====================
 }
 
 void Physics::updateMotionMat()
 {
-    m_motionMat = m_motionMat * m_auxMotionMat;
+    m_motionMat = m_auxMotionMat * m_motionMat;
 }

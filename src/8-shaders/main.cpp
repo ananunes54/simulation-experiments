@@ -28,15 +28,20 @@ int main()
         loadGlad();
 
 		std::vector<glm::vec3> vertices{
-             glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, 0.5 / 2.0f), 
-			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, 0.5 / 2.0f)
+             glm::vec3(0.0f / 1.0f,  0.5f / 2.0f,  0.5f / 2.0f), 
+			 glm::vec3(0.0f / 1.0f, -0.5f / 2.0f,  0.5f / 2.0f),
+			 glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, -0.5f / 2.0f),
+			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, -0.5f / 2.0f),
 		};
 
         // centro do objeto (sem considerar um vetor "extendido")
-        glm::vec3 objCenter(vertices[0][0], vertices[0][1], vertices[0][2]);
+        glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
 
 		std::vector<unsigned int> indices{
-				0, 1
+				0, 1,
+                1, 2,
+                2, 3,
+                3, 0
 		};
 
         Geometry geometry(vertices, indices, objCenter);
@@ -47,7 +52,7 @@ int main()
 		glm::mat4 aMat(0.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f,
-			       0.1f, 0.0f, 0.0f, 0.0f);
+			       0.5f, 0.3f, 0.0f, 0.0f);
 
         Physics physics;
         physics.setCenter(objCenter);
@@ -59,8 +64,13 @@ int main()
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
 
+        std::cout << "gamma: " << physics.getGamma() << std::endl;
+        std::cout << "velocity: " << physics.getVelocityMagnitude() << std::endl;
+
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();
+
+        std::cout << "dT: " << dProperTime << std::endl;
 
 		float time = 0.0f;
 		float properTime = 0.0f;
