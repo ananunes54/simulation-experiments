@@ -2,6 +2,7 @@
 #include <physics.h>
 #include <utils.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <fstream>
 
 glm::mat4 Physics::getAccelerationMat()
 {
@@ -71,51 +72,13 @@ void Physics::setCenter(glm::vec3 center)
 void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
 {
     m_accelerationMat = accelerationMat;
-    // ====== debug =======
-    for (auto i = 0; i < 4; i++)
-    {
-        for (auto j = 0; j < 4; j++)
-        {
-            std::cout << "[" << m_accelerationMat[j][i] << "]";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    //=====================
 
     m_auxMotionMat = scale(m_accelerationMat, dq);
-    // ====== debug =======
-    for (auto i = 0; i < 4; i++)
-    {
-        for (auto j = 0; j < 4; j++)
-        {
-            std::cout << "[" << m_auxMotionMat[j][i] << "]";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    //=====================
+
     m_motionMat = exp(m_auxMotionMat);
     m_auxMotionMat = m_motionMat;
-    // ====== debug =======
-    for (auto i = 0; i < 4; i++)
-    {
-        for (auto j = 0; j < 4; j++)
-        {
-            std::cout << "[" << m_motionMat[j][i] << "]";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    //=====================
     
     m_fourVelocity = m_accelerationMat * m_fourPosition;
-    // ====== debug =======
-    for (auto i = 0; i < 4; i++)
-        std::cout << "[" << m_fourVelocity[i] << "]";
-    std::cout << std::endl; std::cout << std::endl;
-    //=====================
-
 
     glm::vec4 nextFourPosition = m_motionMat * m_fourPosition;
     m_externTimeInterval = nextFourPosition[0];
@@ -132,17 +95,50 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
             -m_gamma * m_velocityMagnitude, m_gamma                       , 0, 0,
             0                             , 0                             , 1, 0,
             0                             , 0                             , 0, 1);
-    // ====== debug =======
-    for (auto i = 0; i < 4; i++)
+}
+
+void Physics::log(const char* logOutputPath)
+{
+    static unsigned int call = 0;
+
+    std::ofstream stream(logOutputPath);
+
+    if (stream.is_open())
     {
-        for (auto j = 0; j < 4; j++)
-        {
-            std::cout << "[" << m_refChangeMat[j][i] << "]";
-        }
-        std::cout << std::endl;
+        stream << "Iteration: " << call << std::endl;
+        stream << "--------------------------------------" << std::endl;
+        stream << "Acceleration Matrix:" << std::endl;
+        print(m_accelerationMat, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Motion Matrix:" << std::endl;
+        print(m_motionMat, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Motion auxiliar Matrix:" << std::endl;
+        print(m_auxMotionMat, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Reference Change Matrix:" << std::endl;
+        print(m_refChangeMat, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Position four-vector:" << std::endl;
+        print(m_fourPosition, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Velocity four-vector:" << std::endl;
+        print(m_fourVelocity, stream);
+        stream << "--------------------------------------" << std::endl;
+        stream << "Velocity Magnitude: " << m_velocityMagnitude << std::endl;
+        stream << "--------------------------------------" << std::endl;
+        stream << "Gamma: " << m_gamma << std::endl;
+        stream << "--------------------------------------" << std::endl;
+        stream << "Proper Time Interval: " << m_properTimeInterval << std::endl;
+        stream << "--------------------------------------" << std::endl;
+        stream << "Extern Time Interval: " << m_externTimeInterval << std::endl;
+        stream << "--------------------------------------" << std::endl;
+        stream << std::endl;
+
+        stream.close();
+        call++;
     }
-    std::cout << std::endl;
-    //=====================
+
 }
 
 void Physics::updateMotionMat()

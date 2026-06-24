@@ -65,9 +65,6 @@ int main()
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
 
-        std::cout << "gamma: " << physics.getGamma() << std::endl;
-        std::cout << "velocity: " << physics.getVelocityMagnitude() << std::endl;
-
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();
 
@@ -75,6 +72,8 @@ int main()
 
 		float time = 0.0f;
 		float properTime = 0.0f;
+
+        physics.log("/home/ana/sim-experiments/physics-log.txt");
 
 		while (!window.shouldClose())
 		{

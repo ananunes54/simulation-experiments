@@ -56,6 +56,10 @@ glm::mat4 exp(glm::mat4 mat);
 
 glm::mat4 scale(glm::mat4 mat, float factor);
 
+void print(const glm::mat4& mat, std::ostream& output);
+
+void print(const glm::vec4& v, std::ostream& output);
+
 float minkowskiMetric(glm::vec4 v1, glm::vec4 v2);
 
 #endif

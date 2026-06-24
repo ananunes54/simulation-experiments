@@ -40,6 +40,8 @@ public:
     void setCenter(glm::vec3 center);
     void setAccelerationMat(glm::mat4 mat, float dq);
 
+    void log(const char* logOutputPath);
+
     void updateMotionMat();
 };
 

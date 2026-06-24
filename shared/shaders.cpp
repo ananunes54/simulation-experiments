@@ -12,15 +12,6 @@ Shader::Shader(std::string& vertexShaderPath, std::string& fragmentShaderPath) :
 {
     m_ID = Shader::createProgram();
     introspectProgram();
-
-
-    u_velocity = glGetUniformLocation(m_ID, "u_velocity");
-    u_gamma = glGetUniformLocation(m_ID, "u_gamma");
-    u_motionMat = glGetUniformLocation(m_ID, "u_motionMat");
-    u_refChangeMat = glGetUniformLocation(m_ID, "u_refChangeMat");
-    u_color = glGetUniformLocation(m_ID, "u_color");
-    u_time = glGetUniformLocation(m_ID, "u_time");
-    u_properTime = glGetUniformLocation(m_ID, "u_properTime");
 }
 
 Shader::~Shader()
@@ -158,41 +149,6 @@ void Shader::introspectProgram()
 unsigned int Shader::getID()
 {
     return m_ID;
-}
-
-int Shader::getVelocityUniform()
-{
-    return u_velocity;
-}
-
-int Shader::getGammaUniform()
-{
-    return u_gamma;
-}
-
-int Shader::getMotionMatUniform()
-{
-    return u_motionMat;
-}
-
-int Shader::getRefChangeMatUniform()
-{
-    return u_refChangeMat;
-}
-
-int Shader::getColorUniform()
-{
-    return u_color;
-}
-
-int Shader::getTimeUniform()
-{
-    return u_time;
-}
-
-int Shader::getProperTimeUniform()
-{
-    return u_properTime;
 }
 
 int Shader::getUniformsCount()

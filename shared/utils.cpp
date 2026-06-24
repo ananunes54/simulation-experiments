@@ -164,6 +164,32 @@ glm::mat4 scale(glm::mat4 mat, float factor)
     return tempMat;
 }
 
+void print(const glm::mat4& mat, std::ostream& output)
+{
+    for (auto j = 0; j < 4; j++)
+    {
+        for (auto i = 0; i < 4; i++)
+        {
+            output << "[" << mat[j][i] << "]";
+        }
+
+        output << std::endl;
+    }
+
+    output << std::endl;
+}
+
+void print(const glm::vec4& mat, std::ostream& output)
+{
+    for (auto j = 0; j < 4; j++)
+    {
+        output << "[" << mat[j] << "]";
+    }
+
+    output << std::endl;
+    output << std::endl;
+}
+
 float minkowskiMetric(glm::vec4 v1, glm::vec4 v2)
 {
 	return v1[0] * v2[0] - v1[1] * v2[1];
