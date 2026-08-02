@@ -84,6 +84,8 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
     m_externTimeInterval = nextFourPosition[0];
 
     m_velocityMagnitude = m_fourVelocity[1] / m_fourVelocity[0];
+    if (m_velocityMagnitude != m_velocityMagnitude)
+        m_velocityMagnitude = 0.0f;
 
     float velocityMetric = minkowskiMetric(m_fourVelocity, m_fourVelocity);
     m_properTimeInterval = sqrt(velocityMetric) * dq;
