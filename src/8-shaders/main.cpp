@@ -79,14 +79,13 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-            std::string uColor = "u_color";
-            material.setGlmVec4(uColor, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-            
-            std::string uTime = "u_time";
-            material.setFloat(uTime, time);
-			
-            std::string uProperTime = "u_properTime";
-            material.setFloat(uProperTime, properTime);
+            material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+            material.setFloat("u_time", time);
+            material.setFloat("u_properTime", properTime);
+            material.setGlmMat4("u_motionMat", physics.getMotionMat());
+            material.setFloat("u_gamma", physics.getGamma());
+            material.setFloat("u_velocity", physics.getVelocityMagnitude());
+            material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
 			
 			time += dTime;
 			properTime += dProperTime;

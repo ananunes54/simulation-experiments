@@ -2,27 +2,27 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <utils.h>
 
-void Material::setFloat(std::string& name, float value)
+void Material::setFloat(const char* name, float value)
 {
     m_uniforms[name] = value;
 }
 
-void Material::setGlmMat3(std::string& name, glm::mat3 value)
+void Material::setGlmMat3(const char* name, glm::mat3 value)
 {
     m_uniforms[name] = value;
 }
 
-void Material::setGlmMat4(std::string& name, glm::mat4 value)
+void Material::setGlmMat4(const char* name, glm::mat4 value)
 {
     m_uniforms[name] = value;
 }
 
-void Material::setGlmVec3(std::string& name, glm::vec3 value)
+void Material::setGlmVec3(const char* name, glm::vec3 value)
 {
     m_uniforms[name] = value;
 }
 
-void Material::setGlmVec4(std::string& name, glm::vec4 value)
+void Material::setGlmVec4(const char* name, glm::vec4 value)
 {
     m_uniforms[name] = value;
 }
@@ -34,7 +34,7 @@ void Material::bind()
 
     for (const auto& [name, value] : m_uniforms)
     {
-        int uLocation = glGetUniformLocation(shaderID, name.c_str());
+        int uLocation = glGetUniformLocation(shaderID, name);
         switch (value.index()) {
             case 0:
                 {
