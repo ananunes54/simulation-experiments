@@ -33,9 +33,7 @@ void main()
     vec3 rotated = rotate * aPos;
 
 	vec3 finalVector = applyMat(u_motionMat, rotated);
-
-    vec4 correctedVector = vec4(finalVector.y, finalVector.z, 0.0, 1.0);
 	
-    gl_Position = correctedVector;
+    gl_Position = u_projectionMat * u_viewMat * u_modelMat * vec4(finalVector.y, finalVector.x, finalVector.z, 1.0);
     vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
