@@ -170,7 +170,7 @@ void print(const glm::mat4& mat, std::ostream& output)
     {
         for (auto i = 0; i < 4; i++)
         {
-            output << "[" << mat[j][i] << "]";
+            output << "[" << mat[i][j] << "]";
         }
 
         output << std::endl;
