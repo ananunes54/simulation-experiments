@@ -29,12 +29,37 @@ int main()
         loadGlad();
 
 		std::vector<glm::vec3> vertices{
-             glm::vec3(0.0f / 1.0f,  0.5f / 2.0f,  0.5f / 2.0f), 
-			 glm::vec3(0.0f / 1.0f, -0.5f / 2.0f,  0.5f / 2.0f),
-			 glm::vec3(0.0f / 1.0f, -0.5f / 2.0f, -0.5f / 2.0f),
-			 glm::vec3(0.0f / 1.0f,  0.5f / 2.0f, -0.5f / 2.0f),
-		};
+             glm::vec3(0.0f, -0.3f,  0.1f / 2.0f), 
+             glm::vec3(0.0f, -0.2f,  0.1f / 2.0f), 
+             glm::vec3(0.0f, -0.1f,  0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.0f,  0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.1f,  0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.2f,  0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.3f,  0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.3f, -0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.2f, -0.1f / 2.0f), 
+             glm::vec3(0.0f,  0.1f, -0.1f / 2.0f), 
+             glm::vec3(0.0f, -0.1f, -0.1f / 2.0f), 
+             glm::vec3(0.0f, -0.2f, -0.1f / 2.0f), 
+             glm::vec3(0.0f, -0.3f, -0.1f / 2.0f), 
 
+             glm::vec3(0.0f,  0.1f / 2.0f, -0.3f), 
+             glm::vec3(0.0f,  0.1f / 2.0f, -0.2f), 
+             glm::vec3(0.0f,  0.1f / 2.0f, -0.1f), 
+             glm::vec3(0.0f,  0.1f / 2.0f,  0.0f), 
+             glm::vec3(0.0f,  0.1f / 2.0f,  0.1f), 
+             glm::vec3(0.0f,  0.1f / 2.0f,  0.2f), 
+             glm::vec3(0.0f,  0.1f / 2.0f,  0.3f), 
+             glm::vec3(0.0f, -0.1f / 2.0f,  0.3f), 
+             glm::vec3(0.0f, -0.1f / 2.0f,  0.2f), 
+             glm::vec3(0.0f, -0.1f / 2.0f,  0.1f), 
+             glm::vec3(0.0f, -0.1f / 2.0f, -0.1f), 
+             glm::vec3(0.0f, -0.1f / 2.0f, -0.2f), 
+             glm::vec3(0.0f, -0.1f / 2.0f, -0.3f), 
+		};
+ 
+        glm::mat4 modelMat(1.0f);
+        modelMat = glm::translate(modelMat, glm::vec3(0.0f, -0.05f, 0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
 
@@ -42,7 +67,30 @@ int main()
 				0, 1,
                 1, 2,
                 2, 3,
-                3, 0
+                3, 4,
+                4, 5,
+                5, 6,
+                6, 7,
+                7, 8,
+                8, 9,
+                9, 10,
+                10, 11,
+                11, 12,
+                12, 0,
+
+                13, 14,
+                14, 15,
+                15, 16,
+                16, 17,
+                17, 18,
+                18, 19,
+                19, 20,
+                20, 21,
+                21, 22,
+                22, 23,
+                23, 24,
+                24, 25,
+                25, 13
 		};
 
         Geometry geometry(vertices, indices, objCenter);
@@ -50,14 +98,14 @@ int main()
         mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
-		glm::mat4 aMat(0.0f, 0.0f, 0.0f, 0.0f,
+		glm::mat4 aMat(0.0f, 70.0f, 0.0f, 0.0f,
+			       70.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f, 0.0f,
-			       0.5f, 0.3f, 0.0f, 0.0f);
+			       0.0f, 0.0f, 0.0f, 0.0f);
 
         Physics physics;
-        physics.setCenter(objCenter);
-        physics.setAccelerationMat(aMat, dq);
+        physics.setCenter(objCenter, modelMat);
+        physics.setAccelerationMat(aMat, dq, MOTION::inertial);
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
@@ -67,8 +115,6 @@ int main()
 
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();
-
-        std::cout << "dT: " << dProperTime << std::endl;
 
 		float time = 0.0f;
 		float properTime = 0.0f;

@@ -64,12 +64,13 @@ float Physics::getExternTimeInterval()
     return m_externTimeInterval;
 }
 
-void Physics::setCenter(glm::vec3 center)
+void Physics::setCenter(glm::vec3 center, glm::mat4 modelMat)
 {
-    m_fourPosition = glm::vec4(center[0], center[1], center[2], 1.0f);
+    glm::vec4 expandedCenter = glm::vec4(center[0], center[1], center[2], 1.0f);
+    m_fourPosition = modelMat * expandedCenter;
 }
 
-void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
+void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq, MOTION motion)
 {
     m_accelerationMat = accelerationMat;
 
@@ -78,10 +79,19 @@ void Physics::setAccelerationMat(glm::mat4 accelerationMat, float dq)
     m_motionMat = exp(m_auxMotionMat);
     m_auxMotionMat = m_motionMat;
     
-    m_fourVelocity = m_accelerationMat * m_fourPosition;
-
-    glm::vec4 nextFourPosition = m_motionMat * m_fourPosition;
-    m_externTimeInterval = nextFourPosition[0];
+    if (motion == MOTION::inertial)
+    {
+        m_fourVelocity = m_motionMat * glm::vec4(1, 0, 0, 0);
+        glm::vec4 nextFourPosition = m_fourPosition + (m_fourVelocity * dq);
+        m_externTimeInterval = nextFourPosition[0];
+    }
+    
+    else 
+    {
+        m_fourVelocity = m_accelerationMat * m_fourPosition;
+        glm::vec4 nextFourPosition = m_motionMat * m_fourPosition;
+        m_externTimeInterval = nextFourPosition[0];
+    }
 
     m_velocityMagnitude = m_fourVelocity[1] / m_fourVelocity[0];
     if (m_velocityMagnitude != m_velocityMagnitude)

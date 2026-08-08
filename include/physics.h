@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 
+enum class MOTION {inertial, hyperbolic};
+
 // por enquanto, as dimensoes para os vetores sao: t, x, 1
 // as matrizes sao "extendidas", tem um vetor de translacao adicionado
 
@@ -37,8 +39,8 @@ public:
     float getProperTimeInterval();
     float getExternTimeInterval();
 
-    void setCenter(glm::vec3 center);
-    void setAccelerationMat(glm::mat4 mat, float dq);
+    void setCenter(glm::vec3 center, glm::mat4 modelMat);
+    void setAccelerationMat(glm::mat4 mat, float dq, MOTION motion);
 
     void log(const char* logOutputPath);
 
