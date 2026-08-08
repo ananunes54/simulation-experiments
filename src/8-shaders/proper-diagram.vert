@@ -15,28 +15,15 @@ uniform mat4 u_modelMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projectionMat;
 
-float solveTLinear(float k, float x0)
+float solveT(float x0, float y0, float linVelocity, float angVelocity, float k)
 {
     float t = k;
+
     for (int i = 0; i < 3; i++)
     {
-        float func = t - u_velocity * (aPos.y + u_velocity * t) - k;
-        float der = 1 - u_velocity * u_velocity;
-        t = t - func / der;
-    }
-
-    return t;
-}
-
-float solveTAngular(float k, float w, float x0, float y0)
-{
-    float t = k;
-    
-    for (int i = 0; i < 3; i++)
-    {
-        float func = t + u_velocity * (x0 * cos(w * t) - y0 * sin(w * t)) - k;
-        float der = 1 - u_velocity * w * (x0 * sin(w * t) + y0 * cos(w * t));
-        t = t - func / der;
+        float function = t + linVelocity * (x0 * cos(angVelocity * t) - y0 * sin(angVelocity * t)) - k;
+        float derivative = 1 + linVelocity * (- angVelocity * (x0 * sin(angVelocity * t) + y0 * cos(angVelocity * t)));
+        t = t - function / derivative;
     }
 
     return t;
@@ -54,21 +41,18 @@ void main()
 {
     float k = u_time / u_gamma;
 
-    //vec3 resultVector = applyMat(u_motionMat, aPos.xyz);
-    //float newTime = solveTLinear(k, resultVector.y);
-	//float newX = aPos.y + u_velocity * testTime;
+    float angVelocity = 1;
 
-    float w = 1;
-    float newTime = solveTAngular(k, w, aPos.y, aPos.z);
-    float newX = aPos.y * cos(w * newTime) - aPos.z * sin(w * newTime);
-    float newY = aPos.y * sin(w * newTime) + aPos.z * cos(w * newTime);
+    float newTime = solveT(aPos.y, aPos.z, u_velocity, angVelocity, k);
+    float newAngle = angVelocity * newTime;
+    float newAngleCos = cos(newAngle);
+    float newAngleSin = sin(newAngle);
+    float newX = aPos.y * newAngleCos - aPos.z * newAngleSin;
+    float newY = aPos.y * newAngleSin + aPos.z * newAngleCos;
 
     vec3 finalVector = applyMat(u_motionMat, vec3(newTime, newX, newY));
 
-	//vec3 finalVector = applyMat(u_refChangeMat, vec3(testTime, newX, resultVector.z));
-
-    //gl_Position = u_projectionMat * u_viewMat * u_modelMat * vec4(finalVector.y, finalVector.x, finalVector.z, 1.0);
-
+    //gl_Position = u_projectionMat * u_viewMat * u_modelMat * vec4(finalVector.y, finalVector.z, 0.0, 1.0);
     gl_Position = vec4(finalVector.y, finalVector.z, 0.0, 1.0);
     vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

@@ -107,7 +107,7 @@ int main()
         physics.setCenter(objCenter, modelMat);
         physics.setAccelerationMat(aMat, dq, MOTION::inertial);
 
-		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/default.vert");
+		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
@@ -138,7 +138,7 @@ int main()
 
             render(mesh, physics, material);
 
-            physics.updateMotionMat();
+            //physics.updateMotionMat();
 
 			window.swapBuffers();
 
