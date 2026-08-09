@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 
+#include <glm/glm.hpp>
+
 #include <geometry.h>
 
 Geometry::Geometry(const char* geometrySource)
@@ -22,19 +24,27 @@ Geometry::Geometry(const char* geometrySource)
         chunks >> type;
         if (type == "v")
         {
-            std::cout << "encontrou um vertice" << std::endl;
-        }
-        else if (type == "vt")
-        {
-            std::cout << "encontrou coordenada de textura" << std::endl;
+            glm::vec3 vertex;
+            chunks >> vertex.x >> vertex.y >> vertex.z;
+            m_vertices.push_back(vertex);
+            std::cout << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
         }
         else if (type == "vn")
         {
-            std::cout << "encontrou um vetor normal de vertice" << std::endl;
+            glm::vec3 normal;
+            chunks >> normal.x >> normal.y >> normal.z;
+            m_normalVectors.push_back(normal);
+            std::cout << normal.x << " " << normal.y << " " << normal.z << std::endl;
+        }
+        else if (type == "vt")
+        {
+            glm::vec2 texture;
+            chunks >> texture.x >> texture.y;
+            m_textureCoordinates.push_back(texture);
+            std::cout << texture.x << " " << texture.y << std::endl;
         }
         else if (type == "f")
         {
-            std::cout << "encontrou uma face poligonal" << std::endl;
         }
         else {}
     }

@@ -1,12 +1,16 @@
 #ifndef GEOMETRY_INCLUDED_H
 #define GEOMETRY_INCLUDED_H
 #include <vector>
+#include <string>
 #include <glm/glm.hpp>
 
 class Geometry
 {
     std::vector<glm::vec3> m_vertices;
+    std::vector<glm::vec3> m_normalVectors;
+    std::vector<glm::vec2> m_textureCoordinates;
     std::vector<unsigned int> m_indices;
+    std::vector<std::string> m_faces;
     glm::vec2 m_objCenter;
 
 public:
