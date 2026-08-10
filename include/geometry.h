@@ -40,8 +40,10 @@ public:
     Geometry(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices, glm::vec2 objCenter) : m_vertices(vertices), m_indices(indices), m_objCenter(objCenter) {}
     Geometry(const char* geometrySource);
     unsigned int getNumOfVertices();
+    unsigned int getNumOfCompleteVertices();
     unsigned int getNumOfIndices();
     glm::vec3* getVertices();
+    Vertex* getCompleteVertices();
     unsigned int* getIndices();
 };
 

@@ -51,7 +51,7 @@ Geometry::Geometry(const char* geometrySource)
             tempTextures.push_back(texture);
         }
 
-        else if (type == "f")
+        else if (type == "f" || type == "l")
         {
             std::string vertexData;
             while (chunks >> vertexData)
@@ -93,6 +93,11 @@ unsigned int Geometry::getNumOfVertices()
     return m_vertices.size();
 }
 
+unsigned int Geometry::getNumOfCompleteVertices()
+{
+    return m_verticesComplete.size();
+}
+
 unsigned int Geometry::getNumOfIndices()
 {
     return m_indices.size();
@@ -101,6 +106,11 @@ unsigned int Geometry::getNumOfIndices()
 glm::vec3* Geometry::getVertices()
 {
     return m_vertices.data();
+}
+
+Vertex* Geometry::getCompleteVertices()
+{
+    return m_verticesComplete.data();
 }
 
 unsigned int* Geometry::getIndices()

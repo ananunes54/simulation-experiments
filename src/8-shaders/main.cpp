@@ -94,8 +94,10 @@ int main()
 		};
 
         Geometry geometry(vertices, indices, objCenter);
-        Geometry geometry2("teste.obj");
+        Geometry geometry2("3dwheel.obj");
         Mesh mesh(geometry);
+        mesh.createMeshFromObj(geometry2);
+
         mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
