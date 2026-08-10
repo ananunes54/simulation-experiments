@@ -4,13 +4,36 @@
 #include <string>
 #include <glm/glm.hpp>
 
+struct Vertex
+{
+    glm::vec3 vertex;
+    glm::vec3 normal;
+    glm::vec2 texture;
+};
+
+struct VertexKey
+{
+    float v, vt, vn;
+
+    bool operator==(const VertexKey& other) const
+    {
+        return v==other.v && vt==other.vt && vn==other.vn; 
+    }
+};
+
+struct VertexKeyHash
+{
+    std::size_t operator()(const VertexKey& key) const
+    {
+        return std::hash<int>()(key.v) ^ std::hash<int>()(key.vt) ^ std::hash<int>()(key.vn);
+    }
+};
+
 class Geometry
 {
     std::vector<glm::vec3> m_vertices;
-    std::vector<glm::vec3> m_normalVectors;
-    std::vector<glm::vec2> m_textureCoordinates;
+    std::vector<Vertex> m_verticesComplete;
     std::vector<unsigned int> m_indices;
-    std::vector<std::string> m_faces;
     glm::vec2 m_objCenter;
 
 public:

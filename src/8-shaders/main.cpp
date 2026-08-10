@@ -94,6 +94,7 @@ int main()
 		};
 
         Geometry geometry(vertices, indices, objCenter);
+        Geometry geometry2("teste.obj");
         Mesh mesh(geometry);
         mesh.setPrimitive(Primitive::line);
 
