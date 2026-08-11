@@ -31,6 +31,7 @@ public:
     Physics() {};
     glm::mat4 getGroupGeneratorMat4();
     glm::mat4 getPoincareGroupMat4();
+    glm::vec4 getPoincareTranslationVec();
     void getGroupGeneratorMat5(float targetMat[25]);
     void getPoincareGroupMat5(float targetMat[25]);
     glm::mat4 getRefChangeMat();

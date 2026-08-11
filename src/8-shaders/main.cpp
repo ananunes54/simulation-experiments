@@ -139,6 +139,7 @@ int main()
             material.setFloat("u_time", time);
             material.setFloat("u_properTime", properTime);
             material.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
+            material.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
             material.setFloat("u_gamma", physics.getGamma());
             material.setFloat("u_velocity", physics.getVelocityMagnitude());
             material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 

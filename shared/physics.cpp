@@ -48,6 +48,11 @@ glm::vec4 Physics::getFourVelocity()
     return m_fourVelocity;
 }
 
+glm::vec4 Physics::getPoincareTranslationVec()
+{
+    return glm::vec4(m_poincareGroupMat5[4], m_poincareGroupMat5[9], m_poincareGroupMat5[14], m_poincareGroupMat5[19]);
+}
+
 float Physics::getVelocityMagnitude()
 {
     return m_velocityMagnitude;
