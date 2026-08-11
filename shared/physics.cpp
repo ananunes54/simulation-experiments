@@ -4,35 +4,23 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
 
-glm::mat4 Physics::getGroupGeneratorMat()
+glm::mat4 Physics::getGroupGeneratorMat4()
 {
     return m_groupGeneratorMat;
 }
 
-float* Physics::getGroupGeneratorMatPtr()
-{
-    return glm::value_ptr(m_groupGeneratorMat);
-}
 
-glm::mat4 Physics::getPoincareGroupMat()
+glm::mat4 Physics::getPoincareGroupMat4()
 {
     return m_poincareGroupMat;
 }
 
-float* Physics::getPoincareGroupMatPtr()
-{
-    return glm::value_ptr(m_poincareGroupMat);
-}
 
 glm::mat4 Physics::getRefChangeMat()
 {
     return m_refChangeMat;
 }
 
-float* Physics::getRefChangeMatPtr()
-{
-    return glm::value_ptr(m_refChangeMat);
-}
 
 glm::vec4 Physics::getFourPosition()
 {

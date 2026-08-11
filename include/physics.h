@@ -26,12 +26,9 @@ class Physics
 
 public:
     Physics() {};
-    glm::mat4 getGroupGeneratorMat();
-    float* getGroupGeneratorMatPtr();
-    glm::mat4 getPoincareGroupMat();
-    float* getPoincareGroupMatPtr();
+    glm::mat4 getGroupGeneratorMat4();
+    glm::mat4 getPoincareGroupMat4();
     glm::mat4 getRefChangeMat();
-    float* getRefChangeMatPtr();
     glm::vec4 getFourVelocity();
     glm::vec4 getFourPosition();
     float getVelocityMagnitude();
