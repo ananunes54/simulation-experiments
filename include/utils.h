@@ -68,4 +68,6 @@ void print(const glm::vec4& v, std::ostream& output);
 
 float minkowskiMetric(glm::vec4 v1, glm::vec4 v2);
 
+void multiplyMat5Vec5(float sourceMat[25], float sourceVec[5], float targetVec[5]);
+
 #endif

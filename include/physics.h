@@ -10,6 +10,9 @@ enum class MOTION {inertial, hyperbolic};
 
 class Physics 
 {
+    float m_groupGeneratorMat5[25];
+    float m_poincareGroupMat5[25];
+    float m_auxPoincareGroupMat5[25];
     glm::mat4 m_groupGeneratorMat;
     glm::mat4 m_poincareGroupMat;
     glm::mat4 m_auxPoincareGroupMat;
@@ -28,6 +31,8 @@ public:
     Physics() {};
     glm::mat4 getGroupGeneratorMat4();
     glm::mat4 getPoincareGroupMat4();
+    void getGroupGeneratorMat5(float targetMat[25]);
+    void getPoincareGroupMat5(float targetMat[25]);
     glm::mat4 getRefChangeMat();
     glm::vec4 getFourVelocity();
     glm::vec4 getFourPosition();
@@ -38,6 +43,7 @@ public:
 
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
     void setGroupGeneratorMat(glm::mat4 mat, float dq, MOTION motion);
+    void setGroupGeneratorMat(const float sourceMat[25], float dq, MOTION motion);
 
     void log(const char* logOutputPath);
 
