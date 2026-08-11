@@ -10,9 +10,9 @@ enum class MOTION {inertial, hyperbolic};
 
 class Physics 
 {
-    glm::mat4 m_accelerationMat;
-    glm::mat4 m_motionMat;
-    glm::mat4 m_auxMotionMat;
+    glm::mat4 m_groupGeneratorMat;
+    glm::mat4 m_poincareGroupMat;
+    glm::mat4 m_auxPoincareGroupMat;
     glm::mat4 m_refChangeMat;
     //a quadrivelocidade diz respeito a posicao do centro do objeto no "tempo inicial"
     glm::vec4 m_fourVelocity;
@@ -26,10 +26,10 @@ class Physics
 
 public:
     Physics() {};
-    glm::mat4 getAccelerationMat();
-    float* getAccelerationMatPtr();
-    glm::mat4 getMotionMat();
-    float* getMotionMatPtr();
+    glm::mat4 getGroupGeneratorMat();
+    float* getGroupGeneratorMatPtr();
+    glm::mat4 getPoincareGroupMat();
+    float* getPoincareGroupMatPtr();
     glm::mat4 getRefChangeMat();
     float* getRefChangeMatPtr();
     glm::vec4 getFourVelocity();
@@ -40,11 +40,11 @@ public:
     float getExternTimeInterval();
 
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
-    void setAccelerationMat(glm::mat4 mat, float dq, MOTION motion);
+    void setGroupGeneratorMat(glm::mat4 mat, float dq, MOTION motion);
 
     void log(const char* logOutputPath);
 
-    void updateMotionMat();
+    void updatePoincareGroupMat();
 };
 
 #endif

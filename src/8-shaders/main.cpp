@@ -101,14 +101,14 @@ int main()
         mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
-		glm::mat4 aMat(0.0f, 70.0f, 0.0f, 0.0f,
+		glm::mat4 generatorMat(0.0f, 70.0f, 0.0f, 0.0f,
 			       70.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f);
 
         Physics physics;
         physics.setCenter(objCenter, modelMat);
-        physics.setAccelerationMat(aMat, dq, MOTION::inertial);
+        physics.setGroupGeneratorMat(generatorMat, dq, MOTION::inertial);
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
@@ -131,7 +131,7 @@ int main()
             material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
             material.setFloat("u_time", time);
             material.setFloat("u_properTime", properTime);
-            material.setGlmMat4("u_motionMat", physics.getMotionMat());
+            material.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat());
             material.setFloat("u_gamma", physics.getGamma());
             material.setFloat("u_velocity", physics.getVelocityMagnitude());
             material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
@@ -141,7 +141,7 @@ int main()
 
             render(mesh, physics, material);
 
-            //physics.updateMotionMat();
+            //physics.updatePoincareGroupMat();
 
 			window.swapBuffers();
 
