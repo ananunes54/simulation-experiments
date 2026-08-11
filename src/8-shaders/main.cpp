@@ -106,6 +106,19 @@ int main()
 			       0.0f, 0.0f, 0.0f, 0.0f,
 			       0.0f, 0.0f, 0.0f, 0.0f);
 
+		float generatorMat5[25] = {0.0f, 70.0f, 0.0f, 0.0f, 0.0f,
+			       70.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			       0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			       0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+
+        float auxGeneratorMat5[25];
+        scaleMat5(generatorMat5, auxGeneratorMat5, dq);
+        float poincareGroupMat5[25];
+        expMat5(auxGeneratorMat5, poincareGroupMat5);
+        printMat(poincareGroupMat5, 5, std::cout);
+        std::cout << std::endl;
+
         Physics physics;
         physics.setCenter(objCenter, modelMat);
         physics.setGroupGeneratorMat(generatorMat, dq, MOTION::inertial);

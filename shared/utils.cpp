@@ -146,7 +146,26 @@ glm::mat4 exp(glm::mat4 mat)
 		}
 	}
 
+    free(expPtr);
 	return tempMat;
+}
+
+void expMat5(float sourceMat[25], float targetMat[25])
+{
+    double buffer[25];
+    for (auto i = 0; i < 25; i++)
+    {
+        buffer[i] = static_cast<double>(sourceMat[i]);
+    }
+
+    double* expPtr = r8mat_expm1(5, buffer);
+    for (auto i = 0; i < 25; i++)
+    {
+        targetMat[i] = static_cast<float>(expPtr[i]);
+    }
+
+    free(expPtr);
+    return;
 }
 
 glm::mat4 scale(glm::mat4 mat, float factor)
@@ -162,6 +181,27 @@ glm::mat4 scale(glm::mat4 mat, float factor)
     }
 
     return tempMat;
+}
+
+void scaleMat5(const float sourceMat[25], float targetMat[25], float factor)
+{
+    for (auto i = 0; i < 25; i++)
+    {
+        targetMat[i] = sourceMat[i] * factor;
+    }
+}
+
+void printMat(const float* sourceMat, unsigned matDimension, std::ostream& output)
+{
+    for (auto j = 0; j < matDimension; j++)
+    {
+        for (auto i = 0; i < matDimension; i++)
+        {
+            output << "[" << sourceMat[i*matDimension + j] << "]";
+        }
+
+        output << std::endl;
+    }
 }
 
 void print(const glm::mat4& mat, std::ostream& output)
