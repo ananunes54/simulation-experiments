@@ -17,6 +17,7 @@
 #include <render.h>
 #include <material.h>
 #include <math5d.h>
+#include <window.h>
 
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"

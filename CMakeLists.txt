@@ -15,6 +15,7 @@ set(SRC
     shared/render.cpp
     shared/material.cpp
     shared/math5d.cpp
+    shared/window.cpp
     src/8-shaders/main.cpp
     )
 
