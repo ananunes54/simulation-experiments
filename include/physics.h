@@ -45,6 +45,8 @@ public:
     void log(const char* logOutputPath);
 
     void updatePoincareGroupMat();
+
+    void reset();
 };
 
 #endif

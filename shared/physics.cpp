@@ -153,3 +153,13 @@ void Physics::updatePoincareGroupMat()
 {
     m_poincareGroupMat = m_auxPoincareGroupMat * m_poincareGroupMat;
 }
+
+void Physics::reset()
+{
+    m_groupGeneratorMat = Mat5(0.0f);
+    m_refChangeMat = glm::mat4(1.0f);
+    m_poincareGroupMat = m_auxPoincareGroupMat = Mat5(1.0f);
+    m_externTimeInterval = m_properTimeInterval = m_velocityMagnitude = 0.0f;
+    m_fourVelocity = m_fourPosition = glm::vec4(0.0f);
+    m_gamma = 1.0f;
+}

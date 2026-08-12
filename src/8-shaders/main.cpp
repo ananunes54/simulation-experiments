@@ -23,6 +23,20 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
+
+Mat5 buildPoincare(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
+{
+    Mat5 mat;
+    mat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], translation[0]);
+    mat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], translation[1]);
+    mat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], translation[2]);
+    mat[3] = Vec5(linAcceleration[2], -angAcceleration[1], angAcceleration[0], 0.0f, translation[3]);
+    mat[4][4] = 1.0f;
+
+    return mat;
+}
+
 int main()
 {
 	try 
@@ -30,8 +44,27 @@ int main()
 		int windowWidth = 800, windowHeight = 800;
 		Window window(windowWidth, windowHeight, "window");
  
+		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
+		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
+
         glm::mat4 modelMat(1.0f);
-        modelMat = glm::translate(modelMat, glm::vec3(0.0f, -0.05f, 0.0f));
+        glm::mat4 viewMat(1.0f);
+        glm::mat4 projectionMat(1.0f);
+
+        initialize(modelMat, viewMat, projectionMat, window);
+
+        glm::vec3 linearAccel(0.0f, 0.0f, 0.0f);
+        glm::vec3 angularAccel(0.0f, 0.0f, 0.0f);
+
+        bool isPaused = true;
+        bool matrixAltered = false;
+
+		float time = 0.0f;
+		float properTime = 0.0f;
+
+
+
+        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.05f, 0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
 
@@ -41,19 +74,11 @@ int main()
         //mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
-        Mat5 generator(Vec5(0.0f, 70.0f, 0.0f, 0.0f, 0.0f),
-                       Vec5(70.0f, 0.0f, 0.0f, 0.0f, 0.0f),
-                       Vec5(0.0f),
-                       Vec5(0.0f),
-                       Vec5(0.0f));
-
+        Mat5 generator(0.0f);
 
         Physics physics;
-        physics.setCenter(objCenter, modelMat);
+        physics.setCenter(objCenter, mat);
         physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
-
-		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
-		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
@@ -61,10 +86,8 @@ int main()
         float dTime = physics.getExternTimeInterval();
         float dProperTime = physics.getProperTimeInterval();
 
-		float time = 0.0f;
-		float properTime = 0.0f;
-
         physics.log("/home/ana/sim-experiments/physics-log.txt");
+
 
 		while (!window.shouldClose())
 		{
@@ -78,30 +101,52 @@ int main()
             material.setFloat("u_gamma", physics.getGamma());
             material.setFloat("u_velocity", physics.getVelocityMagnitude());
             material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
-			
-            glm::mat4 modelMat(1.0f);
-            modelMat = glm::translate(modelMat, glm::vec3(0.0f, 0.0f, -5.0f));
-            modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-            modelMat = glm::scale(modelMat, glm::vec3(0.25f, 0.25f, 0.25f));
             material.setGlmMat4("u_modelMat", modelMat);
-
-            glm::mat4 viewMat(1.0f);
-            //viewMat = glm::rotate(viewMat, glm::radians(15.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-            //viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -5.0f));
             material.setGlmMat4("u_viewMat", viewMat);
-
-            glm::mat4 projectionMat(1.0f);
-            projectionMat = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.1f, 100.0f);
             material.setGlmMat4("u_projectionMat", projectionMat);
 
-			time += dTime;
-			properTime += dProperTime;
 
             window.initImGuiFrame();
 
             ImGui::Begin("Controles");
-            ImGui::Text("Olá Simulação");
+
+            if(ImGui::Button(isPaused ? "Continuar" : "Pausar"))
+            {
+                isPaused = !isPaused;
+            }
+
+            if (ImGui::SliderFloat3("Aceleração Linear", glm::value_ptr(linearAccel), -100.0f, 100.0f, "%.2f"))
+            {
+                matrixAltered = true;
+            }
+
+            if (ImGui::SliderFloat3("Aceleração Angular", glm::value_ptr(angularAccel), -50.0f, 50.0f, "%.2f"))
+            {
+                matrixAltered = true;
+            }
+
             ImGui::End();
+
+
+            if (matrixAltered)
+            {
+                time = properTime = 0.0f;
+                physics.reset();
+                generator = buildPoincare(linearAccel, angularAccel, glm::vec4(0.0f));
+                physics.setCenter(objCenter, mat);
+                physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
+                dTime = physics.getExternTimeInterval();
+                dProperTime = physics.getProperTimeInterval();
+                matrixAltered = false;
+                isPaused = true;
+            }
+
+            if (!isPaused)
+            {
+                time += dTime;
+                properTime += dProperTime;
+            }
+
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -121,4 +166,13 @@ int main()
 	}
 
 	return 0;
+}
+
+
+void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window)
+{
+    modelMat = glm::translate(modelMat, glm::vec3(0.0f, 0.0f, -5.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMat = glm::scale(modelMat, glm::vec3(0.25f, 0.25f, 0.25f));
+    projectionMat = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.1f, 100.0f);
 }
