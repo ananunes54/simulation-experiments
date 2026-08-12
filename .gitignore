@@ -1,2 +1,4 @@
 build/
 *.obj
+physics-log.txt
+*.ini

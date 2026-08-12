@@ -4,6 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 #include <window.h>
 
 Window::Window(int width, int height, const char* title)
@@ -42,19 +46,57 @@ Window::Window(int width, int height, const char* title)
 		throw std::runtime_error("não foi possivel carregar o glad.");
 	}
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
     glfwSetWindowUserPointer(m_handle, this);
     glfwSetFramebufferSizeCallback(m_handle, framebufferSizeCallback);
     glfwSetWindowContentScaleCallback(m_handle, contentScaleCallback);
 
     glfwGetFramebufferSize(m_handle, &m_fbWidth, &m_fbHeight);
     updateViewportAndRatio(m_fbWidth, m_fbHeight);
+
+    initImGui();
 }
 
 Window::~Window()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
 	std::cout << "window destroyed." << std::endl;
 	glfwDestroyWindow(m_handle);
     glfwTerminate();
+}
+
+void Window::initImGui()
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    ImGui::StyleColorsLight();
+    ImGui_ImplGlfw_InitForOpenGL(m_handle, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+}
+
+void Window::initImGuiFrame()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
+void Window::renderImGui()
+{
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Window::updateViewportAndRatio(int width, int height)

@@ -19,7 +19,7 @@
 #include <math5d.h>
 #include <window.h>
 
-#include "imgui.h"
+#include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -66,22 +66,9 @@ int main()
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);
-
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        (void)io;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
 		while (!window.shouldClose())
 		{
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            window.pollEvents();
 
             material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
             material.setFloat("u_time", time);
@@ -110,12 +97,21 @@ int main()
 			time += dTime;
 			properTime += dProperTime;
 
+            window.initImGuiFrame();
+
+            ImGui::Begin("Controles");
+            ImGui::Text("Olá Simulação");
+            ImGui::End();
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             render(mesh, physics, material);
 
             //physics.updatePoincareGroupMat();
+            
+            window.renderImGui();
 
 			window.swapBuffers();
-			window.pollEvents();
 		}
 	}
 

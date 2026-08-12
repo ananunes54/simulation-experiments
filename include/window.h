@@ -12,6 +12,7 @@ class Window
         int m_fbWidth = 0;
         int m_fbHeight = 0;
         float m_aspectRatio = 1.0f;
+        void initImGui();
         void updateViewportAndRatio(int width, int heigth);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
         static void contentScaleCallback(GLFWwindow* window, float xscale, float yscale);
@@ -28,6 +29,8 @@ class Window
         int getFramebufferWidth();
         int getFramebufferHeight();
         GLFWwindow* getHandle();
+        void initImGuiFrame();
+        void renderImGui();
 };
 
 #endif
