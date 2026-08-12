@@ -113,9 +113,21 @@ int main()
 
             ImGui::Begin("Controles");
 
-            if(ImGui::Button(isPaused ? "Continuar" : "Pausar"))
+            if (ImGui::Button(isPaused ? "Continuar" : "Pausar"))
             {
                 isPaused = !isPaused;
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Reset"))
+            {
+                linearAccel = glm::vec3(0.0f, 0.0f, 0.0f);
+                angularAccel = glm::vec3(0.0f, 0.0f, 0.0f);
+                properAngVelocity = 0.0f;
+                physics.setProperAngVelocity(properAngVelocity);
+                matrixAltered = true;
+                isPaused = true;
             }
 
             if (ImGui::SliderFloat3("Aceleração Linear", glm::value_ptr(linearAccel), -100.0f, 100.0f, "%.2f"))
