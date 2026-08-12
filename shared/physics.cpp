@@ -163,3 +163,13 @@ void Physics::reset()
     m_fourVelocity = m_fourPosition = glm::vec4(0.0f);
     m_gamma = 1.0f;
 }
+
+void Physics::setProperAngVelocity(float w)
+{
+    m_properAngularVelocity = w;
+}
+
+float Physics::getProperAngVelocity()
+{
+    return m_properAngularVelocity;
+}

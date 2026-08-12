@@ -8,6 +8,7 @@ uniform float u_time;
 uniform float u_properTime;
 uniform float u_velocity;
 uniform float u_gamma;
+uniform float u_angVelocity;
 uniform vec4 u_poincareTranslationVec;
 uniform mat4 u_poincareGroupMat;
 uniform mat4 u_refChangeMat;
@@ -43,10 +44,8 @@ void main()
     vec4 properRefPosition = u_modelMat * vec4(aPos.x, aPos.y, aPos.z, 1.0);
     float k = u_time / u_gamma;
 
-    float angVelocity = 1;
-
-    float newTime = solveT(properRefPosition.x, properRefPosition.y, u_velocity, angVelocity, k);
-    float newAngle = angVelocity * newTime;
+    float newTime = solveT(properRefPosition.x, properRefPosition.y, u_velocity, u_angVelocity, k);
+    float newAngle = u_angVelocity * newTime;
     float newAngleCos = cos(newAngle);
     float newAngleSin = sin(newAngle);
     float newX = properRefPosition.x * newAngleCos - properRefPosition.y * newAngleSin;

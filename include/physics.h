@@ -25,6 +25,7 @@ class Physics
     float m_gamma;
     float m_properTimeInterval;
     float m_externTimeInterval;
+    float m_properAngularVelocity;
 
 public:
     Physics() {};
@@ -38,7 +39,9 @@ public:
     float getGamma();
     float getProperTimeInterval();
     float getExternTimeInterval();
+    float getProperAngVelocity();
 
+    void setProperAngVelocity(float w);
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
     void setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion);
 

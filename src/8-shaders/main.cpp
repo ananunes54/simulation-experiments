@@ -55,6 +55,7 @@ int main()
 
         glm::vec3 linearAccel(0.0f, 0.0f, 0.0f);
         glm::vec3 angularAccel(0.0f, 0.0f, 0.0f);
+        float properAngVelocity = 0.0f;
 
         bool isPaused = true;
         bool matrixAltered = false;
@@ -77,6 +78,7 @@ int main()
         Mat5 generator(0.0f);
 
         Physics physics;
+        physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
         physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
 
@@ -104,6 +106,7 @@ int main()
             material.setGlmMat4("u_modelMat", modelMat);
             material.setGlmMat4("u_viewMat", viewMat);
             material.setGlmMat4("u_projectionMat", projectionMat);
+            material.setFloat("u_angVelocity", physics.getProperAngVelocity());
 
 
             window.initImGuiFrame();
@@ -123,6 +126,13 @@ int main()
             if (ImGui::SliderFloat3("Aceleração Angular", glm::value_ptr(angularAccel), -50.0f, 50.0f, "%.2f"))
             {
                 matrixAltered = true;
+            }
+
+            if (ImGui::SliderFloat("Velocidade Angular (ref. próprio)", &properAngVelocity, -1.0f, 1.0f, "%.2f"))
+            {
+                time = properTime = 0.0f;
+                physics.setProperAngVelocity(properAngVelocity);
+                isPaused = true;
             }
 
             ImGui::End();
