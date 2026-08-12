@@ -20,6 +20,7 @@ set(SRC
 
 add_subdirectory(third-party/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(libs/matrix-exponential EXCLUDE_FROM_ALL)
+add_subdirectory(third-party/imgui EXCLUDE_FROM_ALL)
 
 add_library(glad STATIC EXCLUDE_FROM_ALL libs/glad/src/glad.c)
 target_include_directories(glad PUBLIC libs/glad/include)
@@ -34,3 +35,4 @@ target_link_libraries(simulation PRIVATE glad)
 target_link_libraries(simulation PRIVATE expm)
 target_link_libraries(simulation PRIVATE m)
 target_link_libraries(simulation PRIVATE glm::glm)
+target_link_libraries(simulation PRIVATE imgui)
