@@ -74,17 +74,18 @@ void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion
 
     if (motion == MOTION::inertial)
     {
-        m_fourVelocity = (m_poincareGroupMat * Vec5(1, 0, 0, 0, 0)).truncate();
+        Vec5 aux(1, 0, 0, 0, 0);
+        m_fourVelocity = (m_poincareGroupMat * aux).truncate();
         glm::vec4 nextFourPosition = m_fourPosition + (m_fourVelocity * dq);
         m_externTimeInterval = nextFourPosition[0];
     }
     
     else 
     {
-        m_fourVelocity = (m_groupGeneratorMat * Vec5(m_fourPosition[0], m_fourPosition[1], m_fourPosition[2], m_fourPosition[3], 1.0f)).truncate();
-        glm::vec4 nextFourPosition = (m_poincareGroupMat * Vec5(m_fourPosition[0], m_fourPosition[1], m_fourPosition[2], m_fourPosition[3], 1.0f)).truncate();
-
-        m_externTimeInterval = nextFourPosition[0];
+        Vec5 expanded4Position(m_fourPosition[0], m_fourPosition[1], m_fourPosition[2], m_fourPosition[3], 1.0f);
+        m_fourVelocity = (m_groupGeneratorMat * expanded4Position).truncate();
+        expanded4Position= m_poincareGroupMat * expanded4Position;
+        m_externTimeInterval = expanded4Position[0];
     }
 
     m_velocityMagnitude = m_fourVelocity[1] / m_fourVelocity[0];
