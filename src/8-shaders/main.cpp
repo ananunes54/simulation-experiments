@@ -26,12 +26,8 @@ int main()
 {
 	try 
 	{
-		Glfw glfw;
-		unsigned windowWidth = 800, windowHeight = 800;
-		Window window(windowWidth, windowHeight);
-		window.makeCurrent();
-        loadGlad();
-
+		int windowWidth = 800, windowHeight = 800;
+		Window window(windowWidth, windowHeight, "window");
  
         glm::mat4 modelMat(1.0f);
         modelMat = glm::translate(modelMat, glm::vec3(0.0f, -0.05f, 0.0f));
@@ -95,6 +91,21 @@ int main()
             material.setFloat("u_velocity", physics.getVelocityMagnitude());
             material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
 			
+            glm::mat4 modelMat(1.0f);
+            modelMat = glm::translate(modelMat, glm::vec3(0.0f, 0.0f, -5.0f));
+            modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            modelMat = glm::scale(modelMat, glm::vec3(0.25f, 0.25f, 0.25f));
+            material.setGlmMat4("u_modelMat", modelMat);
+
+            glm::mat4 viewMat(1.0f);
+            //viewMat = glm::rotate(viewMat, glm::radians(15.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            //viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -5.0f));
+            material.setGlmMat4("u_viewMat", viewMat);
+
+            glm::mat4 projectionMat(1.0f);
+            projectionMat = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.1f, 100.0f);
+            material.setGlmMat4("u_projectionMat", projectionMat);
+
 			time += dTime;
 			properTime += dProperTime;
 
@@ -103,8 +114,7 @@ int main()
             //physics.updatePoincareGroupMat();
 
 			window.swapBuffers();
-
-			glfwPollEvents();
+			window.pollEvents();
 		}
 	}
 
