@@ -13,6 +13,7 @@ class Vec5
 
         float& operator[](unsigned int i);
         const float& operator[](unsigned int i) const;
+        Vec5 operator*(float scalar) const;
 
         const float* value_ptr();
 };
@@ -28,8 +29,12 @@ class Mat5
 
         Vec5& operator[](unsigned int i);
         const Vec5& operator[](unsigned int i) const;
+        Mat5 operator*(float scalar) const;
+        Vec5 operator*(const Vec5& vec) const;
+        Mat5 operator*(const Mat5& other) const;
 
         const float* value_ptr();
+        Mat5 exp() const;
 };
 
 #endif

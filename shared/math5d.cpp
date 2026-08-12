@@ -1,4 +1,7 @@
+#include <cstdlib>
+
 #include <math5d.h>
+#include <matrix_exponential.h>
 
 Vec5::Vec5()
 {
@@ -36,6 +39,12 @@ const float& Vec5::operator[](unsigned int i) const
 {
     return m_data[i];
 }
+
+Vec5 Vec5::operator*(float scalar) const
+{
+    return Vec5(m_data[0] * scalar, m_data[1] * scalar, m_data[2] * scalar, m_data[3] * scalar, m_data[4] * scalar);
+}
+
 
 Mat5::Mat5(float diagonal)
 {
@@ -78,4 +87,57 @@ const Vec5& Mat5::operator[](unsigned int i) const
 const float* Mat5::value_ptr()
 {
     return &m_columns[0][0];
+}
+
+Mat5 Mat5::operator*(float scalar) const
+{
+    return Mat5(m_columns[0] * scalar, m_columns[1] * scalar, m_columns[2] * scalar, m_columns[3] * scalar, m_columns[4] * scalar);
+}
+
+Vec5 Mat5::operator*(const Vec5& vec) const
+{
+    Vec5 result;
+    for (auto j = 0; j < 5; j++)
+    {
+        for (auto i = 0; i < 5; i++)
+        {
+            result[i] += m_columns[j][i] * vec[j];
+        }
+    }
+
+    return result;
+}
+
+Mat5 Mat5::operator*(const Mat5& other) const
+{
+    return Mat5((*this) * other.m_columns[0],
+                (*this) * other.m_columns[1],
+                (*this) * other.m_columns[2],
+                (*this) * other.m_columns[3],
+                (*this) * other.m_columns[4]);    
+}
+
+Mat5 Mat5::exp() const
+{
+    double buffer[25];
+    for (auto j = 0; j < 5; j++)
+    {
+        for (auto i = 0; i < 5; i++)
+        {
+            buffer[j*5 + i] = static_cast<double>(m_columns[j][i]);
+        }
+    }
+
+    double* expPtr = r8mat_expm1(5, buffer);
+    Mat5 result;
+    for (auto j = 0; j < 5; j++)
+    {
+        for (auto i = 0; i < 5; i++)
+        {
+            result[j][i] = static_cast<float>(expPtr[j*5 + i]);
+        }
+    }
+
+    free(expPtr);
+    return result;
 }

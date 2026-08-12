@@ -16,10 +16,26 @@
 #include <shaders.h>
 #include <render.h>
 #include <material.h>
+#include <math5d.h>
 
 
 int main()
 {
+    Vec5 vec(2.0f);
+    for (auto i = 0; i < 5; i++)
+    {
+        std::cout << "[" << vec[i] << "]";
+    }
+    std::cout << std::endl << std::endl;
+
+    Mat5 mat( Vec5(0.0f),
+              Vec5(1.0f, 0.0f, 0.0f, 0.0f, 0.0f),
+              Vec5(0.0f),
+              Vec5(0.0f),
+              Vec5(0.0f));
+    Mat5 mat2 = mat.exp();
+    printMat(mat2.value_ptr(), 5, std::cout);
+
 	try 
 	{
 		Glfw glfw;
