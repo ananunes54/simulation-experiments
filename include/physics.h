@@ -2,6 +2,7 @@
 #define PHYSICS_INCLUDED_H
 
 #include <glm/glm.hpp>
+#include <math5d.h>
 
 enum class MOTION {inertial, hyperbolic};
 
@@ -10,12 +11,10 @@ enum class MOTION {inertial, hyperbolic};
 
 class Physics 
 {
-    float m_groupGeneratorMat5[25];
-    float m_poincareGroupMat5[25];
-    float m_auxPoincareGroupMat5[25];
-    glm::mat4 m_groupGeneratorMat;
-    glm::mat4 m_poincareGroupMat;
-    glm::mat4 m_auxPoincareGroupMat;
+    Mat5 m_groupGeneratorMat;
+    Mat5 m_poincareGroupMat;
+    Mat5 m_auxPoincareGroupMat;
+
     glm::mat4 m_refChangeMat;
     //a quadrivelocidade diz respeito a posicao do centro do objeto no "tempo inicial"
     glm::vec4 m_fourVelocity;
@@ -32,8 +31,6 @@ public:
     glm::mat4 getGroupGeneratorMat4();
     glm::mat4 getPoincareGroupMat4();
     glm::vec4 getPoincareTranslationVec();
-    void getGroupGeneratorMat5(float targetMat[25]);
-    void getPoincareGroupMat5(float targetMat[25]);
     glm::mat4 getRefChangeMat();
     glm::vec4 getFourVelocity();
     glm::vec4 getFourPosition();
@@ -43,8 +40,7 @@ public:
     float getExternTimeInterval();
 
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
-    void setGroupGeneratorMat(glm::mat4 mat, float dq, MOTION motion);
-    void setGroupGeneratorMat(const float sourceMat[25], float dq, MOTION motion);
+    void setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion);
 
     void log(const char* logOutputPath);
 

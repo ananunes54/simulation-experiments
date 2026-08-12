@@ -150,24 +150,6 @@ glm::mat4 exp(glm::mat4 mat)
 	return tempMat;
 }
 
-void expMat5(float sourceMat[25], float targetMat[25])
-{
-    double buffer[25];
-    for (auto i = 0; i < 25; i++)
-    {
-        buffer[i] = static_cast<double>(sourceMat[i]);
-    }
-
-    double* expPtr = r8mat_expm1(5, buffer);
-    for (auto i = 0; i < 25; i++)
-    {
-        targetMat[i] = static_cast<float>(expPtr[i]);
-    }
-
-    free(expPtr);
-    return;
-}
-
 glm::mat4 scale(glm::mat4 mat, float factor)
 {
     glm::mat4 tempMat(1.0f);
@@ -181,14 +163,6 @@ glm::mat4 scale(glm::mat4 mat, float factor)
     }
 
     return tempMat;
-}
-
-void scaleMat5(const float sourceMat[25], float targetMat[25], float factor)
-{
-    for (auto i = 0; i < 25; i++)
-    {
-        targetMat[i] = sourceMat[i] * factor;
-    }
 }
 
 void printMat(const float* sourceMat, unsigned matDimension, std::ostream& output)
@@ -235,16 +209,3 @@ float minkowskiMetric(glm::vec4 v1, glm::vec4 v2)
 	return v1[0] * v2[0] - v1[1] * v2[1];
 }
 
-
-void multiplyMat5Vec5(float sourceMat[25], float sourceVec[5], float targetVec[5])
-{
-    for (auto j = 0; j < 5; j++)
-    {
-        float vectorElement = sourceVec[j];
-        int columnOffset = j * 5;
-        for (auto i = 0; i < 5; i++)
-        {
-            targetVec[i] += sourceMat[columnOffset + i] * vectorElement;
-        }
-    }
-}

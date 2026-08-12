@@ -21,21 +21,6 @@
 
 int main()
 {
-    Vec5 vec(2.0f);
-    for (auto i = 0; i < 5; i++)
-    {
-        std::cout << "[" << vec[i] << "]";
-    }
-    std::cout << std::endl << std::endl;
-
-    Mat5 mat( Vec5(0.0f),
-              Vec5(1.0f, 0.0f, 0.0f, 0.0f, 0.0f),
-              Vec5(0.0f),
-              Vec5(0.0f),
-              Vec5(0.0f));
-    Mat5 mat2 = mat.exp();
-    printMat(mat2.value_ptr(), 5, std::cout);
-
 	try 
 	{
 		Glfw glfw;
@@ -128,10 +113,16 @@ int main()
 			       0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                    0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
+        Mat5 generator(Vec5(0.0f, 70.0f, 0.0f, 0.0f, 0.0f),
+                       Vec5(70.0f, 0.0f, 0.0f, 0.0f, 0.0f),
+                       Vec5(0.0f),
+                       Vec5(0.0f),
+                       Vec5(0.0f));
+
 
         Physics physics;
         physics.setCenter(objCenter, modelMat);
-        physics.setGroupGeneratorMat(generatorMat5, dq, MOTION::inertial);
+        physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
 
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
