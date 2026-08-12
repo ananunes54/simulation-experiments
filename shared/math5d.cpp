@@ -45,6 +45,14 @@ Vec5 Vec5::operator*(float scalar) const
     return Vec5(m_data[0] * scalar, m_data[1] * scalar, m_data[2] * scalar, m_data[3] * scalar, m_data[4] * scalar);
 }
 
+glm::vec4 Vec5::truncate() const
+{
+    return glm::vec4(m_data[0], m_data[1], m_data[2], m_data[3]);
+}
+
+
+
+
 
 Mat5::Mat5(float diagonal)
 {
@@ -140,4 +148,12 @@ Mat5 Mat5::exp() const
 
     free(expPtr);
     return result;
+}
+
+glm::mat4 Mat5::truncate() const
+{
+    return glm::mat4(m_columns[0].truncate(),
+                    m_columns[1].truncate(),
+                    m_columns[2].truncate(),
+                    m_columns[3].truncate());
 }

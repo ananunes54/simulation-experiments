@@ -1,6 +1,8 @@
 #ifndef MATH5D_INCLUDED_H
 #define MATH5D_INCLUDED_H
 
+#include <glm/glm.hpp>
+
 class Vec5
 {
     private:
@@ -16,6 +18,7 @@ class Vec5
         Vec5 operator*(float scalar) const;
 
         const float* value_ptr();
+        glm::vec4 truncate() const;
 };
 
 class Mat5
@@ -35,6 +38,7 @@ class Mat5
 
         const float* value_ptr();
         Mat5 exp() const;
+        glm::mat4 truncate() const;
 };
 
 #endif
