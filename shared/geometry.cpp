@@ -54,6 +54,7 @@ Geometry::Geometry(const char* geometrySource)
         else if (type == "f" || type == "l")
         {
             std::string vertexData;
+            std::vector<unsigned int> tempIndices;
             while (chunks >> vertexData)
             {
                 VertexKey key = {0, 0, 0};
@@ -80,7 +81,26 @@ Geometry::Geometry(const char* geometrySource)
                     m_verticesComplete.push_back(tempVertex);
                 }
 
-                m_indices.push_back(iterator->second);
+                tempIndices.push_back(iterator->second);
+            }
+
+            m_numEdges = tempIndices.size();
+
+            if(m_numEdges == 4)
+            {
+                m_indices.push_back(tempIndices[0]);
+                m_indices.push_back(tempIndices[1]);
+                m_indices.push_back(tempIndices[2]);
+
+                m_indices.push_back(tempIndices[0]);
+                m_indices.push_back(tempIndices[2]);
+                m_indices.push_back(tempIndices[3]);
+            }
+
+            else 
+            {
+                for (auto i = 0; i < m_numEdges; i++) 
+                    m_indices.push_back(tempIndices[i]);
             }
         }
     }
@@ -118,3 +138,7 @@ unsigned int* Geometry::getIndices()
     return m_indices.data();
 }
 
+unsigned int Geometry::getNumEdges()
+{
+    return m_numEdges;
+}

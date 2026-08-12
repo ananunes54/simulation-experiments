@@ -28,6 +28,7 @@ void render(Mesh& mesh, Physics& physics, Material& material)
 
     material.bind();
 
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (mesh.getPrimitive() == Primitive::line)
     {
         GLCall(glDrawElements(GL_LINES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0));

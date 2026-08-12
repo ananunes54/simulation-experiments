@@ -18,6 +18,9 @@
 #include <material.h>
 #include <math5d.h>
 
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 int main()
 {
@@ -29,90 +32,18 @@ int main()
 		window.makeCurrent();
         loadGlad();
 
-		std::vector<glm::vec3> vertices{
-             glm::vec3(0.0f, -0.3f,  0.1f / 2.0f), 
-             glm::vec3(0.0f, -0.2f,  0.1f / 2.0f), 
-             glm::vec3(0.0f, -0.1f,  0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.0f,  0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.1f,  0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.2f,  0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.3f,  0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.3f, -0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.2f, -0.1f / 2.0f), 
-             glm::vec3(0.0f,  0.1f, -0.1f / 2.0f), 
-             glm::vec3(0.0f, -0.1f, -0.1f / 2.0f), 
-             glm::vec3(0.0f, -0.2f, -0.1f / 2.0f), 
-             glm::vec3(0.0f, -0.3f, -0.1f / 2.0f), 
-
-             glm::vec3(0.0f,  0.1f / 2.0f, -0.3f), 
-             glm::vec3(0.0f,  0.1f / 2.0f, -0.2f), 
-             glm::vec3(0.0f,  0.1f / 2.0f, -0.1f), 
-             glm::vec3(0.0f,  0.1f / 2.0f,  0.0f), 
-             glm::vec3(0.0f,  0.1f / 2.0f,  0.1f), 
-             glm::vec3(0.0f,  0.1f / 2.0f,  0.2f), 
-             glm::vec3(0.0f,  0.1f / 2.0f,  0.3f), 
-             glm::vec3(0.0f, -0.1f / 2.0f,  0.3f), 
-             glm::vec3(0.0f, -0.1f / 2.0f,  0.2f), 
-             glm::vec3(0.0f, -0.1f / 2.0f,  0.1f), 
-             glm::vec3(0.0f, -0.1f / 2.0f, -0.1f), 
-             glm::vec3(0.0f, -0.1f / 2.0f, -0.2f), 
-             glm::vec3(0.0f, -0.1f / 2.0f, -0.3f), 
-		};
  
         glm::mat4 modelMat(1.0f);
         modelMat = glm::translate(modelMat, glm::vec3(0.0f, -0.05f, 0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
 
-		std::vector<unsigned int> indices{
-				0, 1,
-                1, 2,
-                2, 3,
-                3, 4,
-                4, 5,
-                5, 6,
-                6, 7,
-                7, 8,
-                8, 9,
-                9, 10,
-                10, 11,
-                11, 12,
-                12, 0,
-
-                13, 14,
-                14, 15,
-                15, 16,
-                16, 17,
-                17, 18,
-                18, 19,
-                19, 20,
-                20, 21,
-                21, 22,
-                22, 23,
-                23, 24,
-                24, 25,
-                25, 13
-		};
-
-        Geometry geometry(vertices, indices, objCenter);
-        Geometry geometry2("3dwheel.obj");
-        Mesh mesh(geometry);
-        mesh.createMeshFromObj(geometry2);
-
-        mesh.setPrimitive(Primitive::line);
+        Geometry geometry("3dwheel.obj");
+        Mesh mesh;
+        mesh.createMeshFromObj(geometry);
+        //mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
-		glm::mat4 generatorMat(0.0f, 70.0f, 0.0f, 0.0f,
-			       70.0f, 0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f, 0.0f);
-
-		float generatorMat5[25] = {0.0f, 70.0f, 0.0f, 0.0f, 0.0f,
-			       70.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			       0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-
         Mat5 generator(Vec5(0.0f, 70.0f, 0.0f, 0.0f, 0.0f),
                        Vec5(70.0f, 0.0f, 0.0f, 0.0f, 0.0f),
                        Vec5(0.0f),
@@ -138,9 +69,22 @@ int main()
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
 		while (!window.shouldClose())
 		{
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
             material.setFloat("u_time", time);

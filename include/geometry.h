@@ -35,6 +35,7 @@ class Geometry
     std::vector<Vertex> m_verticesComplete;
     std::vector<unsigned int> m_indices;
     glm::vec2 m_objCenter;
+    unsigned int m_numEdges;
 
 public:
     Geometry(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices, glm::vec2 objCenter) : m_vertices(vertices), m_indices(indices), m_objCenter(objCenter) {}
@@ -45,6 +46,7 @@ public:
     glm::vec3* getVertices();
     Vertex* getCompleteVertices();
     unsigned int* getIndices();
+    unsigned int getNumEdges();
 };
 
 #endif

@@ -13,7 +13,8 @@ class Mesh
         unsigned int m_verticesCount;
 
     public:
-        Mesh(Geometry geometry);
+        Mesh() {}
+        void createMesh(Geometry geometry);
         void createMeshFromObj(Geometry geometry);
         void setPrimitive(Primitive primitive);
         Primitive getPrimitive();

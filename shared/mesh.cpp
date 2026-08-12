@@ -4,11 +4,16 @@
 #include <geometry.h>
 #include <utils.h>
 
-Mesh::Mesh(Geometry geometry)
+void Mesh::createMesh(Geometry geometry)
 {
     m_verticesCount = geometry.getNumOfVertices();
     m_indicesCount = geometry.getNumOfIndices();
-    
+
+    if (geometry.getNumEdges() == 2)    
+        m_primitive = Primitive::line;
+    else
+        m_primitive = Primitive::triangle;
+
     unsigned int temp_vbo;
     unsigned int temp_ebo;
     GLCall(glGenVertexArrays(1, &m_vao));

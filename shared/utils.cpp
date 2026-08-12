@@ -47,6 +47,8 @@ Window::Window(unsigned int width, unsigned int height)
 	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
 	#endif
 
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
 	handle = glfwCreateWindow(width, height, "window", NULL, NULL);
 
 	if (!handle)
