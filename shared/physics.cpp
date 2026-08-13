@@ -1,7 +1,10 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
 #include <physics.h>
 #include <utils.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <fstream>
 
 #include <math5d.h>
@@ -23,6 +26,10 @@ glm::mat4 Physics::getRefChangeMat()
     return m_refChangeMat;
 }
 
+glm::mat3 Physics::getAlignmentMat()
+{
+    return m_alignmentMat;
+}
 
 glm::vec4 Physics::getFourPosition()
 {
@@ -37,6 +44,11 @@ glm::vec4 Physics::getFourVelocity()
 glm::vec4 Physics::getPoincareTranslationVec()
 {
     return m_poincareGroupMat[4].truncate();
+}
+
+glm::vec3 Physics::getVelocityVector()
+{
+    return m_velocityVector;
 }
 
 float Physics::getVelocityMagnitude()
@@ -88,11 +100,16 @@ void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion
         m_externTimeInterval = expanded4Position[0];
     }
 
-    m_velocityMagnitude = m_fourVelocity[1] / m_fourVelocity[0];
+    m_velocityVector[0] = m_fourVelocity[1] / m_fourVelocity[0];
+    m_velocityVector[1] = m_fourVelocity[2] / m_fourVelocity[0];
+    m_velocityVector[2] = m_fourVelocity[3] / m_fourVelocity[0];
+
+    float velocityMetric = minkowskiMetric(m_fourVelocity, m_fourVelocity);
+    m_velocityMagnitude = sqrt(pow(m_fourVelocity[0], 2) - 1) / m_fourVelocity[0];
+
     if (m_velocityMagnitude != m_velocityMagnitude)
         m_velocityMagnitude = 0.0f;
 
-    float velocityMetric = minkowskiMetric(m_fourVelocity, m_fourVelocity);
     m_properTimeInterval = sqrt(velocityMetric) * dq;
     
     m_gamma = 1 / sqrt(1 - pow(m_velocityMagnitude, 2));
@@ -102,8 +119,19 @@ void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion
             -m_gamma * m_velocityMagnitude, m_gamma                       , 0, 0,
             0                             , 0                             , 1, 0,
             0                             , 0                             , 0, 1);
-}
 
+    /* definir as matrizes para alinhar o movimento */
+    if (m_velocityMagnitude > 0.0001f)
+    {
+        glm::vec3 velocityVecNormalized = glm::normalize(m_velocityVector);
+        glm::quat rotationQuat = glm::rotation(glm::vec3(1.0f, 0.0f, 0.0f), velocityVecNormalized);
+        m_alignmentMat = glm::mat3_cast(rotationQuat);
+    }
+    else 
+    {
+        m_alignmentMat = glm::mat3(1.0f);
+    }
+}
 
 void Physics::log(const char* logOutputPath)
 {

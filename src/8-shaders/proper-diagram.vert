@@ -12,6 +12,10 @@ uniform float u_angVelocity;
 uniform vec4 u_poincareTranslationVec;
 uniform mat4 u_poincareGroupMat;
 uniform mat4 u_refChangeMat;
+uniform mat3 u_alignmentMat;
+uniform mat3 u_alignmentMatInverse;
+
+uniform mat4 u_modelMatRotation;
 
 uniform mat4 u_modelMat;
 uniform mat4 u_viewMat;
@@ -41,7 +45,8 @@ vec3 applyMat(mat4 m, vec3 v)
 
 void main()
 {
-    vec4 properRefPosition = u_modelMat * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    vec4 rotated = u_modelMat * vec4(aPos, 1.0);
+    vec3 properRefPosition = u_alignmentMatInverse * rotated.xyz;
     float k = u_time / u_gamma;
 
     float newTime = solveT(properRefPosition.x, properRefPosition.y, u_velocity, u_angVelocity, k);
@@ -52,10 +57,12 @@ void main()
     float newY = properRefPosition.x * newAngleSin + properRefPosition.y * newAngleCos;
 
     //vec3 finalVector = applyMat(u_poincareGroupMat, vec3(newTime, newX, newY));
+    vec3 finalVector = u_alignmentMat * vec3(newX, newY, properRefPosition.z);
 
-    vec4 finalVector = (u_poincareGroupMat * vec4(newTime, newX, newY, properRefPosition.z)) + u_poincareTranslationVec;
+    vec4 finalVectorExpanded = (u_poincareGroupMat * vec4(newTime, finalVector)) + u_poincareTranslationVec;
 
-    gl_Position = u_projectionMat * u_viewMat * vec4(finalVector.y, finalVector.z, finalVector.w, 1.0);
+
+    gl_Position = u_projectionMat * u_viewMat * vec4(finalVectorExpanded.y, finalVectorExpanded.z, finalVectorExpanded.w, 1.0);
     //gl_Position = vec4(finalVector.y, finalVector.z, 0.0, 1.0);
     vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

@@ -29,7 +29,7 @@ Reference Change Matrix:
 
 --------------------------------------
 Position four-vector:
-[0][-0.05][0][1]
+[0][0][0][1]
 
 --------------------------------------
 Velocity four-vector:

@@ -65,14 +65,14 @@ int main()
 
 
 
-        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.05f, 0.0f));
+        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
 
         Geometry geometry("3dwheel.obj");
         Mesh mesh;
         mesh.createMeshFromObj(geometry);
-        //mesh.setPrimitive(Primitive::line);
+        mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
         Mat5 generator(0.0f);
@@ -107,6 +107,8 @@ int main()
             material.setGlmMat4("u_viewMat", viewMat);
             material.setGlmMat4("u_projectionMat", projectionMat);
             material.setFloat("u_angVelocity", physics.getProperAngVelocity());
+            material.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
+            material.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
 
 
             window.initImGuiFrame();

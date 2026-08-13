@@ -15,12 +15,15 @@ class Physics
     Mat5 m_poincareGroupMat;
     Mat5 m_auxPoincareGroupMat;
 
+    glm::mat3 m_alignmentMat;
+
     glm::mat4 m_refChangeMat;
     //a quadrivelocidade diz respeito a posicao do centro do objeto no "tempo inicial"
     glm::vec4 m_fourVelocity;
     // a quadriposicao diz respeito a posicao do centro do objeto no "tempo inicial"
     glm::vec4 m_fourPosition;
     // o modulo da velocidade diz respeito a velocidade do centro do objeto
+    glm::vec3 m_velocityVector;
     float m_velocityMagnitude;
     float m_gamma;
     float m_properTimeInterval;
@@ -33,8 +36,10 @@ public:
     glm::mat4 getPoincareGroupMat4();
     glm::vec4 getPoincareTranslationVec();
     glm::mat4 getRefChangeMat();
+    glm::mat3 getAlignmentMat();
     glm::vec4 getFourVelocity();
     glm::vec4 getFourPosition();
+    glm::vec3 getVelocityVector();
     float getVelocityMagnitude();
     float getGamma();
     float getProperTimeInterval();
