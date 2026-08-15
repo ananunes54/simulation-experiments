@@ -24,6 +24,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
+glm::mat4 setModelMat(glm::vec3& translation, glm::vec3& rotation, float scale);
 
 Mat5 buildPoincare(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
 {
@@ -57,8 +58,13 @@ int main()
         glm::vec3 angularAccel(0.0f, 0.0f, 0.0f);
         float properAngVelocity = 0.0f;
 
+        glm::vec3 objectPosition(0.0f);
+        glm::vec3 objectRotation(0.0f);
+        float objectScale(1.0f);
+
         bool isPaused = true;
         bool matrixAltered = false;
+        bool objectAltered = true;
 
 		float time = 0.0f;
 		float properTime = 0.0f;
@@ -103,16 +109,15 @@ int main()
             material.setFloat("u_gamma", physics.getGamma());
             material.setFloat("u_velocity", physics.getVelocityMagnitude());
             material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
-            material.setGlmMat4("u_modelMat", modelMat);
             material.setGlmMat4("u_viewMat", viewMat);
             material.setGlmMat4("u_projectionMat", projectionMat);
             material.setFloat("u_angVelocity", physics.getProperAngVelocity());
             material.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
             material.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
 
-
             window.initImGuiFrame();
 
+            ///////////////
             ImGui::Begin("Controles");
 
             if (ImGui::Button(isPaused ? "Continuar" : "Pausar"))
@@ -150,6 +155,60 @@ int main()
             }
 
             ImGui::End();
+            ///////////////
+
+
+            ///////////////
+            ImGui::Begin("Posição do objeto");
+
+            if (ImGui::Button("Reset1"))
+            {
+                objectAltered = true;
+                objectPosition = glm::vec3(0.0f);
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::SliderFloat3("Translação", glm::value_ptr(objectPosition), -50.0f, 50.0f, "%.0f"))
+            {
+                objectAltered = true;
+            }
+
+            if (ImGui::Button("Reset2"))
+            {
+                objectAltered = true;
+                objectRotation = glm::vec3(0.0f);
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::SliderFloat3("Rotação", glm::value_ptr(objectRotation), -180.0f, 180.0f, "%.0f"))
+            {
+                objectAltered = true;
+            }
+
+            if (ImGui::Button("Reset3"))
+            {
+                objectAltered = true;
+                objectScale = 0.0f;
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::SliderFloat("Escala", &objectScale, 0.0f, 5.0f, "%.3f"))
+            {
+                objectAltered = true;
+            }
+
+            ImGui::End();
+            ///////////////
+
+            if (objectAltered)
+            {
+                modelMat = setModelMat(objectPosition, objectRotation, objectScale);
+                material.setGlmMat4("u_modelMat", modelMat);
+                objectAltered = false;
+            }
 
 
             if (matrixAltered)
@@ -190,6 +249,17 @@ int main()
 	}
 
 	return 0;
+}
+
+glm::mat4 setModelMat(glm::vec3& translation, glm::vec3& rotation, float scale)
+{
+    glm::mat4 modelMat(1.0f);
+    modelMat = glm::translate(modelMat, translation);
+    modelMat = glm::rotate(modelMat, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 2.0f));
+    modelMat = glm::scale(modelMat, glm::vec3(scale, scale, scale));
+    return modelMat;
 }
 
 
