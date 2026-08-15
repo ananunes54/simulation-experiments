@@ -102,6 +102,8 @@ int main()
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
+        glm::mat4 modelMatRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        material.setGlmMat4("u_modelMatRotation", modelMatRotation);
 
 		while (!window.shouldClose())
 		{
