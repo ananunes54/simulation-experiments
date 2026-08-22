@@ -27,21 +27,16 @@ float solveT(float x0, float y0, float linVelocity, float angVelocity, float k)
 
     for (int i = 0; i < 3; i++)
     {
-        float function = t + linVelocity * (x0 * cos(angVelocity * t) - y0 * sin(angVelocity * t)) - k;
-        float derivative = 1 + linVelocity * (- angVelocity * (x0 * sin(angVelocity * t) + y0 * cos(angVelocity * t)));
+        float sinCalculated = sin(angVelocity * t);
+        float cosCalculated = cos(angVelocity * t);
+        float function = t + linVelocity * (x0 * cosCalculated - y0 * sinCalculated) - k;
+        float derivative = 1 + linVelocity * (- angVelocity * (x0 * sinCalculated + y0 * cosCalculated));
         t = t - function / derivative;
     }
 
     return t;
 }
 
-
-vec3 applyMat(mat4 m, vec3 v)
-{
-	vec4 tempVec = vec4(v.xyz, 1.0);
-	tempVec = m * tempVec;
-	return tempVec.xyz;
-}
 
 void main()
 {

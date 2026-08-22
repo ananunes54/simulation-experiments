@@ -84,7 +84,6 @@ int main()
         Geometry geometry("3dwheel.obj");
         Mesh mesh;
         mesh.createMeshFromObj(geometry);
-        mesh.setPrimitive(Primitive::line);
 
 		float dq = 0.01f;
         Mat5 generator(0.0f);
@@ -92,7 +91,7 @@ int main()
         Physics physics;
         physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
-        physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
+        physics.setGroupGeneratorMat(generator, dq, MOTION::hyperbolic);
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
@@ -271,6 +270,7 @@ int main()
             {
                 time += dTime;
                 properTime += dProperTime;
+                physics.updatePoincareGroupMat();
             }
 
 
@@ -278,7 +278,6 @@ int main()
 
             render(mesh, physics, material);
 
-            //physics.updatePoincareGroupMat();
             
             window.renderImGui();
 

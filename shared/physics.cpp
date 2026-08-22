@@ -84,21 +84,10 @@ void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion
     m_poincareGroupMat = m_auxPoincareGroupMat.exp();
     m_auxPoincareGroupMat = m_poincareGroupMat;
 
-    if (motion == MOTION::inertial)
-    {
-        Vec5 aux(1, 0, 0, 0, 0);
-        m_fourVelocity = (m_poincareGroupMat * aux).truncate();
-        glm::vec4 nextFourPosition = m_fourPosition + (m_fourVelocity * dq);
-        m_externTimeInterval = nextFourPosition[0];
-    }
-    
-    else 
-    {
-        Vec5 expanded4Position(m_fourPosition[0], m_fourPosition[1], m_fourPosition[2], m_fourPosition[3], 1.0f);
-        m_fourVelocity = (m_groupGeneratorMat * expanded4Position).truncate();
-        expanded4Position= m_poincareGroupMat * expanded4Position;
-        m_externTimeInterval = expanded4Position[0];
-    }
+    Vec5 aux(1, 0, 0, 0, 0);
+    m_fourVelocity = (m_poincareGroupMat * aux).truncate();
+    glm::vec4 nextFourPosition = m_fourPosition + (m_fourVelocity * dq);
+    m_externTimeInterval = nextFourPosition[0];
 
     m_velocityVector[0] = m_fourVelocity[1] / m_fourVelocity[0];
     m_velocityVector[1] = m_fourVelocity[2] / m_fourVelocity[0];
@@ -179,7 +168,7 @@ void Physics::log(const char* logOutputPath)
 
 void Physics::updatePoincareGroupMat()
 {
-    m_poincareGroupMat = m_auxPoincareGroupMat * m_poincareGroupMat;
+    m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
 }
 
 void Physics::reset()
