@@ -18,13 +18,13 @@
 #include <material.h>
 #include <math5d.h>
 #include <window.h>
+#include <transform.h>
 
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
-glm::mat4 setModelMat(glm::vec3& translation, glm::vec3& rotation, float scale);
 glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up);
 
 int main()
@@ -40,6 +40,7 @@ int main()
         glm::mat4 modelMat(1.0f);
         glm::mat4 viewMat(1.0f);
         glm::mat4 projectionMat(1.0f);
+        Transform modelTransform;
 
         initialize(modelMat, viewMat, projectionMat, window);
 
@@ -223,8 +224,8 @@ int main()
 
             if (objectAltered)
             {
-                modelMat = setModelMat(objectPosition, objectRotation, objectScale);
-                material.setGlmMat4("u_modelMat", modelMat);
+                modelTransform.set(objectPosition, objectRotation, objectScale);
+                material.setGlmMat4("u_modelMat", modelTransform.getModelMat());
                 objectAltered = false;
             }
 
@@ -274,16 +275,6 @@ int main()
 	return 0;
 }
 
-glm::mat4 setModelMat(glm::vec3& translation, glm::vec3& rotation, float scale)
-{
-    glm::mat4 modelMat(1.0f);
-    modelMat = glm::translate(modelMat, translation);
-    modelMat = glm::rotate(modelMat, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
-    modelMat = glm::rotate(modelMat, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMat = glm::rotate(modelMat, glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 2.0f));
-    modelMat = glm::scale(modelMat, glm::vec3(scale, scale, scale));
-    return modelMat;
-}
 
 glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up)
 {
