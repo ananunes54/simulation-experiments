@@ -30,6 +30,9 @@ class Physics
     float m_externTimeInterval = 0.0f;
     float m_properAngularVelocity = 0.0f;
 
+    float m_properTime = 0.0f;
+    MOTION m_motion = MOTION::inertial;
+
 public:
     Physics(float externTimeInterval);
     glm::mat4 getGroupGeneratorMat4();
@@ -45,12 +48,15 @@ public:
     float getProperTimeInterval();
     float getProperAngVelocity();
 
+    float getProperTime();
+    void setProperTime(float time);
+
     void setProperAngVelocity(float w);
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
 
     void log(const char* logOutputPath);
 
-    void updatePoincareGroupMat();
+    void update();
     void buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation);
 
     void reset();

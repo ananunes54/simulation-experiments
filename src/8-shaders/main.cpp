@@ -62,7 +62,6 @@ int main()
         bool viewAltered = true;
 
 		float time = 0.0f;
-		float properTime = 0.0f;
 
         float dTime = 0.01f, dProperTime = 0.01f; 
 
@@ -74,7 +73,7 @@ int main()
         Geometry geometry;
         parseObj("3dwheel.obj", geometry);
         Mesh mesh;
-        mesh.createMeshFromObj(geometry);
+        mesh.createMesh(geometry);
 
 
         Physics physics(dTime);
@@ -95,7 +94,7 @@ int main()
 
             material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
             material.setFloat("u_time", time);
-            material.setFloat("u_properTime", properTime);
+            material.setFloat("u_properTime", physics.getProperTime());
             material.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
             material.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
             material.setFloat("u_gamma", physics.getGamma());
@@ -141,7 +140,8 @@ int main()
 
             if (ImGui::SliderFloat("Velocidade Angular (ref. próprio)", &properAngVelocity, -1.0f, 1.0f, "%.2f"))
             {
-                time = properTime = 0.0f;
+                time = 0.0f;
+                physics.setProperTime(0.0f);
                 physics.setProperAngVelocity(properAngVelocity);
                 isPaused = true;
             }
@@ -240,7 +240,7 @@ int main()
 
             if (matrixAltered)
             {
-                time = properTime = 0.0f;
+                time = 0.0f;
                 physics.reset();
                 physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
@@ -252,8 +252,7 @@ int main()
             if (!isPaused)
             {
                 time += dTime;
-                properTime += dProperTime;
-                //physics.updatePoincareGroupMat();
+                physics.update();
             }
 
 

@@ -15,7 +15,6 @@ class Mesh
     public:
         Mesh() {}
         void createMesh(Geometry geometry);
-        void createMeshFromObj(Geometry geometry);
         void setPrimitive(Primitive primitive);
         Primitive getPrimitive();
         int getVAO();
