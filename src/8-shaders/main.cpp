@@ -21,6 +21,7 @@
 #include <transform.h>
 #include <camera.h>
 #include <gui.h>
+#include <control.h>
 
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
@@ -39,34 +40,15 @@ int main()
 		std::string vertexShaderPath("/home/ana/sim-experiments/src/8-shaders/proper-diagram.vert");
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
-        glm::mat4 modelMat(1.0f);
-
         Transform modelTransform;
         Camera cam;
 
         initialize(window, cam, modelTransform);
 
-        glm::vec3 linearAccel(0.0f);
-        glm::vec3 angularAccel(0.0f);
-        float properAngVelocity = 0.0f;
-
-        glm::vec3 objectPosition(0.0f);
-        glm::vec3 objectRotation(0.0f);
-        float objectScale(1.0f);
-
-        glm::vec3 viewPosition(0.0f);
-        glm::vec3 viewTarget(0.0f);
-        glm::vec3 viewUp(0.0f, 1.0f, 0.0f);
-
+        PhysicsConfig physicsC;
+        TransformConfig transformC;
+        CameraConfig cameraC;
         SimulationState state;
-        bool matrixAltered = false;
-        bool objectAltered = true;
-        bool viewAltered = true;
-
-        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
-        // centro do objeto (sem considerar um vetor "extendido")
-        glm::vec3 objCenter(0.0f);
-
 
         Physics physics(state.dTime);
         Geometry geometry;
@@ -77,8 +59,7 @@ int main()
         parseObj("3dwheel.obj", geometry);
         mesh.createMesh(geometry);
 
-        physics.setProperAngVelocity(properAngVelocity);
-        physics.setCenter(objCenter, mat);
+        physics.setProperAngVelocity(physicsC.properAngVelocity);
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
@@ -106,31 +87,24 @@ int main()
 
             if (UIWidget::drawButton("Reset"))
             {
-                linearAccel = glm::vec3(0.0f);
-                angularAccel = glm::vec3(0.0f);
-                properAngVelocity = 0.0f;
-                physics.setProperAngVelocity(properAngVelocity);
-                matrixAltered = true;
                 state.paused = true;
+                physicsC.reset();
+                render.setFlag(Render::PHYSICS);
             }
 
-            if (UIWidget::drawVec3Control("Aceleração linear", linearAccel, glm::vec2(-100.0f, 100.0f), "%.2f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Aceleração linear", physicsC.linearAccel, glm::vec2(-100.0f, 100.0f), "%.2f", glm::vec3(0.0f)))
             {
-                matrixAltered = true;
+                render.setFlag(Render::PHYSICS);
             }
 
-            if (UIWidget::drawVec3Control("Aceleração angular", angularAccel, glm::vec2(-50.0f, 50.0f), "%.2f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Aceleração angular", physicsC.angularAccel, glm::vec2(-50.0f, 50.0f), "%.2f", glm::vec3(0.0f)))
             {
-                matrixAltered = true;
+                render.setFlag(Render::PHYSICS);
             }
 
-            if (UIWidget::drawFloatControl("Rotação (referencial próprio)", properAngVelocity, glm::vec2(-1.0f, 1.0f), "%.2f", 0.0f))
+            if (UIWidget::drawFloatControl("Rotação (referencial próprio)", physicsC.properAngVelocity, glm::vec2(-1.0f, 1.0f), "%.2f", 0.0f))
             {
-                state.time = 0.0f;
-                physics.setProperTime(0.0f);
-                physics.setProperAngVelocity(properAngVelocity);
-                state.paused = true;
-                state.stateAltered = true;
+                render.setFlag(Render::PHYSICS);
             }
 
             ImGui::End();
@@ -140,29 +114,29 @@ int main()
             ///////////////
             ImGui::Begin("Posição do objeto");
 
-            if (UIWidget::drawVec3Control("Translação", objectPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Translação", transformC.objectPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
-                objectAltered = true;
+                render.setFlag(Render::TRANSFORM);
             }
 
-            if (UIWidget::drawVec3Control("Rotação", objectRotation, glm::vec2(-180.0f, 180.0f), "%.0f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Rotação", transformC.objectRotation, glm::vec2(-180.0f, 180.0f), "%.0f", glm::vec3(0.0f)))
             {
-                objectAltered = true;
+                render.setFlag(Render::TRANSFORM);
             }
 
-            if (UIWidget::drawFloatControl("Escala", objectScale, glm::vec2(0.0f, 5.0f), "%.2f", 1.0f))
+            if (UIWidget::drawFloatControl("Escala", transformC.objectScale, glm::vec2(0.0f, 5.0f), "%.2f", 1.0f))
             {
-                objectAltered = true;
+                render.setFlag(Render::TRANSFORM);
             }
 
-            if (UIWidget::drawVec3Control("Posição camera", viewPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Posição camera", cameraC.viewPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
-                viewAltered = true;
+                render.setFlag(Render::CAMERA);
             }
 
-            if (UIWidget::drawVec3Control("Alvo camera", viewTarget, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+            if (UIWidget::drawVec3Control("Alvo camera", cameraC.viewTarget, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
-                viewAltered = true;
+                render.setFlag(Render::CAMERA);
             }
 
             
@@ -178,33 +152,28 @@ int main()
 
 
             ///////////////
-            if (objectAltered)
+            if (render.checkFlag(Render::TRANSFORM))
             {
-                modelTransform.set(objectPosition, objectRotation, objectScale);
-                objectAltered = false;
+                modelTransform.set(transformC.objectPosition, transformC.objectRotation, transformC.objectScale);
             }
 
-            if (viewAltered)
+            if (render.checkFlag(Render::CAMERA))
             {
-                cam.setViewMat(viewPosition, viewTarget, viewUp);
-                viewAltered = false;
+                cam.setViewMat(cameraC.viewPosition, cameraC.viewTarget, cameraC.viewUp);
             }
 
 
-            if (matrixAltered)
+            if (render.checkFlag(Render::PHYSICS))
             {
-                state.time = 0.0f;
-                state.stateAltered = true;
+                state.resetTime();
                 physics.reset();
-                physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
-                physics.setCenter(objCenter, mat);
-                matrixAltered = false;
-                state.paused = true;
+                physics.setProperAngVelocity(physicsC.properAngVelocity);
+                physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(0.0f));
             }
 
             if (!state.paused)
             {
-                state.time += state.dTime;
+                state.updateTime();
                 physics.update();
             }
 

@@ -48,6 +48,5 @@ void Camera::calculateCamera()
     m_projectionMat = glm::perspective(m_projectionAngle, m_projectionAspectRatio, m_near, m_far);
     m_cameraMat = m_projectionMat * m_viewMat;
 
-    cameraAltered = true;
 
 }

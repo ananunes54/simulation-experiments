@@ -7,6 +7,8 @@
 #include <utils.h>
 #include <camera.h>
 #include <transform.h>
+#include <control.h>
+#include <iostream>
 
 void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model)
 {
@@ -18,7 +20,7 @@ void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationStat
         shader.setFloat("u_properTime", physics.getProperTime());
     }
 
-    if (physics.physicsAltered)
+    if (m_flags & PHYSICS)
     {
         shader.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
         shader.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
@@ -30,13 +32,13 @@ void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationStat
         shader.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
     }
 
-    if (camera.cameraAltered)
+    if (m_flags & CAMERA)
     {
         shader.setGlmMat4("u_viewMat", camera.getViewMat());
         shader.setGlmMat4("u_projectionMat", camera.getProjectionMat());
     }
 
-    if (model.modelAltered)
+    if (m_flags & TRANSFORM)
     {
         shader.setGlmMat4("u_modelMat", model.getModelMat());
     }
@@ -45,9 +47,7 @@ void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationStat
     shader.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     state.stateAltered = false;
-    physics.physicsAltered = false;
-    camera.cameraAltered = false;
-    model.modelAltered = false;
+    m_flags &= CLEAR;
 
     shader.bind();
 
@@ -73,7 +73,7 @@ void Render::setFlag(Flag f)
 
 bool Render::checkFlag(Flag f)
 {
-    return m_flags &= f;
+    return m_flags & f;
 }
 
 void Render::clearFlag(Flag f)

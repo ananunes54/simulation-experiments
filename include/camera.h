@@ -29,7 +29,6 @@ class Camera
         glm::mat4 getProjectionMat();
         glm::mat4 getCameraMat();
 
-        bool cameraAltered = false;
         
 };
 

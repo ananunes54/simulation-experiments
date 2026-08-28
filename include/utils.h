@@ -25,21 +25,6 @@ public:
 	}
 };
 
-struct SimulationState
-{
-    bool paused = true;
-    bool stateAltered = false;
-    float dTime = 0.01;
-    float time = 0.0f;
-
-    void reset()
-    {
-        paused = true;
-        stateAltered = false;
-        dTime = 0.01;
-        time = 0.0f;
-    }
-};
 
 std::string readFromFile(std::string& fileName);
 

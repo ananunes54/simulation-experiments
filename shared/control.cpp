@@ -1,20 +1,42 @@
 #include <iostream>
 #include <control.h>
-#include <matrix.h>
+#include <glm/glm.hpp>
 
-namespace simulation
+
+void PhysicsConfig::reset()
 {
-	void SetInitialValues(state& s)
-	{
-		std::cout << "aceleracao linear: ";
-		std::cin >> s.linAcceleration.data[0] >> s.linAcceleration.data[1] >> s.linAcceleration.data[2];
-		std::cout << "aceleracao angular: ";
-		std::cin >> s.angAcceleration.data[0] >> s.angAcceleration.data[1] >> s.angAcceleration.data[2];
-		std::cout << "velocidade: ";
-		std::cin >> s.spacialVelocity.data[0] >> s.spacialVelocity.data[1] >> s.spacialVelocity.data[2];
-		std::cout << "posicao: ";
-		std::cin >> s.spacialPosition.data[0] >> s.spacialPosition.data[1] >> s.spacialPosition.data[2];
-		std::cout << "eixos visiveis: ";
-		std::cin >> s.visibleAxis1 >> s.visibleAxis2;
-	}
+    linearAccel = glm::vec3(0.0f);
+    angularAccel = glm::vec3(0.0f);
+    properAngVelocity = 0.0f;
+}
+
+void TransformConfig::reset()
+{
+    objectPosition = glm::vec3(0.0f);
+    objectRotation = glm::vec3(0.0f);
+    objectScale = 1.0f;
+}
+
+void CameraConfig::reset()
+{
+    viewPosition = glm::vec3(0.0f);
+    viewTarget = glm::vec3(0.0f);
+    viewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+}
+
+void SimulationState::resetAll()
+{
+    paused = true;
+    stateAltered = false;
+    time = 0.0f;
+}
+
+void SimulationState::resetTime()
+{
+    time = 0.0f;
+}
+
+void SimulationState::updateTime()
+{
+    time += dTime;
 }
