@@ -29,12 +29,11 @@ void Material::setGlmVec4(const char* name, glm::vec4 value)
 
 void Material::bind()
 {
-    unsigned int shaderID = m_shader.getID();
-    GLCall(glUseProgram(shaderID));
+    GLCall(glUseProgram(m_shaderID));
 
     for (const auto& [name, value] : m_uniforms)
     {
-        int uLocation = glGetUniformLocation(shaderID, name);
+        int uLocation = glGetUniformLocation(m_shaderID, name);
         switch (value.index()) {
             case 0:
                 {

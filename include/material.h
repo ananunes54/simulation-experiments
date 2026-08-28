@@ -12,11 +12,11 @@ using UniformType = std::variant<int, float, glm::vec3, glm::vec4, glm::mat3, gl
 class Material
 {
     private:
-        Shader& m_shader;
+        unsigned int m_shaderID;
         std::unordered_map<const char*, UniformType> m_uniforms;
 
     public:
-        Material(Shader& shader) : m_shader(shader) {};
+        Material(unsigned int shaderID) : m_shaderID(shaderID) {};
         void setFloat(const char* name, float value);
         void setGlmMat3(const char* name, glm::mat3 value);
         void setGlmMat4(const char* name, glm::mat4 value);

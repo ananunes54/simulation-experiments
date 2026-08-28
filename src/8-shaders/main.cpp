@@ -81,7 +81,7 @@ int main()
         physics.setCenter(objCenter, mat);
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
-        Material material(shader);
+        Material material(shader.getID());
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
