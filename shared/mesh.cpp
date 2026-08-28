@@ -36,7 +36,7 @@ void Mesh::createMesh(Geometry geometry)
 
 void Mesh::createMeshFromObj(Geometry geometry)
 {
-    m_verticesCount = geometry.getNumOfCompleteVertices();
+    m_verticesCount = geometry.getNumOfVertices();
     m_indicesCount = geometry.getNumOfIndices();
     
     unsigned int temp_vbo;
@@ -48,7 +48,7 @@ void Mesh::createMeshFromObj(Geometry geometry)
     GLCall(glBindVertexArray(m_vao));
 
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, temp_vbo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfCompleteVertices() * sizeof(Vertex), geometry.getCompleteVertices(), GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, geometry.getNumOfVertices() * sizeof(Vertex), geometry.getVertices(), GL_STATIC_DRAW));
     
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp_ebo));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, geometry.getNumOfIndices() * sizeof(unsigned int), geometry.getIndices(), GL_STATIC_DRAW));

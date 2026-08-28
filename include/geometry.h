@@ -31,22 +31,24 @@ struct VertexKeyHash
 
 class Geometry
 {
-    std::vector<glm::vec3> m_vertices;
-    std::vector<Vertex> m_verticesComplete;
+    std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
     glm::vec2 m_objCenter;
     unsigned int m_numEdges;
 
 public:
-    Geometry(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices, glm::vec2 objCenter) : m_vertices(vertices), m_indices(indices), m_objCenter(objCenter) {}
-    Geometry(const char* geometrySource);
+    Geometry() {};
     unsigned int getNumOfVertices();
-    unsigned int getNumOfCompleteVertices();
     unsigned int getNumOfIndices();
-    glm::vec3* getVertices();
-    Vertex* getCompleteVertices();
+    Vertex* getVertices();
     unsigned int* getIndices();
     unsigned int getNumEdges();
+    void setNumEdges(int numEdges);
+
+    void pushBackVertex(const Vertex& vertex);
+    void pushBackIndex(int index);
 };
+
+void parseObj(const char* geometrySource, Geometry& target);
 
 #endif

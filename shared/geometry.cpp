@@ -10,7 +10,7 @@
 #include <geometry.h>
 
 
-Geometry::Geometry(const char* geometrySource)
+void parseObj(const char* geometrySource, Geometry& target)
 {
     std::ifstream objFile(geometrySource);
     if (objFile.is_open() == false)
@@ -69,7 +69,7 @@ Geometry::Geometry(const char* geometrySource)
                 
                 key.vn = std::strtol(vertexDataPtr, &endPtr, 10);
 
-                unsigned int index = m_verticesComplete.size();
+                unsigned int index = target.getNumOfVertices();
                 auto [iterator, inserted] = uniqueVertices.insert({key, index});
 
                 if (inserted)
@@ -78,29 +78,31 @@ Geometry::Geometry(const char* geometrySource)
                                          tempNormals[key.vn],
                                          tempTextures[key.vt]};
 
-                    m_verticesComplete.push_back(tempVertex);
+                    target.pushBackVertex(tempVertex);
                 }
 
                 tempIndices.push_back(iterator->second);
             }
 
-            m_numEdges = tempIndices.size();
+            int numEdges = tempIndices.size();
+            target.setNumEdges(numEdges);
+            
 
-            if(m_numEdges == 4)
+            if(numEdges == 4)
             {
-                m_indices.push_back(tempIndices[0]);
-                m_indices.push_back(tempIndices[1]);
-                m_indices.push_back(tempIndices[2]);
+                target.pushBackIndex(tempIndices[0]);
+                target.pushBackIndex(tempIndices[1]);
+                target.pushBackIndex(tempIndices[2]);
 
-                m_indices.push_back(tempIndices[0]);
-                m_indices.push_back(tempIndices[2]);
-                m_indices.push_back(tempIndices[3]);
+                target.pushBackIndex(tempIndices[0]);
+                target.pushBackIndex(tempIndices[2]);
+                target.pushBackIndex(tempIndices[3]);
             }
 
             else 
             {
-                for (auto i = 0; i < m_numEdges; i++) 
-                    m_indices.push_back(tempIndices[i]);
+                for (auto i = 0; i < numEdges; i++) 
+                    target.pushBackIndex(tempIndices[i]);
             }
         }
     }
@@ -113,24 +115,14 @@ unsigned int Geometry::getNumOfVertices()
     return m_vertices.size();
 }
 
-unsigned int Geometry::getNumOfCompleteVertices()
-{
-    return m_verticesComplete.size();
-}
-
 unsigned int Geometry::getNumOfIndices()
 {
     return m_indices.size();
 }
 
-glm::vec3* Geometry::getVertices()
+Vertex* Geometry::getVertices()
 {
     return m_vertices.data();
-}
-
-Vertex* Geometry::getCompleteVertices()
-{
-    return m_verticesComplete.data();
 }
 
 unsigned int* Geometry::getIndices()
@@ -141,4 +133,19 @@ unsigned int* Geometry::getIndices()
 unsigned int Geometry::getNumEdges()
 {
     return m_numEdges;
+}
+
+void Geometry::pushBackVertex(const Vertex& vertex)
+{
+    m_vertices.push_back(vertex);
+}
+
+void Geometry::pushBackIndex(int index)
+{
+    m_indices.push_back(index);
+}
+
+void Geometry::setNumEdges(int numEdges)
+{
+    m_numEdges = numEdges;
 }

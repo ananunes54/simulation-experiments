@@ -71,7 +71,8 @@ int main()
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f);
 
-        Geometry geometry("3dwheel.obj");
+        Geometry geometry;
+        parseObj("3dwheel.obj", geometry);
         Mesh mesh;
         mesh.createMeshFromObj(geometry);
 
