@@ -8,7 +8,8 @@
 #include <shaders.h>
 
 struct SimulationState;
+class Camera;
 
-void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state);
+void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera);
 
 #endif

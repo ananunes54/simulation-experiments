@@ -19,13 +19,13 @@
 #include <math5d.h>
 #include <window.h>
 #include <transform.h>
+#include <camera.h>
 
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
-glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up);
+void initialize(Window& window, Camera& camera, Transform& model);
 
 
 int main()
@@ -42,8 +42,9 @@ int main()
         glm::mat4 viewMat(1.0f);
         glm::mat4 projectionMat(1.0f);
         Transform modelTransform;
+        Camera cam;
 
-        initialize(modelMat, viewMat, projectionMat, window);
+        initialize(window, cam, modelTransform);
 
         glm::vec3 linearAccel(0.0f);
         glm::vec3 angularAccel(0.0f);
@@ -86,12 +87,10 @@ int main()
 
 		while (!window.shouldClose())
 		{
-            shader.setGlmMat4("u_viewMat", viewMat);
-            shader.setGlmMat4("u_projectionMat", projectionMat);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            render(mesh, physics, shader, state);
+            render(mesh, physics, shader, state, cam);
 
 
             window.initImGuiFrame();
@@ -230,8 +229,7 @@ int main()
 
             if (viewAltered)
             {
-                viewMat = setViewMat(viewPosition, viewTarget, viewUp);
-                shader.setGlmMat4("u_viewMat", viewMat);
+                cam.setViewMat(viewPosition, viewTarget, viewUp);
                 viewAltered = false;
             }
 
@@ -266,16 +264,9 @@ int main()
 }
 
 
-glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up)
-{
-    return glm::lookAt(position, target, up);
-}
 
-
-void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window)
+void initialize(Window& window, Camera& camera, Transform& model)
 {
-    modelMat = glm::translate(modelMat, glm::vec3(0.0f, 0.0f, -5.0f));
-    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    modelMat = glm::scale(modelMat, glm::vec3(0.25f, 0.25f, 0.25f));
-    projectionMat = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.1f, 100.0f);
+    model.set(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(90.0f, 0.0f, 0.0f), 0.25f);
+    camera.setProjectionMat(45.0f, window.getAspectRatio(), 0.1f, 100.0f);
 }
