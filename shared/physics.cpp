@@ -190,3 +190,16 @@ float Physics::getProperAngVelocity()
 {
     return m_properAngularVelocity;
 }
+
+Mat5 Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
+{
+    Mat5 mat;
+    mat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], translation[0]);
+    mat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], translation[1]);
+    mat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], translation[2]);
+    mat[3] = Vec5(linAcceleration[2], -angAcceleration[1], angAcceleration[0], 0.0f, translation[3]);
+    mat[4][4] = 1.0f;
+
+    return mat;
+}
+

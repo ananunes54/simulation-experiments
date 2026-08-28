@@ -27,18 +27,6 @@ void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMa
 glm::mat4 setModelMat(glm::vec3& translation, glm::vec3& rotation, float scale);
 glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up);
 
-Mat5 buildPoincare(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
-{
-    Mat5 mat;
-    mat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], translation[0]);
-    mat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], translation[1]);
-    mat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], translation[2]);
-    mat[3] = Vec5(linAcceleration[2], -angAcceleration[1], angAcceleration[0], 0.0f, translation[3]);
-    mat[4][4] = 1.0f;
-
-    return mat;
-}
-
 int main()
 {
 	try 
@@ -257,7 +245,7 @@ int main()
             {
                 time = properTime = 0.0f;
                 physics.reset();
-                generator = buildPoincare(linearAccel, angularAccel, glm::vec4(0.0f));
+                generator = physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
                 physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
                 dTime = physics.getExternTimeInterval();
@@ -270,7 +258,7 @@ int main()
             {
                 time += dTime;
                 properTime += dProperTime;
-                physics.updatePoincareGroupMat();
+                //physics.updatePoincareGroupMat();
             }
 
 
