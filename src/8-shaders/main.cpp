@@ -20,6 +20,7 @@
 #include <window.h>
 #include <transform.h>
 #include <camera.h>
+#include <gui.h>
 
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
@@ -97,14 +98,14 @@ int main()
             ///////////////
             ImGui::Begin("Controles");
 
-            if (ImGui::Button(state.paused ? "Continuar" : "Pausar"))
+            if (UIWidget::drawDualButton("Continuar", "Pausar", state.paused))
             {
                 state.paused = !state.paused;
             }
 
             ImGui::SameLine();
 
-            if (ImGui::Button("Reset"))
+            if (UIWidget::drawButton("Reset"))
             {
                 linearAccel = glm::vec3(0.0f);
                 angularAccel = glm::vec3(0.0f);
@@ -114,17 +115,17 @@ int main()
                 state.paused = true;
             }
 
-            if (ImGui::SliderFloat3("Aceleração Linear", glm::value_ptr(linearAccel), -100.0f, 100.0f, "%.2f"))
+            if (UIWidget::drawVec3Control("Aceleração linear", linearAccel, glm::vec2(-100.0f, 100.0f), "%.2f", glm::vec3(0.0f)))
             {
                 matrixAltered = true;
             }
 
-            if (ImGui::SliderFloat3("Aceleração Angular", glm::value_ptr(angularAccel), -50.0f, 50.0f, "%.2f"))
+            if (UIWidget::drawVec3Control("Aceleração angular", angularAccel, glm::vec2(-50.0f, 50.0f), "%.2f", glm::vec3(0.0f)))
             {
                 matrixAltered = true;
             }
 
-            if (ImGui::SliderFloat("Velocidade Angular (ref. próprio)", &properAngVelocity, -1.0f, 1.0f, "%.2f"))
+            if (UIWidget::drawFloatControl("Rotação (referencial próprio)", properAngVelocity, glm::vec2(-1.0f, 1.0f), "%.2f", 0.0f))
             {
                 state.time = 0.0f;
                 physics.setProperTime(0.0f);
@@ -140,73 +141,32 @@ int main()
             ///////////////
             ImGui::Begin("Posição do objeto");
 
-            if (ImGui::Button("Reset1"))
-            {
-                objectAltered = true;
-                objectPosition = glm::vec3(0.0f);
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::SliderFloat3("Translação", glm::value_ptr(objectPosition), -50.0f, 50.0f, "%.0f"))
+            if (UIWidget::drawVec3Control("Translação", objectPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
                 objectAltered = true;
             }
 
-            if (ImGui::Button("Reset2"))
-            {
-                objectAltered = true;
-                objectRotation = glm::vec3(0.0f);
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::SliderFloat3("Rotação", glm::value_ptr(objectRotation), -180.0f, 180.0f, "%.0f"))
+            if (UIWidget::drawVec3Control("Rotação", objectRotation, glm::vec2(-180.0f, 180.0f), "%.0f", glm::vec3(0.0f)))
             {
                 objectAltered = true;
             }
 
-            if (ImGui::Button("Reset3"))
-            {
-                objectAltered = true;
-                objectScale = 0.0f;
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::SliderFloat("Escala", &objectScale, 0.0f, 5.0f, "%.3f"))
+            if (UIWidget::drawFloatControl("Escala", objectScale, glm::vec2(0.0f, 5.0f), "%.2f", 1.0f))
             {
                 objectAltered = true;
             }
 
-
-
-            if (ImGui::Button("Reset4"))
-            {
-                viewAltered = true;
-                viewPosition = glm::vec3(0.0f);
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::SliderFloat3("Posição camera", glm::value_ptr(viewPosition), -50.0f, 50.0f, "%.0f"))
+            if (UIWidget::drawVec3Control("Posição camera", viewPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
                 viewAltered = true;
             }
 
-            if (ImGui::Button("Reset5"))
-            {
-                viewAltered = true;
-                viewTarget = glm::vec3(0.0f);
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::SliderFloat3("Alvo camera", glm::value_ptr(viewTarget), -50.0f, 50.0f, "%.0f"))
+            if (UIWidget::drawVec3Control("Alvo camera", viewTarget, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
             {
                 viewAltered = true;
             }
 
+            
             ImGui::End();
             ///////////////
 
