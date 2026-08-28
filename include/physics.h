@@ -11,24 +11,24 @@ enum class MOTION {inertial, hyperbolic};
 
 class Physics 
 {
-    Mat5 m_groupGeneratorMat;
-    Mat5 m_poincareGroupMat;
-    Mat5 m_auxPoincareGroupMat;
+    Mat5 m_groupGeneratorMat = Mat5(0.0f);
+    Mat5 m_poincareGroupMat = Mat5(1.0f);
+    Mat5 m_auxPoincareGroupMat = Mat5(1.0f);
 
-    glm::mat3 m_alignmentMat;
+    glm::mat3 m_alignmentMat = glm::mat3(1.0f);
 
-    glm::mat4 m_refChangeMat;
+    glm::mat4 m_refChangeMat = glm::mat4(1.0f);
     //a quadrivelocidade diz respeito a posicao do centro do objeto no "tempo inicial"
-    glm::vec4 m_fourVelocity;
+    glm::vec4 m_fourVelocity = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
     // a quadriposicao diz respeito a posicao do centro do objeto no "tempo inicial"
-    glm::vec4 m_fourPosition;
+    glm::vec4 m_fourPosition = glm::vec4(0.0f);
     // o modulo da velocidade diz respeito a velocidade do centro do objeto
-    glm::vec3 m_velocityVector;
-    float m_velocityMagnitude;
-    float m_gamma;
-    float m_properTimeInterval;
-    float m_externTimeInterval;
-    float m_properAngularVelocity;
+    glm::vec3 m_velocityVector = glm::vec3(0.0f);
+    float m_velocityMagnitude = 0.0f;
+    float m_gamma = 1.0f;
+    float m_properTimeInterval = 0.0f;
+    float m_externTimeInterval = 0.0f;
+    float m_properAngularVelocity = 0.0f;
 
 public:
     Physics() {};
