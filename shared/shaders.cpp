@@ -11,7 +11,6 @@
 Shader::Shader(std::string& vertexShaderPath, std::string& fragmentShaderPath) : m_vertexShaderPath(vertexShaderPath), m_fragmentShaderPath(fragmentShaderPath) 
 {
     m_ID = Shader::createProgram();
-    introspectProgram();
 }
 
 Shader::~Shader()
@@ -127,36 +126,8 @@ unsigned int Shader::createProgram()
 
 }
 
-void Shader::introspectProgram()
-{
-    GLCall(glGetProgramiv(m_ID, GL_ACTIVE_UNIFORMS, &m_uniformsCount));
-    m_uniforms.resize(m_uniformsCount);
-
-    int maxNameLenght;
-    GLCall(glGetProgramiv(m_ID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLenght));
-
-    GLint size;
-
-    for (auto i = 0; i < m_uniformsCount; i++)
-    {
-        m_uniforms[i].program = m_ID;
-        m_uniforms[i].index = i;
-        m_uniforms[i].name.assign(maxNameLenght, '\0');
-        GLCall(glGetActiveUniform(m_ID, i, maxNameLenght, nullptr, &size, &(m_uniforms[i]).type, m_uniforms[i].name.data()));
-    }
-}
-
 unsigned int Shader::getID()
 {
     return m_ID;
 }
 
-int Shader::getUniformsCount()
-{
-    return m_uniformsCount;
-}
-
-std::vector<UniformInfo> Shader::getUniforms()
-{
-    return m_uniforms;
-}
