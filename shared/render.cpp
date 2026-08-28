@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <utils.h>
 
-void render(Mesh& mesh, Physics& physics, Shader& shader)
+void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state)
 {
     GLCall(glBindVertexArray(mesh.getVAO()));
 

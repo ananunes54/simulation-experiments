@@ -27,6 +27,22 @@
 void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
 glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up);
 
+struct SimulationState
+{
+    bool paused = true;
+    bool stateAltered = false;
+    float dTime = 0.01;
+    float time = 0.0f;
+
+    void reset()
+    {
+        paused = true;
+        stateAltered = false;
+        dTime = 0.01;
+        time = 0.0f;
+    }
+};
+
 int main()
 {
 	try 
@@ -56,14 +72,10 @@ int main()
         glm::vec3 viewTarget(0.0f);
         glm::vec3 viewUp(0.0f, 1.0f, 0.0f);
 
-        bool isPaused = true;
+        SimulationState state;
         bool matrixAltered = false;
         bool objectAltered = true;
         bool viewAltered = true;
-
-		float time = 0.0f;
-
-        float dTime = 0.01f, dProperTime = 0.01f; 
 
 
         glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
@@ -76,7 +88,7 @@ int main()
         mesh.createMesh(geometry);
 
 
-        Physics physics(dTime);
+        Physics physics(state.dTime);
         physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
 
@@ -92,7 +104,7 @@ int main()
             window.pollEvents();
 
             shader.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-            shader.setFloat("u_time", time);
+            shader.setFloat("u_time", state.time);
             shader.setFloat("u_properTime", physics.getProperTime());
             shader.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
             shader.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
@@ -110,9 +122,9 @@ int main()
             ///////////////
             ImGui::Begin("Controles");
 
-            if (ImGui::Button(isPaused ? "Continuar" : "Pausar"))
+            if (ImGui::Button(state.paused ? "Continuar" : "Pausar"))
             {
-                isPaused = !isPaused;
+                state.paused = !state.paused;
             }
 
             ImGui::SameLine();
@@ -124,7 +136,7 @@ int main()
                 properAngVelocity = 0.0f;
                 physics.setProperAngVelocity(properAngVelocity);
                 matrixAltered = true;
-                isPaused = true;
+                state.paused = true;
             }
 
             if (ImGui::SliderFloat3("Aceleração Linear", glm::value_ptr(linearAccel), -100.0f, 100.0f, "%.2f"))
@@ -139,10 +151,10 @@ int main()
 
             if (ImGui::SliderFloat("Velocidade Angular (ref. próprio)", &properAngVelocity, -1.0f, 1.0f, "%.2f"))
             {
-                time = 0.0f;
+                state.time = 0.0f;
                 physics.setProperTime(0.0f);
                 physics.setProperAngVelocity(properAngVelocity);
-                isPaused = true;
+                state.paused = true;
             }
 
             ImGui::End();
@@ -239,25 +251,24 @@ int main()
 
             if (matrixAltered)
             {
-                time = 0.0f;
+                state.time = 0.0f;
                 physics.reset();
                 physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
-                dProperTime = physics.getProperTimeInterval();
                 matrixAltered = false;
-                isPaused = true;
+                state.paused = true;
             }
 
-            if (!isPaused)
+            if (!state.paused)
             {
-                time += dTime;
+                state.time += state.dTime;
                 physics.update();
             }
 
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            render(mesh, physics, shader);
+            render(mesh, physics, shader, state);
 
             
             window.renderImGui();

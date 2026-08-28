@@ -7,6 +7,8 @@
 #include <physics.h>
 #include <shaders.h>
 
-void render(Mesh& mesh, Physics& physics, Shader& shader);
+struct SimulationState;
+
+void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state);
 
 #endif
