@@ -43,8 +43,8 @@ int main()
 
         initialize(modelMat, viewMat, projectionMat, window);
 
-        glm::vec3 linearAccel(0.0f, 0.0f, 0.0f);
-        glm::vec3 angularAccel(0.0f, 0.0f, 0.0f);
+        glm::vec3 linearAccel(0.0f);
+        glm::vec3 angularAccel(0.0f);
         float properAngVelocity = 0.0f;
 
         glm::vec3 objectPosition(0.0f);
@@ -66,20 +66,18 @@ int main()
         float dTime = 0.01f, dProperTime = 0.01f; 
 
 
-        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
-        glm::vec3 objCenter(0.0f, 0.0f, 0.0f);
+        glm::vec3 objCenter(0.0f);
 
         Geometry geometry("3dwheel.obj");
         Mesh mesh;
         mesh.createMeshFromObj(geometry);
 
-        Mat5 generator(0.0f);
 
         Physics physics(dTime);
         physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
-        physics.setGroupGeneratorMat(generator);
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
@@ -121,8 +119,8 @@ int main()
 
             if (ImGui::Button("Reset"))
             {
-                linearAccel = glm::vec3(0.0f, 0.0f, 0.0f);
-                angularAccel = glm::vec3(0.0f, 0.0f, 0.0f);
+                linearAccel = glm::vec3(0.0f);
+                angularAccel = glm::vec3(0.0f);
                 properAngVelocity = 0.0f;
                 physics.setProperAngVelocity(properAngVelocity);
                 matrixAltered = true;
@@ -242,10 +240,8 @@ int main()
             {
                 time = properTime = 0.0f;
                 physics.reset();
-                generator = physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
+                physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
-                physics.setGroupGeneratorMat(generator);
-                dTime = physics.getExternTimeInterval();
                 dProperTime = physics.getProperTimeInterval();
                 matrixAltered = false;
                 isPaused = true;

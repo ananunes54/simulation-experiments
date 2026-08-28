@@ -43,17 +43,15 @@ public:
     float getVelocityMagnitude();
     float getGamma();
     float getProperTimeInterval();
-    float getExternTimeInterval();
     float getProperAngVelocity();
 
     void setProperAngVelocity(float w);
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
-    void setGroupGeneratorMat(const Mat5 sourceMat);
 
     void log(const char* logOutputPath);
 
     void updatePoincareGroupMat();
-    Mat5 buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation);
+    void buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation);
 
     void reset();
 };
