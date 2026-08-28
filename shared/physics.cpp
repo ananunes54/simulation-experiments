@@ -9,6 +9,8 @@
 
 #include <math5d.h>
 
+Physics::Physics(float externTimeInterval) : m_externTimeInterval(externTimeInterval), m_properTimeInterval(externTimeInterval) {}
+
 glm::mat4 Physics::getGroupGeneratorMat4()
 {
     return m_groupGeneratorMat.truncate();
@@ -77,17 +79,15 @@ void Physics::setCenter(glm::vec3 center, glm::mat4 modelMat)
     m_fourPosition = modelMat * expandedCenter;
 }
 
-void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion)
+void Physics::setGroupGeneratorMat(const Mat5 sourceMat)
 {
     m_groupGeneratorMat = sourceMat;
-    m_auxPoincareGroupMat = m_groupGeneratorMat * dq;
+    m_auxPoincareGroupMat = m_groupGeneratorMat * m_properTimeInterval;
     m_poincareGroupMat = m_auxPoincareGroupMat.exp();
     m_auxPoincareGroupMat = m_poincareGroupMat;
 
     Vec5 aux(1, 0, 0, 0, 0);
     m_fourVelocity = (m_poincareGroupMat * aux).truncate();
-    glm::vec4 nextFourPosition = m_fourPosition + (m_fourVelocity * dq);
-    m_externTimeInterval = nextFourPosition[0];
 
     m_velocityVector[0] = m_fourVelocity[1] / m_fourVelocity[0];
     m_velocityVector[1] = m_fourVelocity[2] / m_fourVelocity[0];
@@ -99,7 +99,7 @@ void Physics::setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion
     if (m_velocityMagnitude != m_velocityMagnitude)
         m_velocityMagnitude = 0.0f;
 
-    m_properTimeInterval = sqrt(velocityMetric) * dq;
+    m_properTimeInterval = sqrt(velocityMetric) * m_externTimeInterval;
     
     m_gamma = 1 / sqrt(1 - pow(m_velocityMagnitude, 2));
 
@@ -176,7 +176,8 @@ void Physics::reset()
     m_groupGeneratorMat = Mat5(0.0f);
     m_refChangeMat = glm::mat4(1.0f);
     m_poincareGroupMat = m_auxPoincareGroupMat = Mat5(1.0f);
-    m_externTimeInterval = m_properTimeInterval = m_velocityMagnitude = 0.0f;
+    m_velocityMagnitude = 0.0f;
+    m_properTimeInterval = m_externTimeInterval;
     m_fourVelocity = m_fourPosition = glm::vec4(0.0f);
     m_gamma = 1.0f;
 }

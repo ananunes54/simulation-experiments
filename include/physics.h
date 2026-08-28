@@ -31,7 +31,7 @@ class Physics
     float m_properAngularVelocity = 0.0f;
 
 public:
-    Physics() {};
+    Physics(float externTimeInterval);
     glm::mat4 getGroupGeneratorMat4();
     glm::mat4 getPoincareGroupMat4();
     glm::vec4 getPoincareTranslationVec();
@@ -48,7 +48,7 @@ public:
 
     void setProperAngVelocity(float w);
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
-    void setGroupGeneratorMat(const Mat5 sourceMat, float dq, MOTION motion);
+    void setGroupGeneratorMat(const Mat5 sourceMat);
 
     void log(const char* logOutputPath);
 

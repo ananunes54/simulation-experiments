@@ -63,6 +63,7 @@ int main()
 		float time = 0.0f;
 		float properTime = 0.0f;
 
+        float dTime = 0.01f, dProperTime = 0.01f; 
 
 
         glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -73,19 +74,15 @@ int main()
         Mesh mesh;
         mesh.createMeshFromObj(geometry);
 
-		float dq = 0.01f;
         Mat5 generator(0.0f);
 
-        Physics physics;
+        Physics physics(dTime);
         physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
-        physics.setGroupGeneratorMat(generator, dq, MOTION::hyperbolic);
+        physics.setGroupGeneratorMat(generator);
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
         Material material(shader);
-
-        float dTime = physics.getExternTimeInterval();
-        float dProperTime = physics.getProperTimeInterval();
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
@@ -247,7 +244,7 @@ int main()
                 physics.reset();
                 generator = physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
-                physics.setGroupGeneratorMat(generator, dq, MOTION::inertial);
+                physics.setGroupGeneratorMat(generator);
                 dTime = physics.getExternTimeInterval();
                 dProperTime = physics.getProperTimeInterval();
                 matrixAltered = false;
