@@ -86,21 +86,13 @@ int main()
 
 		while (!window.shouldClose())
 		{
-            window.pollEvents();
-
-            shader.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-            shader.setFloat("u_time", state.time);
-            shader.setFloat("u_properTime", physics.getProperTime());
-            shader.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
-            shader.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
-            shader.setFloat("u_gamma", physics.getGamma());
-            shader.setFloat("u_velocity", physics.getVelocityMagnitude());
-            shader.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
             shader.setGlmMat4("u_viewMat", viewMat);
             shader.setGlmMat4("u_projectionMat", projectionMat);
-            shader.setFloat("u_angVelocity", physics.getProperAngVelocity());
-            shader.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
-            shader.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            render(mesh, physics, shader, state);
+
 
             window.initImGuiFrame();
 
@@ -140,6 +132,7 @@ int main()
                 physics.setProperTime(0.0f);
                 physics.setProperAngVelocity(properAngVelocity);
                 state.paused = true;
+                state.stateAltered = true;
             }
 
             ImGui::End();
@@ -219,6 +212,15 @@ int main()
             ImGui::End();
             ///////////////
 
+            
+            window.renderImGui();
+
+			window.swapBuffers();
+
+            window.pollEvents();
+
+
+            ///////////////
             if (objectAltered)
             {
                 modelTransform.set(objectPosition, objectRotation, objectScale);
@@ -237,6 +239,7 @@ int main()
             if (matrixAltered)
             {
                 state.time = 0.0f;
+                state.stateAltered = true;
                 physics.reset();
                 physics.buildPoincareGenerator(linearAccel, angularAccel, glm::vec4(0.0f));
                 physics.setCenter(objCenter, mat);
@@ -251,14 +254,6 @@ int main()
             }
 
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            render(mesh, physics, shader, state);
-
-            
-            window.renderImGui();
-
-			window.swapBuffers();
 		}
 	}
 
