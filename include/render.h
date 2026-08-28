@@ -11,6 +11,25 @@ struct SimulationState;
 class Camera;
 class Transform;
 
-void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model);
+class Render    
+{
+    enum Flag : uint32_t
+    {   
+        CLEAR = 0,
+        PHYSICS = 1 << 0,
+        TRANSFORM = 1 << 1,
+        CAMERA = 1 << 2
+    };
+
+    uint32_t m_flags = CLEAR;
+
+    public:
+        void setFlag(Flag f);
+        bool checkFlag(Flag f);
+        void clearFlag(Flag f);
+        void clearAllFlags();
+        void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model);
+};
+
 
 #endif

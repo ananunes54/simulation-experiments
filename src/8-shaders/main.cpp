@@ -63,22 +63,22 @@ int main()
         bool objectAltered = true;
         bool viewAltered = true;
 
-
         glm::mat4 mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
         // centro do objeto (sem considerar um vetor "extendido")
         glm::vec3 objCenter(0.0f);
 
-        Geometry geometry;
-        parseObj("3dwheel.obj", geometry);
-        Mesh mesh;
-        mesh.createMesh(geometry);
-
 
         Physics physics(state.dTime);
+        Geometry geometry;
+        Mesh mesh;
+        Shader shader(vertexShaderPath, fragmentShaderPath);
+        Render render;
+
+        parseObj("3dwheel.obj", geometry);
+        mesh.createMesh(geometry);
+
         physics.setProperAngVelocity(properAngVelocity);
         physics.setCenter(objCenter, mat);
-
-        Shader shader(vertexShaderPath, fragmentShaderPath);
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
@@ -90,8 +90,7 @@ int main()
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            render(mesh, physics, shader, state, cam, modelTransform);
-
+            render.render(mesh, physics, shader, state, cam, modelTransform);
 
             window.initImGuiFrame();
 

@@ -8,7 +8,7 @@
 #include <camera.h>
 #include <transform.h>
 
-void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model)
+void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model)
 {
     GLCall(glBindVertexArray(mesh.getVAO()));
 
@@ -63,4 +63,25 @@ void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state
             
     GLCall(glBindVertexArray(0));
     shader.unbind();
+}
+
+
+void Render::setFlag(Flag f)
+{
+    m_flags |= f;
+}
+
+bool Render::checkFlag(Flag f)
+{
+    return m_flags &= f;
+}
+
+void Render::clearFlag(Flag f)
+{
+    m_flags &= ~f;
+}
+
+void Render::clearAllFlags()
+{
+    m_flags = CLEAR;
 }
