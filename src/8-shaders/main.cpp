@@ -27,21 +27,6 @@
 void initialize(glm::mat4& modelMat, glm::mat4& viewMat, glm::mat4& projectionMat, Window& window);
 glm::mat4 setViewMat(glm::vec3& position, glm::vec3& target, glm::vec3& up);
 
-struct SimulationState
-{
-    bool paused = true;
-    bool stateAltered = false;
-    float dTime = 0.01;
-    float time = 0.0f;
-
-    void reset()
-    {
-        paused = true;
-        stateAltered = false;
-        dTime = 0.01;
-        time = 0.0f;
-    }
-};
 
 int main()
 {

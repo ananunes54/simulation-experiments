@@ -60,6 +60,7 @@ public:
     void buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation);
 
     void reset();
+    bool physicsAltered;
 };
 
 #endif

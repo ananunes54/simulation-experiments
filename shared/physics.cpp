@@ -123,7 +123,10 @@ void Physics::log(const char* logOutputPath)
 void Physics::update()
 {
     if (m_motion == MOTION::hyperbolic)
+    {
         m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
+        physicsAltered = true;
+    }
     
     m_properTime += m_properTimeInterval;
 }
@@ -138,11 +141,13 @@ void Physics::reset()
     m_fourVelocity = m_fourPosition = glm::vec4(0.0f);
     m_gamma = 1.0f;
     m_properTime = 0.0f;
+    physicsAltered = true;
 }
 
 void Physics::setProperAngVelocity(float w)
 {
     m_properAngularVelocity = w;
+    physicsAltered = true;
 }
 
 float Physics::getProperAngVelocity()
@@ -152,6 +157,7 @@ float Physics::getProperAngVelocity()
 
 void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
 {
+    physicsAltered = true;
     m_groupGeneratorMat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], translation[0]);
     m_groupGeneratorMat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], translation[1]);
     m_groupGeneratorMat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], translation[2]);
@@ -204,5 +210,6 @@ float Physics::getProperTime()
 
 void Physics::setProperTime(float time)
 {
+    physicsAltered = true;
     m_properTime = time;
 }

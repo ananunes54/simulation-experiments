@@ -4,24 +4,36 @@
 
 void Transform::setPosition(const glm::vec3& position)
 {
+    if (m_position == position)
+        return;
+
     m_position = position;
     calculateModelMat();
 }
 
 void Transform::setRotation(const glm::vec3& angles)
 {
+    if (m_rotationAngles == angles)
+        return;
+
     m_rotationAngles = angles;
     calculateModelMat();
 }
 
 void Transform::setScaling(float scale)
 {
+    if (m_scalingFactor == scale)
+        return;
+
     m_scalingFactor = scale;
     calculateModelMat();
 }
 
 void Transform::set(const glm::vec3& position, const glm::vec3& angles, float scale)
 {
+    if (m_position == position && m_rotationAngles == angles && m_scalingFactor == scale)
+        return;
+
     m_position = position;
     m_rotationAngles = angles;
     m_scalingFactor = scale;
@@ -30,6 +42,7 @@ void Transform::set(const glm::vec3& position, const glm::vec3& angles, float sc
 
 void Transform::calculateModelMat()
 {
+    modelMatAltered = true;
     m_modelMat = glm::translate(glm::mat4(1.0f), m_position);
     m_modelMat = glm::rotate(m_modelMat, glm::radians(m_rotationAngles[0]), glm::vec3(1.0f, 0.0f, 0.0f));
     m_modelMat = glm::rotate(m_modelMat, glm::radians(m_rotationAngles[1]), glm::vec3(0.0f, 1.0f, 0.0f));
