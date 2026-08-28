@@ -6,8 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <utils.h>
 #include <camera.h>
+#include <transform.h>
 
-void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera)
+void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model)
 {
     GLCall(glBindVertexArray(mesh.getVAO()));
 
@@ -34,6 +35,11 @@ void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state
         shader.setGlmMat4("u_viewMat", camera.getViewMat());
         shader.setGlmMat4("u_projectionMat", camera.getProjectionMat());
     }
+
+    if (model.modelAltered)
+    {
+        shader.setGlmMat4("u_modelMat", model.getModelMat());
+    }
     
 
     shader.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -41,6 +47,7 @@ void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state
     state.stateAltered = false;
     physics.physicsAltered = false;
     camera.cameraAltered = false;
+    model.modelAltered = false;
 
     shader.bind();
 

@@ -9,7 +9,8 @@
 
 struct SimulationState;
 class Camera;
+class Transform;
 
-void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera);
+void render(Mesh& mesh, Physics& physics, Shader& shader, SimulationState& state, Camera& camera, Transform& model);
 
 #endif

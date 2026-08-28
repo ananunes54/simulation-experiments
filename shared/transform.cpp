@@ -42,7 +42,7 @@ void Transform::set(const glm::vec3& position, const glm::vec3& angles, float sc
 
 void Transform::calculateModelMat()
 {
-    modelMatAltered = true;
+    modelAltered = true;
     m_modelMat = glm::translate(glm::mat4(1.0f), m_position);
     m_modelMat = glm::rotate(m_modelMat, glm::radians(m_rotationAngles[0]), glm::vec3(1.0f, 0.0f, 0.0f));
     m_modelMat = glm::rotate(m_modelMat, glm::radians(m_rotationAngles[1]), glm::vec3(0.0f, 1.0f, 0.0f));

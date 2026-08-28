@@ -19,7 +19,7 @@ class Transform
         void setScaling(float scale);
         void set(const glm::vec3& position, const glm::vec3& angles, float scale);
 
-        bool modelMatAltered = false;
+        bool modelAltered = false;
 
         glm::mat4 getModelMat();
 };

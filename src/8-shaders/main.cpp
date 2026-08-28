@@ -39,8 +39,7 @@ int main()
 		std::string fragmentShaderPath("/home/ana/sim-experiments/src/8-shaders/default.frag");
 
         glm::mat4 modelMat(1.0f);
-        glm::mat4 viewMat(1.0f);
-        glm::mat4 projectionMat(1.0f);
+
         Transform modelTransform;
         Camera cam;
 
@@ -90,7 +89,7 @@ int main()
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            render(mesh, physics, shader, state, cam);
+            render(mesh, physics, shader, state, cam, modelTransform);
 
 
             window.initImGuiFrame();
@@ -223,7 +222,6 @@ int main()
             if (objectAltered)
             {
                 modelTransform.set(objectPosition, objectRotation, objectScale);
-                shader.setGlmMat4("u_modelMat", modelTransform.getModelMat());
                 objectAltered = false;
             }
 
