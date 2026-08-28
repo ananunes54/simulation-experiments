@@ -3,15 +3,14 @@
 #include <mesh.h>
 #include <physics.h>
 #include <shaders.h>
-#include <material.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <utils.h>
 
-void render(Mesh& mesh, Physics& physics, Material& material)
+void render(Mesh& mesh, Physics& physics, Shader& shader)
 {
     GLCall(glBindVertexArray(mesh.getVAO()));
 
-    material.bind();
+    shader.bind();
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (mesh.getPrimitive() == Primitive::line)
@@ -24,5 +23,5 @@ void render(Mesh& mesh, Physics& physics, Material& material)
     }
             
     GLCall(glBindVertexArray(0));
-    material.unbind();
+    shader.unbind();
 }

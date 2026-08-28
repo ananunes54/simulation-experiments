@@ -81,30 +81,29 @@ int main()
         physics.setCenter(objCenter, mat);
 
         Shader shader(vertexShaderPath, fragmentShaderPath);
-        Material material(shader.getID());
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
         glm::mat4 modelMatRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        material.setGlmMat4("u_modelMatRotation", modelMatRotation);
+        shader.setGlmMat4("u_modelMatRotation", modelMatRotation);
 
 		while (!window.shouldClose())
 		{
             window.pollEvents();
 
-            material.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-            material.setFloat("u_time", time);
-            material.setFloat("u_properTime", physics.getProperTime());
-            material.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
-            material.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
-            material.setFloat("u_gamma", physics.getGamma());
-            material.setFloat("u_velocity", physics.getVelocityMagnitude());
-            material.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
-            material.setGlmMat4("u_viewMat", viewMat);
-            material.setGlmMat4("u_projectionMat", projectionMat);
-            material.setFloat("u_angVelocity", physics.getProperAngVelocity());
-            material.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
-            material.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
+            shader.setGlmVec4("u_color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+            shader.setFloat("u_time", time);
+            shader.setFloat("u_properTime", physics.getProperTime());
+            shader.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
+            shader.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
+            shader.setFloat("u_gamma", physics.getGamma());
+            shader.setFloat("u_velocity", physics.getVelocityMagnitude());
+            shader.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
+            shader.setGlmMat4("u_viewMat", viewMat);
+            shader.setGlmMat4("u_projectionMat", projectionMat);
+            shader.setFloat("u_angVelocity", physics.getProperAngVelocity());
+            shader.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
+            shader.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
 
             window.initImGuiFrame();
 
@@ -226,14 +225,14 @@ int main()
             if (objectAltered)
             {
                 modelTransform.set(objectPosition, objectRotation, objectScale);
-                material.setGlmMat4("u_modelMat", modelTransform.getModelMat());
+                shader.setGlmMat4("u_modelMat", modelTransform.getModelMat());
                 objectAltered = false;
             }
 
             if (viewAltered)
             {
                 viewMat = setViewMat(viewPosition, viewTarget, viewUp);
-                material.setGlmMat4("u_viewMat", viewMat);
+                shader.setGlmMat4("u_viewMat", viewMat);
                 viewAltered = false;
             }
 
@@ -258,7 +257,7 @@ int main()
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            render(mesh, physics, material);
+            render(mesh, physics, shader);
 
             
             window.renderImGui();

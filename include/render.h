@@ -6,8 +6,7 @@
 #include <mesh.h>
 #include <physics.h>
 #include <shaders.h>
-#include <material.h>
 
-void render(Mesh& mesh, Physics& physics, Material& material);
+void render(Mesh& mesh, Physics& physics, Shader& shader);
 
 #endif
