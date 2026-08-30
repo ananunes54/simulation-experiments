@@ -19,7 +19,6 @@ set(SRC
     shared/material.cpp
     shared/math5d.cpp
     shared/window.cpp
-    src/8-shaders/main.cpp
     )
 
 add_subdirectory(third-party/glfw EXCLUDE_FROM_ALL)
@@ -31,12 +30,21 @@ target_include_directories(glad PUBLIC libs/glad/include)
 
 find_package(glm CONFIG REQUIRED)
 
-add_executable(simulation ${SRC})
-target_include_directories(simulation PUBLIC include)
+add_library(relativity_lib ${SRC})
+target_include_directories(relativity_lib PUBLIC include)
 
-target_link_libraries(simulation PRIVATE glfw)
-target_link_libraries(simulation PRIVATE glad)
-target_link_libraries(simulation PRIVATE expm)
-target_link_libraries(simulation PRIVATE m)
-target_link_libraries(simulation PRIVATE glm::glm)
-target_link_libraries(simulation PRIVATE imgui)
+target_link_libraries(relativity_lib PUBLIC glfw)
+target_link_libraries(relativity_lib PUBLIC glad)
+target_link_libraries(relativity_lib PUBLIC expm)
+target_link_libraries(relativity_lib PUBLIC m)
+target_link_libraries(relativity_lib PUBLIC glm::glm)
+target_link_libraries(relativity_lib PUBLIC imgui)
+
+option(BUILD_TESTS "Building tests" OFF)
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+else()
+    add_executable(simulation src/8-shaders/main.cpp)
+    target_link_libraries(simulation PRIVATE relativity_lib)
+endif()
