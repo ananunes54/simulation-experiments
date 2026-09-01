@@ -1,4 +1,7 @@
 #include <iostream>
+#include <physics.h>
+#include <gtest/gtest.h>
+#include <glm/glm.hpp>
 
 int main()
 {
