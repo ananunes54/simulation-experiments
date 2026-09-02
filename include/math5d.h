@@ -16,6 +16,8 @@ class Vec5
         float& operator[](unsigned int i);
         const float& operator[](unsigned int i) const;
         Vec5 operator*(float scalar) const;
+        bool operator==(const Vec5& other) const;
+        bool operator!=(const Vec5& other) const;
 
         const float* value_ptr();
         glm::vec4 truncate() const;
@@ -35,6 +37,8 @@ class Mat5
         Mat5 operator*(float scalar) const;
         Vec5 operator*(const Vec5& vec) const;
         Mat5 operator*(const Mat5& other) const;
+        bool operator==(const Mat5& other) const;
+        bool operator!=(const Mat5& other) const;
 
         const float* value_ptr();
         Mat5 exp() const;

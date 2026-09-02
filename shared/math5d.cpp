@@ -45,6 +45,28 @@ Vec5 Vec5::operator*(float scalar) const
     return Vec5(m_data[0] * scalar, m_data[1] * scalar, m_data[2] * scalar, m_data[3] * scalar, m_data[4] * scalar);
 }
 
+bool Vec5::operator!=(const Vec5& other) const
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (m_data[i] == other.m_data[i])
+            return false;
+    }
+
+    return true;
+}
+
+bool Vec5::operator==(const Vec5& other) const
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (m_data[i] != other.m_data[i])
+            return false;
+    }
+
+    return true;
+}
+
 glm::vec4 Vec5::truncate() const
 {
     return glm::vec4(m_data[0], m_data[1], m_data[2], m_data[3]);
@@ -123,6 +145,28 @@ Mat5 Mat5::operator*(const Mat5& other) const
                 (*this) * other.m_columns[2],
                 (*this) * other.m_columns[3],
                 (*this) * other.m_columns[4]);    
+}
+
+bool Mat5::operator==(const Mat5& other) const
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (m_columns[i] != other.m_columns[i])
+            return false;
+    }
+
+    return true;
+}
+
+bool Mat5::operator!=(const Mat5& other) const
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (m_columns[i] == other.m_columns[i])
+            return false;
+    }
+
+    return true;
 }
 
 Mat5 Mat5::exp() const
