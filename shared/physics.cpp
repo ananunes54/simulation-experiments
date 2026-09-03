@@ -155,11 +155,11 @@ float Physics::getProperAngVelocity()
 
 void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
 {
-    m_groupGeneratorMat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], translation[0]);
-    m_groupGeneratorMat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], translation[1]);
-    m_groupGeneratorMat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], translation[2]);
-    m_groupGeneratorMat[3] = Vec5(linAcceleration[2], -angAcceleration[1], angAcceleration[0], 0.0f, translation[3]);
-    m_groupGeneratorMat[4][4] = 1.0f;
+    m_groupGeneratorMat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], 0.0f); 
+    m_groupGeneratorMat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], 0.0f); 
+    m_groupGeneratorMat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], 0.0f);
+    m_groupGeneratorMat[3] = Vec5(linAcceleration[2], -angAcceleration[1], angAcceleration[0], 0.0f, 0.0f);
+    m_groupGeneratorMat[4] = Vec5(translation[0], translation[1], translation[2], translation[3], 0.0f);
 
     m_groupGeneratorMat = m_groupGeneratorMat * m_properTimeInterval;
     m_poincareGroupMat = m_groupGeneratorMat.exp();
