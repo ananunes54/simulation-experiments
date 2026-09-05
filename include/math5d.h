@@ -45,4 +45,9 @@ class Mat5
         glm::mat4 truncate() const;
 };
 
+namespace math5 {
+    bool compare(const Vec5& v1, const Vec5& v2, float error);
+    bool compare(const Mat5& m1, const Mat5& m2, float error);
+}
+
 #endif

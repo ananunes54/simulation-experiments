@@ -1,5 +1,5 @@
 #include <cstdlib>
-
+#include <math.h>
 #include <math5d.h>
 #include <matrix_exponential.h>
 
@@ -200,4 +200,27 @@ glm::mat4 Mat5::truncate() const
                     m_columns[1].truncate(),
                     m_columns[2].truncate(),
                     m_columns[3].truncate());
+}
+
+
+bool math5::compare(const Vec5& v1, const Vec5& v2, float error)
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (abs(v2[i] - v1[i]) > error)
+            return false;
+    }
+
+    return true;
+}
+
+bool math5::compare(const Mat5& m1, const Mat5& m2, float error)
+{
+    for (auto i = 0; i < 5; i++)
+    {
+        if (!compare(m1[i], m2[i], error))
+            return false;
+    }
+
+    return true;
 }

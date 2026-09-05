@@ -11,6 +11,11 @@
 
 Physics::Physics(float externTimeInterval) : m_externTimeInterval(externTimeInterval), m_properTimeInterval(externTimeInterval) {}
 
+Mat5 Physics::getPoincareMat()
+{
+    return m_poincareGroupMat;
+}
+
 glm::mat4 Physics::getGroupGeneratorMat4()
 {
     return m_groupGeneratorMat.truncate();

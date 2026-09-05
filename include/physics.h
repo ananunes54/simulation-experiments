@@ -35,6 +35,7 @@ class Physics
 
 public:
     Physics(float externTimeInterval);
+    Mat5 getPoincareMat();
     glm::mat4 getGroupGeneratorMat4();
     glm::mat4 getPoincareGroupMat4();
     glm::vec4 getPoincareTranslationVec();
