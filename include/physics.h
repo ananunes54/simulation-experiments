@@ -31,7 +31,8 @@ class Physics
     float m_properAngularVelocity = 0.0f;
 
     float m_properTime = 0.0f;
-    MOTION m_motion = MOTION::inertial;
+    MOTION m_motion = MOTION::hyperbolic;
+    void recalculatePhysics();
 
 public:
     Physics(float externTimeInterval);

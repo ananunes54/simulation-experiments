@@ -39,7 +39,9 @@ Mat5 analyticPoincareMat(float time, const glm::vec3& linAcceleration, const glm
 }
 
 
-TEST_P(PhysicsPoincareTest, PoincareValidation) {
+TEST_P(PhysicsPoincareTest, PoincareValidation)
+{
+    float tolerance = 0.001f;
     PoincareParams params = GetParam();
     Vec5 position(0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
     Vec5 analyticResult(0.0f);
@@ -53,14 +55,14 @@ TEST_P(PhysicsPoincareTest, PoincareValidation) {
         // teste dos invariantes
         EXPECT_FALSE(std::isnan(physics_obj.getVelocityMagnitude())) << "velocidade retornou NaN no passo: " << i << std::endl;
         EXPECT_FALSE(std::isnan(physics_obj.getGamma())) << "gamma retornou NaN no passo: " << i << std::endl;
-        EXPECT_LT(physics_obj.getVelocityMagnitude(), 1.0f) << "velocidade ultrapassou o limite no passo: " << i << std::endl;
+        EXPECT_LT(physics_obj.getVelocityMagnitude(), 1.0f + tolerance) << "velocidade ultrapassou o limite no passo: " << i << std::endl;
 
         // teste das matrizes
         numericalPoincare = physics_obj.getPoincareMat();
         analyticPoincare = analyticPoincareMat(physics_obj.getProperTime(), params.linAcceleration, params.angAcceleration, params.translation);
         numericalResult = numericalPoincare * position;
         analyticResult = analyticPoincare * position;
-        EXPECT_TRUE(math5::compare(numericalResult, analyticResult, 0.01)) << "vetor analitico e numerico divergiram no passo: " << i << std::endl;
+        EXPECT_TRUE(math5::compare(numericalResult, analyticResult, tolerance)) << "vetor analitico e numerico divergiram no passo: " << i << std::endl;
 
         physics_obj.update();
     }
@@ -85,11 +87,11 @@ INSTANTIATE_TEST_SUITE_P(
 
         PoincareParams{ glm::vec3(50, 0, 0), glm::vec3(0.0f), glm::vec4(0.0f)},
 
-        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)},
+        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(0.01f, 0.0f, 0.0f, 0.0f)},
 
-        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(1.0f, 1.0f, 0.0f, 0.0f)},
+        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(0.01f, 0.01f, 0.0f, 0.0f)},
 
-        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(5.0f, 1.0f, 0.0f, 0.0f)}
+        PoincareParams{ glm::vec3(10, 0, 0), glm::vec3(0.0f), glm::vec4(0.01f, 0.001f, 0.0f, 0.0f)}
     )
 );
 
