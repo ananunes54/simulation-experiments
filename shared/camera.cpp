@@ -27,6 +27,12 @@ void Camera::setProjectionMat(float angle, float aspectRatio, float near, float 
     calculateCamera();
 }
 
+void Camera::setProjectionRatio(float aspectRatio)
+{
+    m_projectionAspectRatio = aspectRatio;
+    calculateCamera();
+}
+
 glm::mat4 Camera::getViewMat()
 {
     return  m_viewMat;

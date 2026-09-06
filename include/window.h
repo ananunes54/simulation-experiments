@@ -12,6 +12,7 @@ class Window
         int m_fbWidth = 0;
         int m_fbHeight = 0;
         float m_aspectRatio = 1.0f;
+        bool m_ratioChanged = false;
         void initImGui();
         void updateViewportAndRatio(int width, int heigth);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -26,6 +27,7 @@ class Window
         void swapBuffers();
         static void pollEvents();
         float getAspectRatio();
+        bool ratioChanged();
         int getFramebufferWidth();
         int getFramebufferHeight();
         GLFWwindow* getHandle();

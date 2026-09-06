@@ -108,6 +108,7 @@ void Window::updateViewportAndRatio(int width, int height)
 
     glViewport(0, 0, width, height);
     m_aspectRatio = (float)width / (float)height;
+    m_ratioChanged = true;
 }
 
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -116,6 +117,7 @@ void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
     self->updateViewportAndRatio(width, height);
 }
 
+// relacionado ao DPI
 void Window::contentScaleCallback(GLFWwindow* window, float xscale, float yscale)
 {
     auto* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -160,4 +162,10 @@ int Window::getFramebufferHeight()
 GLFWwindow* Window::getHandle()
 {
     return m_handle;
+}
+
+bool Window::ratioChanged()
+{
+    m_ratioChanged = !m_ratioChanged;
+    return !m_ratioChanged;
 }

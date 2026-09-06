@@ -24,6 +24,7 @@ class Camera
     public:
         void setViewMat(const glm::vec3& viewPosition, const glm::vec3& viewTarget, const glm::vec3& viewUp);
         void setProjectionMat(float angle, float aspectRatio, float near, float far);
+        void setProjectionRatio(float aspectRatio);
 
         glm::mat4 getViewMat();
         glm::mat4 getProjectionMat();

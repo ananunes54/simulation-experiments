@@ -152,6 +152,7 @@ int main()
 
 
             ///////////////
+            
             if (render.checkFlag(Render::TRANSFORM))
             {
                 modelTransform.set(transformC.objectPosition, transformC.objectRotation, transformC.objectScale);
@@ -175,6 +176,12 @@ int main()
             {
                 state.updateTime();
                 physics.update();
+            }
+
+            if (window.ratioChanged())
+            {
+                cam.setProjectionRatio(window.getAspectRatio());
+                render.setFlag(Render::CAMERA);
             }
 
 
