@@ -76,69 +76,107 @@ int main()
             window.initImGuiFrame();
 
             ///////////////
-            ImGui::Begin("Controles");
+            ImGui::Begin("Painel");
 
             if (UIWidget::drawDualButton("Continuar", "Pausar", state.paused))
             {
                 state.paused = !state.paused;
             }
 
-            ImGui::SameLine();
-
-            if (UIWidget::drawButton("Reset"))
+            if (ImGui::CollapsingHeader("Configurações Física", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                state.paused = true;
-                physicsC.reset();
-                render.setFlag(Render::PHYSICS);
+                static int selected = 0;
+
+                if (ImGui::RadioButton("uniforme", &selected, 0))
+                {
+                    physics.setMotion(MOTION::inertial);
+                    physics.reset();
+                    render.setFlag(Render::PHYSICS);
+                }
+
+                ImGui::SameLine();
+                
+                if (ImGui::RadioButton("acelerado", &selected, 1))
+                {
+                    physics.setMotion(MOTION::hyperbolic);
+                    physics.reset();
+                    render.setFlag(Render::PHYSICS);
+                }
+
+
+                ImGui::SameLine();
+
+                if (UIWidget::drawButton("Reset"))
+                {
+                    state.paused = true;
+                    physicsC.reset();
+                    render.setFlag(Render::PHYSICS);
+                }
+
+                if (UIWidget::drawVec3Control("Aceleração linear", physicsC.linearAccel, glm::vec2(-5.0f, 5.0f), "%.2f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::PHYSICS);
+                }
+
+                if (UIWidget::drawVec3Control("Aceleração angular", physicsC.angularAccel, glm::vec2(-50.0f, 50.0f), "%.2f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::PHYSICS);
+                }
+
+                if (UIWidget::drawFloatControl("Rotação (referencial próprio)", physicsC.properAngVelocity, glm::vec2(-1.0f, 1.0f), "%.2f", 0.0f))
+                {
+                    render.setFlag(Render::PHYSICS);
+                }
+
             }
 
-            if (UIWidget::drawVec3Control("Aceleração linear", physicsC.linearAccel, glm::vec2(-100.0f, 100.0f), "%.2f", glm::vec3(0.0f)))
+            ImGui::Separator();
+
+            if (ImGui::CollapsingHeader("Configurações Objeto", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                render.setFlag(Render::PHYSICS);
+
+                if (UIWidget::drawVec3Control("Translação", transformC.objectPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::TRANSFORM);
+                }
+
+                if (UIWidget::drawVec3Control("Rotação", transformC.objectRotation, glm::vec2(-180.0f, 180.0f), "%.0f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::TRANSFORM);
+                }
+
+                if (UIWidget::drawFloatControl("Escala", transformC.objectScale, glm::vec2(0.0f, 5.0f), "%.2f", 1.0f))
+                {
+                    render.setFlag(Render::TRANSFORM);
+                }
+
+                if (UIWidget::drawVec3Control("Posição camera", cameraC.viewPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::CAMERA);
+                }
+
+                if (UIWidget::drawVec3Control("Alvo camera", cameraC.viewTarget, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
+                {
+                    render.setFlag(Render::CAMERA);
+                }
+
             }
 
-            if (UIWidget::drawVec3Control("Aceleração angular", physicsC.angularAccel, glm::vec2(-50.0f, 50.0f), "%.2f", glm::vec3(0.0f)))
+            ImGui::Separator();
+
+            glm::vec4 poincare = physics.getPoincareTranslationVec();
+
+            if (ImGui::CollapsingHeader("Info", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                render.setFlag(Render::PHYSICS);
+                ImGui::Text("Velocidade: %.3f", physics.getVelocityMagnitude());
+                ImGui::Text("Gamma: %.3f", physics.getGamma());
+                ImGui::Text("Tempo externo: %.3f", state.time);
+                ImGui::Text("Tempo próprio: %3f", physics.getProperTime());
+                ImGui::Text("Intervalo t_ext: %.3f", state.dTime);
+                ImGui::Text("Intervalo t_prop: %.3f", physics.getProperTimeInterval());
+                ImGui::Text("Poincare 5 coluna: [%.2f, %.2f, %.2f, %.2f]",
+                        poincare.x, poincare.y, poincare.z, poincare.w);
             }
-
-            if (UIWidget::drawFloatControl("Rotação (referencial próprio)", physicsC.properAngVelocity, glm::vec2(-1.0f, 1.0f), "%.2f", 0.0f))
-            {
-                render.setFlag(Render::PHYSICS);
-            }
-
-            ImGui::End();
-            ///////////////
-
-
-            ///////////////
-            ImGui::Begin("Posição do objeto");
-
-            if (UIWidget::drawVec3Control("Translação", transformC.objectPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
-            {
-                render.setFlag(Render::TRANSFORM);
-            }
-
-            if (UIWidget::drawVec3Control("Rotação", transformC.objectRotation, glm::vec2(-180.0f, 180.0f), "%.0f", glm::vec3(0.0f)))
-            {
-                render.setFlag(Render::TRANSFORM);
-            }
-
-            if (UIWidget::drawFloatControl("Escala", transformC.objectScale, glm::vec2(0.0f, 5.0f), "%.2f", 1.0f))
-            {
-                render.setFlag(Render::TRANSFORM);
-            }
-
-            if (UIWidget::drawVec3Control("Posição camera", cameraC.viewPosition, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
-            {
-                render.setFlag(Render::CAMERA);
-            }
-
-            if (UIWidget::drawVec3Control("Alvo camera", cameraC.viewTarget, glm::vec2(-50.0f, 50.0f), "%.0f", glm::vec3(0.0f)))
-            {
-                render.setFlag(Render::CAMERA);
-            }
-
             
             ImGui::End();
             ///////////////
@@ -169,13 +207,18 @@ int main()
                 state.resetTime();
                 physics.reset();
                 physics.setProperAngVelocity(physicsC.properAngVelocity);
-                physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(0.0f));
+                physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
             }
 
             if (!state.paused)
             {
                 state.updateTime();
                 physics.update();
+            }
+
+            if (physics.getMotion() == MOTION::hyperbolic)
+            {
+                render.setFlag(Render::PHYSICS);
             }
 
             if (window.ratioChanged())

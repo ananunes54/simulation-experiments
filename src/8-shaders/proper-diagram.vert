@@ -51,7 +51,15 @@ void main()
     float newX = rotated.x * newAngleCos - rotated.y * newAngleSin;
     float newY = rotated.x * newAngleSin + rotated.y * newAngleCos;
 
-    vec4 finalVector = (u_poincareGroupMat * vec4(newTime, newX, newY, rotated.z)) + u_poincareTranslationVec;
+    float visualScale = 1.0f;
+
+    vec4 scaledTranslation = vec4(
+            u_poincareTranslationVec.x,
+            u_poincareTranslationVec.y * visualScale,
+            u_poincareTranslationVec.z * visualScale,
+            u_poincareTranslationVec.w * visualScale);
+
+    vec4 finalVector = (u_poincareGroupMat * vec4(0.0f, newX, newY, rotated.z)) + scaledTranslation;
 
     vec4 worldPos = u_modelMat * vec4(finalVector.yzw, 1.0);
 

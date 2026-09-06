@@ -133,7 +133,7 @@ void Physics::update()
         m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
         recalculatePhysics();
     }
-    
+     
     m_properTime += m_properTimeInterval;
 }
 
@@ -199,6 +199,7 @@ void Physics::recalculatePhysics()
 
 void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
 {
+    std::cout << "building generator" << std::endl;
     m_groupGeneratorMat[0] = Vec5(0.0f, linAcceleration[0], linAcceleration[1], linAcceleration[2], 0.0f); 
     m_groupGeneratorMat[1] = Vec5(linAcceleration[0], 0.0f, -angAcceleration[2], angAcceleration[1], 0.0f); 
     m_groupGeneratorMat[2] = Vec5(linAcceleration[1], angAcceleration[2], 0.0f, -angAcceleration[0], 0.0f);
@@ -207,7 +208,11 @@ void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm
 
     Mat5 groupGeneratorMat = m_groupGeneratorMat * m_properTimeInterval;
     m_auxPoincareGroupMat = groupGeneratorMat.exp();
-    m_poincareGroupMat = Mat5(1.0f);
+
+    if (m_motion == MOTION::hyperbolic)
+        m_poincareGroupMat = Mat5(1.0f);
+    else
+        m_poincareGroupMat = m_auxPoincareGroupMat;
 
     recalculatePhysics();
 }
@@ -220,4 +225,14 @@ float Physics::getProperTime()
 void Physics::setProperTime(float time)
 {
     m_properTime = time;
+}
+
+void Physics::setMotion(MOTION motion)
+{
+    m_motion = motion;
+}
+
+MOTION Physics::getMotion()
+{
+    return m_motion;
 }

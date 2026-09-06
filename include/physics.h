@@ -31,7 +31,7 @@ class Physics
     float m_properAngularVelocity = 0.0f;
 
     float m_properTime = 0.0f;
-    MOTION m_motion = MOTION::hyperbolic;
+    MOTION m_motion = MOTION::inertial;
     void recalculatePhysics();
 
 public:
@@ -49,12 +49,14 @@ public:
     float getGamma();
     float getProperTimeInterval();
     float getProperAngVelocity();
+    MOTION getMotion();
 
     float getProperTime();
     void setProperTime(float time);
 
     void setProperAngVelocity(float w);
     void setCenter(glm::vec3 center, glm::mat4 modelMat);
+    void setMotion(MOTION motion);
 
     void log(const char* logOutputPath);
 
