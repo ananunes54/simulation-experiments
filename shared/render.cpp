@@ -18,15 +18,15 @@ void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationStat
     {
         shader.setFloat("u_time", state.time);
         shader.setFloat("u_properTime", physics.getProperTime());
-    }
-
-    if (m_flags & PHYSICS)
-    {
         shader.setGlmMat4("u_poincareGroupMat", physics.getPoincareGroupMat4());
         shader.setGlmVec4("u_poincareTranslationVec", physics.getPoincareTranslationVec());
         shader.setFloat("u_gamma", physics.getGamma());
         shader.setFloat("u_velocity", physics.getVelocityMagnitude());
         shader.setGlmMat4("u_refChangeMat", physics.getRefChangeMat()); 
+    }
+
+    if (m_flags & PHYSICS)
+    {
         shader.setFloat("u_angVelocity", physics.getProperAngVelocity());
         shader.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
         shader.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));

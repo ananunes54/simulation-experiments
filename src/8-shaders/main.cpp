@@ -208,17 +208,13 @@ int main()
                 physics.reset();
                 physics.setProperAngVelocity(physicsC.properAngVelocity);
                 physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+                state.paused = true;
             }
 
             if (!state.paused)
             {
                 state.updateTime();
                 physics.update();
-            }
-
-            if (physics.getMotion() == MOTION::hyperbolic)
-            {
-                render.setFlag(Render::PHYSICS);
             }
 
             if (window.ratioChanged())
