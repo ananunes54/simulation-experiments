@@ -21,20 +21,24 @@ uniform mat4 u_modelMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projectionMat;
 
-float solveT(float x0, float y0, float linVelocity, float angVelocity, float k)
+float solveDeltaT(float x0, float y0, float linVelocity, float angVelocity, float centerTime)
 {
-    float t = k;
+    float dt = 0.0;
 
     for (int i = 0; i < 3; i++)
     {
-        float sinCalculated = sin(angVelocity * t);
-        float cosCalculated = cos(angVelocity * t);
-        float function = t + linVelocity * (x0 * cosCalculated - y0 * sinCalculated) - k;
-        float derivative = 1 + linVelocity * (- angVelocity * (x0 * sinCalculated + y0 * cosCalculated));
-        t = t - function / derivative;
+        float localTime = centerTime + dt;
+        float sinCalculated = sin(angVelocity * localTime);
+        float cosCalculated = cos(angVelocity * localTime);
+        float currentX = x0 * cosCalculated - y0 * sinCalculated;
+        float currentY = x0 * sinCalculated + y0 * cosCalculated;
+
+        float function = dt + linVelocity * currentX;
+        float derivative = 1.0 + linVelocity * (- angVelocity * currentY);
+        dt = dt - function / derivative;
     }
 
-    return t;
+    return dt;
 }
 
 
@@ -42,10 +46,9 @@ void main()
 {
     vec4 rotated = u_modelMatRotation * vec4(aPos, 1.0);
     vec3 properRefPosition = u_alignmentMatInverse * rotated.xyz;
-    float k = u_time / u_gamma;
 
-    float newTime = solveT(properRefPosition.x, properRefPosition.y, u_velocity, u_angVelocity, k);
-    float newAngle = u_angVelocity * newTime;
+    float deltaT = solveDeltaT(properRefPosition.x, properRefPosition.y, u_velocity, u_angVelocity, u_properTime);
+    float newAngle = u_angVelocity * (deltaT + u_properTime);
     float newAngleCos = cos(newAngle);
     float newAngleSin = sin(newAngle);
     float newX = rotated.x * newAngleCos - rotated.y * newAngleSin;
@@ -59,7 +62,7 @@ void main()
             u_poincareTranslationVec.z * visualScale,
             u_poincareTranslationVec.w * visualScale);
 
-    vec4 finalVector = (u_poincareGroupMat * vec4(0.0f, newX, newY, rotated.z)) + scaledTranslation;
+    vec4 finalVector = (u_poincareGroupMat * vec4(deltaT, newX, newY, rotated.z)) + scaledTranslation;
 
     vec4 worldPos = u_modelMat * vec4(finalVector.yzw, 1.0);
 
