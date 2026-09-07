@@ -8,6 +8,10 @@ struct PhysicsConfig
     glm::vec3 linearAccel = glm::vec3(0.0f);
     glm::vec3 angularAccel = glm::vec3(0.0f);
     float properAngVelocity = 0.0f;
+    
+    glm::vec2 linearAccelLimit = glm::vec2(-20.0f, 20.0f);
+    glm::vec2 angularAccelLimit = glm::vec2(-5.0f, 0.5f);
+    glm::vec2 properAngVelocityLimit = glm::vec2(-5.0f, 5.0f);
 
     void reset();
 };

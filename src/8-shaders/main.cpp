@@ -85,12 +85,14 @@ int main()
 
             if (ImGui::CollapsingHeader("Configurações Física", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                static int selected = 0;
+                static int selected = -1;
 
                 if (ImGui::RadioButton("uniforme", &selected, 0))
                 {
                     physics.setMotion(MOTION::inertial);
                     physics.reset();
+                    physicsC.reset();
+                    physicsC.linearAccelLimit = glm::vec2(-20.0f, 20.0f);
                     render.setFlag(Render::PHYSICS);
                 }
 
@@ -100,6 +102,8 @@ int main()
                 {
                     physics.setMotion(MOTION::hyperbolic);
                     physics.reset();
+                    physicsC.reset();
+                    physicsC.linearAccelLimit = glm::vec2(-5.0f, 5.0f);
                     render.setFlag(Render::PHYSICS);
                 }
 
@@ -113,7 +117,7 @@ int main()
                     render.setFlag(Render::PHYSICS);
                 }
 
-                if (UIWidget::drawVec3Control("Aceleração linear", physicsC.linearAccel, glm::vec2(-5.0f, 5.0f), "%.2f", glm::vec3(0.0f)))
+                if (UIWidget::drawVec3Control("Aceleração linear", physicsC.linearAccel, physicsC.linearAccelLimit, "%.2f", glm::vec3(0.0f)))
                 {
                     render.setFlag(Render::PHYSICS);
                 }
