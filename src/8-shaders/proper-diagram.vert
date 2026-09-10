@@ -44,9 +44,9 @@ float solveDeltaT(float x0, float y0, float linVelocity, float angVelocity, floa
 
 void main()
 {
+    float offset = 20.0;
     vec4 rotated = u_modelMatRotation * vec4(aPos, 1.0);
     vec3 properRefPosition = u_alignmentMatInverse * rotated.xyz;
-
     float deltaT = solveDeltaT(properRefPosition.x, properRefPosition.y, u_velocity, u_angVelocity, u_properTime);
     float newAngle = u_angVelocity * (deltaT + u_properTime);
     float newAngleCos = cos(newAngle);
@@ -62,9 +62,9 @@ void main()
             u_poincareTranslationVec.z * visualScale,
             u_poincareTranslationVec.w * visualScale);
 
-    vec4 finalVector = (u_poincareGroupMat * vec4(deltaT, newX, newY, rotated.z)) + scaledTranslation;
+    vec4 boostedVector = (u_poincareGroupMat * vec4(deltaT, newX + offset, newY, rotated.z)) + scaledTranslation;
 
-    vec4 worldPos = u_modelMat * vec4(finalVector.yzw, 1.0);
+    vec4 worldPos = u_modelMat * vec4(boostedVector.y - offset, boostedVector.z, boostedVector.w, 1.0);
 
     gl_Position = u_projectionMat * u_viewMat * worldPos;
 

@@ -63,6 +63,7 @@ int main()
 
         physics.log("/home/ana/sim-experiments/physics-log.txt");
 
+
         glm::mat4 modelMatRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         shader.setGlmMat4("u_modelMatRotation", modelMatRotation);
 
@@ -92,7 +93,7 @@ int main()
                     physics.setMotion(MOTION::inertial);
                     physics.reset();
                     physicsC.reset();
-                    physicsC.linearAccelLimit = glm::vec2(-20.0f, 20.0f);
+                    physicsC.linearAccelLimit = glm::vec2(-30.0f, 30.0f);
                     render.setFlag(Render::PHYSICS);
                 }
 
@@ -211,7 +212,7 @@ int main()
                 state.resetTime();
                 physics.reset();
                 physics.setProperAngVelocity(physicsC.properAngVelocity);
-                physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+                physics.buildPoincareGenerator(physicsC.linearAccel, physicsC.angularAccel, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
                 state.paused = true;
             }
 
@@ -219,6 +220,19 @@ int main()
             {
                 state.updateTime();
                 physics.update();
+                float offset = 20.0f; 
+    
+                glm::mat4 boostMat = physics.getPoincareGroupMat4(); 
+                glm::vec4 centerOffset = glm::vec4(0.0f, offset, 0.0f, 0.0f);
+                glm::vec4 visualCenter = (boostMat * centerOffset) - centerOffset;
+
+                cam.setViewMat(
+                    glm::vec3(visualCenter.y, visualCenter.z, visualCenter.w + 50.0f), 
+                    glm::vec3(visualCenter.y, visualCenter.z, visualCenter.w),        
+                    glm::vec3(0.0f, 1.0f, 0.0f)                                        
+                    );
+    
+                render.setFlag(Render::CAMERA);
             }
 
             if (window.ratioChanged())
