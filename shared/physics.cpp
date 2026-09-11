@@ -130,6 +130,12 @@ void Physics::update()
     if (m_motion == MOTION::hyperbolic)
         m_auxPoincareGroupMat = (m_groupGeneratorMat * m_properTimeInterval).exp();
 
+    if (m_motion == MOTION::inertial)
+    {
+        m_auxPoincareGroupMat = Mat5(0.0f);
+        m_auxPoincareGroupMat[4] = Vec5(m_gamma, m_gamma * m_velocityVector.x, 0.0f, 0.0f, 0.0f);
+        m_auxPoincareGroupMat = (m_auxPoincareGroupMat * m_properTimeInterval).exp();
+    }
     m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
     recalculatePhysics();
      
