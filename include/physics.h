@@ -25,6 +25,7 @@ class Physics
     // o modulo da velocidade diz respeito a velocidade do centro do objeto
     glm::vec3 m_velocityVector = glm::vec3(0.0f);
     float m_velocityMagnitude = 0.0f;
+    float m_accelerationMagnitude = 0.0f;
     float m_gamma = 1.0f;
     float m_properTimeInterval = 0.0f;
     float m_externTimeInterval = 0.0f;
@@ -49,6 +50,7 @@ public:
     float getGamma();
     float getProperTimeInterval();
     float getProperAngVelocity();
+    float getAccelerationMagnitude();
     MOTION getMotion();
 
     float getProperTime();

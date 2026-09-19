@@ -30,6 +30,7 @@ void Render::render(Mesh& mesh, Physics& physics, Shader& shader, SimulationStat
         shader.setFloat("u_angVelocity", physics.getProperAngVelocity());
         shader.setGlmMat3("u_alignmentMat", physics.getAlignmentMat());
         shader.setGlmMat3("u_alignmentMatInverse", glm::inverse(physics.getAlignmentMat()));
+        shader.setFloat("u_acceleration", physics.getAccelerationMagnitude());
     }
 
     if (m_flags & CAMERA)

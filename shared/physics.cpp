@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <fstream>
+#include <math.h>
 
 #include <math5d.h>
 
@@ -128,15 +129,17 @@ void Physics::log(const char* logOutputPath)
 void Physics::update()
 {
     if (m_motion == MOTION::hyperbolic)
-        m_auxPoincareGroupMat = (m_groupGeneratorMat * m_properTimeInterval).exp();
+    {
+        m_poincareGroupMat = (m_groupGeneratorMat * m_properTime).exp();
+    }
 
     if (m_motion == MOTION::inertial)
     {
         m_auxPoincareGroupMat = Mat5(0.0f);
-        m_auxPoincareGroupMat[4] = Vec5(m_gamma, m_gamma * m_velocityVector.x, 0.0f, 0.0f, 0.0f);
+        m_auxPoincareGroupMat[4] = Vec5(m_gamma, m_gamma * m_velocityVector.x, m_gamma * m_velocityVector.y, m_gamma * m_velocityVector.z, 0.0f);
         m_auxPoincareGroupMat = (m_auxPoincareGroupMat * m_properTimeInterval).exp();
+        m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
     }
-    m_poincareGroupMat = m_poincareGroupMat * m_auxPoincareGroupMat;
     recalculatePhysics();
      
     m_properTime += m_properTimeInterval;
@@ -173,6 +176,9 @@ void Physics::recalculatePhysics()
     m_velocityVector[1] = m_fourVelocity[2] / m_fourVelocity[0];
     m_velocityVector[2] = m_fourVelocity[3] / m_fourVelocity[0];
 
+    std::cout << "velocidade:" << std::endl;
+    std::cout << m_velocityVector[0] << ", " << m_velocityVector[1] << ", " << m_velocityVector[2] << std::endl;
+
     float velocityMetric = minkowskiMetric(m_fourVelocity, m_fourVelocity);
     m_velocityMagnitude = sqrt(pow(m_fourVelocity[0], 2) - 1) / m_fourVelocity[0];
 
@@ -200,6 +206,11 @@ void Physics::recalculatePhysics()
     {
         m_alignmentMat = glm::mat3(1.0f);
     }
+
+    glm::mat3 invAlignMat = glm::inverse(getAlignmentMat());
+    glm::vec3 alignedVec = invAlignMat * m_velocityVector;
+    std::cout << "velocidade alinhada:" << std::endl;
+    std::cout << alignedVec[0] << ", " << alignedVec[1] << ", " << alignedVec[2] << std::endl;
 }
 
 void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm::vec3& angAcceleration, const glm::vec4& translation)
@@ -212,8 +223,7 @@ void Physics::buildPoincareGenerator(const glm::vec3& linAcceleration, const glm
 
     if (m_motion == MOTION::hyperbolic)
     {
-        m_groupGeneratorMat[4] = Vec5(translation[0], translation[1], translation[2], translation[3], 0.0f);
-        m_auxPoincareGroupMat = (m_groupGeneratorMat * m_properTimeInterval).exp();
+        m_groupGeneratorMat[4] = Vec5(1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         m_poincareGroupMat = Mat5(1.0f);
     }
 
@@ -250,4 +260,9 @@ void Physics::setMotion(MOTION motion)
 MOTION Physics::getMotion()
 {
     return m_motion;
+}
+
+float Physics::getAccelerationMagnitude()
+{
+    return m_accelerationMagnitude;
 }

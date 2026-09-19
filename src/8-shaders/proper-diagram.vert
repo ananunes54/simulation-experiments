@@ -9,6 +9,7 @@ uniform float u_properTime;
 uniform float u_velocity;
 uniform float u_gamma;
 uniform float u_angVelocity;
+uniform float u_acceleration;
 uniform vec4 u_poincareTranslationVec;
 uniform mat4 u_poincareGroupMat;
 uniform mat4 u_refChangeMat;
@@ -33,7 +34,7 @@ float solveDeltaT(float x0, float y0, float linVelocity, float angVelocity, floa
         float currentX = x0 * cosCalculated - y0 * sinCalculated;
         float currentY = x0 * sinCalculated + y0 * cosCalculated;
 
-        float function = dt + linVelocity * currentX;
+        float function = dt + linVelocity * (currentX);
         float derivative = 1.0 + linVelocity * (- angVelocity * currentY);
         dt = dt - function / derivative;
     }
@@ -62,9 +63,9 @@ void main()
             u_poincareTranslationVec.z * visualScale,
             u_poincareTranslationVec.w * visualScale);
 
-    vec4 boostedVector = (u_poincareGroupMat * vec4(deltaT, newX + offset, newY, rotated.z)) + scaledTranslation;
+    vec4 boostedVector = (u_poincareGroupMat * vec4(deltaT, newX, newY, rotated.z)) + scaledTranslation;
 
-    vec4 worldPos = u_modelMat * vec4(boostedVector.y - u_gamma * offset, boostedVector.z, boostedVector.w, 1.0);
+    vec4 worldPos = u_modelMat * vec4(boostedVector.y, boostedVector.z, boostedVector.w, 1.0);
 
     gl_Position = u_projectionMat * u_viewMat * worldPos;
 
