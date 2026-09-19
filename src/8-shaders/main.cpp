@@ -27,8 +27,53 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-void initialize(Window& window, Camera& camera, Transform& model);
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#include <vector>
 
+// Função para salvar o frame atual do OpenGL
+void SalvarScreenshot(const char* nomeArquivo, int largura, int altura) {
+    // 1. Aloca memória para os pixels (Largura * Altura * 3 canais de cor RGB)
+    std::vector<unsigned char> pixels(largura * altura * 3);
+    static int count = 1;
+    std::string nome = "simulacao_figura" + std::to_string(count) + ".png";
+
+    // 2. Garante que o OpenGL não tente alinhar os bytes de forma diferente
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+    // 3. Lê os pixels do buffer do OpenGL
+    glReadPixels(0, 0, largura, altura, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+
+    // 4. O OpenGL tem a coordenada Y invertida (0,0 é no canto inferior esquerdo).
+    // O stb_image_write permite inverter automaticamente na hora de salvar:
+    stbi_flip_vertically_on_write(true);
+
+    // 5. Salva o arquivo em PNG (formato sem perda de qualidade)
+    stbi_write_png(nome.c_str(), largura, altura, 3, pixels.data(), largura * 3);
+    count++;
+}
+
+void tecle_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    // Verifica se a tecla ESC foi pressionada
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE); // Fecha a janela
+    }
+    
+    // Verifica se a tecla Espaço foi pressionada
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        std::cout << "Barra de espaço pressionada!" << std::endl;
+    }
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS)
+    {
+        std::cout << "salvando" << std::endl;
+        int largura, altura;
+        glfwGetFramebufferSize(window, &largura, &altura);
+        SalvarScreenshot("simulacao.png", largura, altura);
+    }
+}
+
+void initialize(Window& window, Camera& camera, Transform& model);
 
 int main()
 {
@@ -66,6 +111,8 @@ int main()
 
         glm::mat4 modelMatRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         shader.setGlmMat4("u_modelMatRotation", modelMatRotation);
+
+        glfwSetKeyCallback(window.getHandle(), tecle_callback);
 
 		while (!window.shouldClose())
 		{
@@ -221,7 +268,7 @@ int main()
                 state.updateTime();
                 physics.update();
                 float offset = 20.0f; 
-    
+/*    
                 glm::mat4 boostMat = physics.getPoincareGroupMat4(); 
                 glm::vec4 centerOffset = glm::vec4(0.0f, offset, 0.0f, 0.0f);
                 glm::vec4 visualCenter = (boostMat * centerOffset) - centerOffset;
@@ -231,7 +278,7 @@ int main()
                     glm::vec3(visualCenter.y, visualCenter.z, visualCenter.w),        
                     glm::vec3(0.0f, 1.0f, 0.0f)                                        
                     );
-    
+   */ 
                 render.setFlag(Render::CAMERA);
             }
 

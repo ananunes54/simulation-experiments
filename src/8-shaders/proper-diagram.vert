@@ -64,7 +64,7 @@ void main()
 
     vec4 boostedVector = (u_poincareGroupMat * vec4(deltaT, newX + offset, newY, rotated.z)) + scaledTranslation;
 
-    vec4 worldPos = u_modelMat * vec4(boostedVector.y - offset, boostedVector.z, boostedVector.w, 1.0);
+    vec4 worldPos = u_modelMat * vec4(boostedVector.y - u_gamma * offset, boostedVector.z, boostedVector.w, 1.0);
 
     gl_Position = u_projectionMat * u_viewMat * worldPos;
 
