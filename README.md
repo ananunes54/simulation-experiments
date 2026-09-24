@@ -1,7 +1,11 @@
 <p align="center">
   <img width="1904" height="991" alt="vxalto" src="https://github.com/user-attachments/assets/941c5d66-d42b-4b6a-ac86-03e6c2e82271" /> (a)
   <img width="1904" height="991" alt="vxalto2" src="https://github.com/user-attachments/assets/cd513016-6040-4500-bb52-fcc4aabe91a3" /> (b)
+  <em>Figura 1. Renderização do objeto sob movimento uniforme. (a) Captura em um dado instante 𝑡1 da simulação; (b) Captura em um instante 𝑡2 posterior a 𝑡1 , evidenciando a
+constância das variáveis monitoradas para esse regime.</em>
 </p>
+
+<br><br>
 
 <p align="center">
   <img width="1904" height="991" alt="erroyacelerado" src="https://github.com/user-attachments/assets/5202e0b3-3cb2-4620-b729-56d4fc5c78d9" />
