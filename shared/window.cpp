@@ -81,6 +81,7 @@ void Window::initImGui()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    ImFont* font = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16.0f);
     ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(m_handle, true);
     ImGui_ImplOpenGL3_Init("#version 330");

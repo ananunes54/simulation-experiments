@@ -114,6 +114,9 @@ int main()
 
         glfwSetKeyCallback(window.getHandle(), tecle_callback);
 
+// Aumenta a escala de toda a UI (fontes, botões, margens) em 20%
+ImGui::GetStyle().ScaleAllSizes(1.2f);
+
 		while (!window.shouldClose())
 		{
 
@@ -140,7 +143,7 @@ int main()
                     physics.setMotion(MOTION::inertial);
                     physics.reset();
                     physicsC.reset();
-                    physicsC.linearAccelLimit = glm::vec2(-30.0f, 30.0f);
+                    physicsC.linearAccelLimit = glm::vec2(-100.0f, 100.0f);
                     render.setFlag(Render::PHYSICS);
                 }
 
@@ -223,9 +226,9 @@ int main()
                 ImGui::Text("Velocidade: %.3f", physics.getVelocityMagnitude());
                 ImGui::Text("Gamma: %.3f", physics.getGamma());
                 ImGui::Text("Tempo externo: %.3f", state.time);
-                ImGui::Text("Tempo próprio: %3f", physics.getProperTime());
-                ImGui::Text("Intervalo t_ext: %.3f", state.dTime);
-                ImGui::Text("Intervalo t_prop: %.3f", physics.getProperTimeInterval());
+                ImGui::Text("Tempo próprio: %.3f", physics.getProperTime());
+                ImGui::Text("Intervalo t_ext: %.4f", state.dTime);
+                ImGui::Text("Intervalo t_prop: %.4f", physics.getProperTimeInterval());
                 ImGui::Text("Poincare 5 coluna: [%.2f, %.2f, %.2f, %.2f]",
                         poincare.x, poincare.y, poincare.z, poincare.w);
             }

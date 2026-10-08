@@ -55,7 +55,7 @@ void main()
     float newX = rotated.x * newAngleCos - rotated.y * newAngleSin;
     float newY = rotated.x * newAngleSin + rotated.y * newAngleCos;
 
-    float visualScale = 1.0f;
+    float visualScale = 10.0f;
 
     vec4 scaledTranslation = vec4(
             u_poincareTranslationVec.x,
